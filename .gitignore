@@ -2,6 +2,7 @@ private/vendor/
 node_modules/
 npm-debug.log
 yarn-error.log
+*.lock
 
 # Laravel 4 specific
 private/bootstrap
