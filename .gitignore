@@ -5,7 +5,6 @@ yarn-error.log
 *.lock
 
 # Laravel 4 specific
-private/bootstrap
 private/app/storage
 
 # Laravel 5 & Lumen specific
