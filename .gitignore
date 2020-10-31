@@ -3,6 +3,7 @@ node_modules/
 npm-debug.log
 yarn-error.log
 *.lock
+*.DS_Store
 
 # Laravel 4 specific
 private/bootstrap/chache
