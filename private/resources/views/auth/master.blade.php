@@ -30,24 +30,24 @@
     <!--begin::Body-->
     <body  id="kt_body"  class="header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable page-loading"  >
         <!--begin::Main-->
-        <div class="d-flex flex-column flex-root">
+        <!-- <div class="d-flex flex-column flex-root"> -->
             <!--begin::Login-->
-            <div class="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login">
+            <!-- <div class="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login">
                 <div class="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style="background-image: url({{ config('app.url') }}assets/media/bg/bg-1.jpg);">
-                    <div class="login-form text-center text-white p-7 position-relative overflow-hidden">
+                    <div class="login-form text-center text-white p-7 position-relative overflow-hidden"> -->
                         <!--begin::Login Header-->
-                        <div class="d-flex flex-center mb-15">
+                        <!-- <div class="d-flex flex-center mb-15">
                             <a href="#">
                             <img src="{{ config('app.url') }}assets/media/logos/logo-letter-9.png" class="max-h-100px" alt=""/>
                             </a>
-                        </div>
+                        </div> -->
                         <!--end::Login Header-->
                         @yield('content')
-                    </div>
+                    <!-- </div>
                 </div>
-            </div>
+            </div> -->
             <!--end::Login-->
-        </div>
+        <!-- </div> -->
         <!--end::Main-->
         <script>var HOST_URL = "https://preview.keenthemes.com/metronic/theme/html/tools/preview";</script>
         <!--begin::Global Config(global config for global JS scripts)-->

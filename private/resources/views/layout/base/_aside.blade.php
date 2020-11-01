@@ -46,7 +46,7 @@
             {{ Metronic::printAttrs('aside_menu') }}>
 
             <ul class="menu-nav {{ Metronic::printClasses('aside_menu_nav', false) }}">
-                @include('layout.base.left-menu')
+                {{ Menu::renderVerMenu(config('menu_aside.items')) }}
             </ul>
         </div>
     </div>

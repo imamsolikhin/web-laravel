@@ -19,15 +19,15 @@ Route::get('/', 'HomeController@index');
 Route::get('dashboard', 'HomeController@dashboard')->name('dashboard');
 
 // Demo routes
-//Route::get('/datatables', 'PagesController@datatables')->name('datatables');
-//Route::get('/ktdatatables', 'PagesController@ktDatatables');
-//Route::get('/select2', 'PagesController@select2');
-//Route::get('/icons/custom-icons', 'PagesController@customIcons');
-//Route::get('/icons/flaticon', 'PagesController@flaticon');
-//Route::get('/icons/fontawesome', 'PagesController@fontawesome');
-//Route::get('/icons/lineawesome', 'PagesController@lineawesome');
-//Route::get('/icons/socicons', 'PagesController@socicons');
-//Route::get('/icons/svg', 'PagesController@svg');
+// Route::get('/datatables', 'PagesController@datatables')->name('datatables');
+// Route::get('/ktdatatables', 'PagesController@ktDatatables');
+// Route::get('/select2', 'PagesController@select2');
+// Route::get('/icons/custom-icons', 'PagesController@customIcons');
+// Route::get('/icons/flaticon', 'PagesController@flaticon');
+// Route::get('/icons/fontawesome', 'PagesController@fontawesome');
+// Route::get('/icons/lineawesome', 'PagesController@lineawesome');
+// Route::get('/icons/socicons', 'PagesController@socicons');
+// Route::get('/icons/svg', 'PagesController@svg');
 // Quick search dummy route to display html elements in search dropdown (header search)
 Route::get('/quick-search', 'PagesController@quickSearch')->name('quick-search');
 
@@ -210,35 +210,4 @@ Route::prefix('management')->namespace('Management')->as('management.')->group(f
 
     Route::resource('role', 'RoleController', ['except' => ['show']]);
     Route::post('role/data', 'RoleController@getData')->name('role.data');
-});
-
-
-Route::prefix('olt')->namespace('Olt')->as('olt.')->group(function() {
-    Route::prefix('host')->as('host.')->group(function() {
-        Route::post('data', 'HostController@getData')->name('data');
-        Route::get('/{id}', 'HostController@show')->name('show');
-    });
-    Route::resource('host', 'HostController', ['except' => ['create', 'show']]);
-
-    Route::prefix('signal-formula')->as('signal-formula.')->group(function() {
-        Route::post('data', 'SignalFormulaController@getData')->name('data');
-        Route::get('/{id}', 'SignalFormulaController@show')->name('show');
-    });
-    Route::resource('signal-formula', 'SignalFormulaController', ['except' => ['create', 'show']]);
-
-    Route::prefix('device')->as('device.')->group(function() {
-        Route::get('/', 'DeviceController@index')->name('index');
-    });
-
-    Route::prefix('device')->as('device.')->group(function() {
-        Route::post('data', 'DeviceController@getData')->name('data');
-        Route::get('/{id}', 'DeviceController@show')->name('show');
-    });
-    Route::resource('device', 'DeviceController', ['except' => ['create', 'show']]);
-
-    Route::prefix('clients')->as('clients.')->group(function() {
-        Route::post('data', 'ClientsController@getData')->name('data');
-        Route::get('/{id}', 'ClientsController@show')->name('show');
-    });
-    Route::resource('clients', 'ClientsController', ['except' => ['create', 'show']]);
 });
