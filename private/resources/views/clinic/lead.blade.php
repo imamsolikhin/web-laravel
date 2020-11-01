@@ -263,7 +263,7 @@
 @section('styles')
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.css">
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.min.css">
-<link rel="stylesheet" href="{{ config('app.url') }}assets/examples/css/tables/datatable.css">
+<link rel="stylesheet" href="{{ config('app.url') }}examples/css/tables/datatable.css">
 <link rel="stylesheet" href="{{ config('app.url') }}css/inject.css">
 @endsection
 

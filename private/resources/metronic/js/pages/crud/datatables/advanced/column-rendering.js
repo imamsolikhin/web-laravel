@@ -21,7 +21,7 @@ var KTDatatablesAdvancedColumnRendering = function() {
 							output = `
                                 <div class="d-flex align-items-center">
                                     <div class="symbol symbol-50 flex-shrink-0">
-                                        <img src="assets/media/users/` + user_img + `" alt="photo">
+                                        <img src="media/users/` + user_img + `" alt="photo">
                                     </div>
                                     <div class="ml-3">
                                         <span class="text-dark-75 font-weight-bold line-height-sm d-block pb-2">` + full[2] + `</span>

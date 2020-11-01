@@ -73,7 +73,7 @@ var KTAppsProjectsListDatatable = function() {
                     if (number < 7) {
                         output = '<div class="d-flex align-items-center">\
 								<div class="symbol symbol-40 symbol-circle symbol-sm">\
-									<img class="" src="assets/media/project-logos/' + img + '" alt="photo"/>\
+									<img class="" src="media/project-logos/' + img + '" alt="photo"/>\
 								</div>\
 								<div class="ml-3">\
 									<div class="text-dark-75 font-weight-bolder font-size-lg mb-0">' + data.CompanyAgent + '</div>\

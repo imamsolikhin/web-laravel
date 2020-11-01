@@ -55,7 +55,7 @@ var KTAppsEducationSchoolLibrary = function() {
 
 						output = '<div class="d-flex align-items-center">\
 							<div class="symbol symbol-40 symbol-sm flex-shrink-0">\
-								<img class="" src="assets/media/books/' + img + '" alt="photo">\
+								<img class="" src="media/books/' + img + '" alt="photo">\
 							</div>\
 							<div class="ml-4">\
 								<a href="#" class="text-dark-75 text-hover-primary font-weight-bolder font-size-lg mb-0">' + data.CompanyName + '</a>\

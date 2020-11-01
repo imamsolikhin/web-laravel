@@ -154,7 +154,7 @@
                             <div class="form-group row">
                                 <label class="col-lg-4 col-form-label">Transfer</label>
                                 <div class="col-lg-8">
-                                    <div class="image-input image-input-empty image-input-outline" id="kt_image_5" style="background-image: url(assets/media/users/blank.png)">
+                                    <div class="image-input image-input-empty image-input-outline" id="kt_image_5" style="background-image: url(media/users/blank.png)">
                                         <div class="img-fluid image-input-wrapper"></div>
                                         <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="Change avatar">
                                             <i class="fa fa-pen icon-sm text-muted"></i>
@@ -482,7 +482,7 @@
 @section('styles')
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.css">
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.min.css">
-<link rel="stylesheet" href="{{ config('app.url') }}assets/examples/css/tables/datatable.css">
+<link rel="stylesheet" href="{{ config('app.url') }}examples/css/tables/datatable.css">
 <link rel="stylesheet" href="{{ config('app.url') }}css/inject.css">
 @endsection
 

@@ -996,7 +996,7 @@ CREATE TABLE `sys_setup` (
 -- Records of sys_setup
 -- ----------------------------
 BEGIN;
-INSERT INTO `sys_setup` VALUES ('SYS', 'localhost', 'HPI MANAGEMENT', 'HPI MANAGEMENT', 'assets/images/logo-tacyon.jpg', 'assets/images/background/bg-network.jpg', 'assets/images/background/logo-tacyon.jpg');
+INSERT INTO `sys_setup` VALUES ('SYS', 'localhost', 'HPI MANAGEMENT', 'HPI MANAGEMENT', 'images/logo-tacyon.jpg', 'images/background/bg-network.jpg', 'images/background/logo-tacyon.jpg');
 COMMIT;
 
 -- ----------------------------

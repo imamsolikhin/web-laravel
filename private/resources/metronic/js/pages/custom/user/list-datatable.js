@@ -63,7 +63,7 @@ var KTAppsUsersListDatatable = function() {
 						if (number > 8) {
 							output = '<div class="d-flex align-items-center">\
 								<div class="symbol symbol-40 symbol-sm flex-shrink-0">\
-									<img class="" src="assets/media/users/' + user_img + '" alt="photo">\
+									<img class="" src="media/users/' + user_img + '" alt="photo">\
 								</div>\
 								<div class="ml-4">\
 									<div class="text-dark-75 font-weight-bolder font-size-lg mb-0">' + data.CompanyAgent + '</div>\

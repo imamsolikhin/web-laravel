@@ -64,7 +64,7 @@ class StockInController extends Controller {
                         ->addColumn('action', function($transaksi) {
                             $detail = '<a href="' . route('product.transaksi.show', $transaksi->Code) . '" class="btn btn-icon btn-light btn-hover-success btn-sm" data-toggle="tooltip" data-placement="top" title="Detail">
 					            <span class="svg-icon svg-icon-md svg-icon-success">
-					                <!--begin::Svg Icon | path:assets/media/svg/icons/General/Settings-1.svg-->
+					                <!--begin::Svg Icon | path:media/svg/icons/General/Settings-1.svg-->
 					                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
 					                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 					                        <rect x="0" y="0" width="24" height="24"/>

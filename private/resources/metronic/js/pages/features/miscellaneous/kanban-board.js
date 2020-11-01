@@ -178,7 +178,7 @@ var KTKanbanBoardDemo = function() {
                             'title': `
                                 <div class="d-flex align-items-center">
                         	        <div class="symbol symbol-success mr-3">
-                        	            <img alt="Pic" src="assets/media/users/300_24.jpg" />
+                        	            <img alt="Pic" src="media/users/300_24.jpg" />
                         	        </div>
                         	        <div class="d-flex flex-column align-items-start">
                         	            <span class="text-dark-50 font-weight-bold mb-1">SEO Optimization</span>
@@ -210,7 +210,7 @@ var KTKanbanBoardDemo = function() {
                             'title': `
                                 <div class="d-flex align-items-center">
                         	        <div class="symbol symbol-success mr-3">
-                        	            <img alt="Pic" src="assets/media/users/300_16.jpg" />
+                        	            <img alt="Pic" src="media/users/300_16.jpg" />
                         	        </div>
                         	        <div class="d-flex flex-column align-items-start">
                         	            <span class="text-dark-50 font-weight-bold mb-1">Server Setup</span>
@@ -223,7 +223,7 @@ var KTKanbanBoardDemo = function() {
                             'title': `
                                 <div class="d-flex align-items-center">
                         	        <div class="symbol symbol-success mr-3">
-                        	            <img alt="Pic" src="assets/media/users/300_15.jpg" />
+                        	            <img alt="Pic" src="media/users/300_15.jpg" />
                         	        </div>
                         	        <div class="d-flex flex-column align-items-start">
                         	            <span class="text-dark-50 font-weight-bold mb-1">Report Generation</span>
@@ -242,7 +242,7 @@ var KTKanbanBoardDemo = function() {
                             'title': `
                                 <div class="d-flex align-items-center">
                         	        <div class="symbol symbol-success mr-3">
-                            	         <img alt="Pic" src="assets/media/users/300_24.jpg" />
+                            	         <img alt="Pic" src="media/users/300_24.jpg" />
                         	        </div>
                         	        <div class="d-flex flex-column align-items-start">
                         	            <span class="text-dark-50 font-weight-bold mb-1">Marketing</span>
@@ -274,7 +274,7 @@ var KTKanbanBoardDemo = function() {
                             'title': `
                                 <div class="d-flex align-items-center">
                         	        <div class="symbol symbol-success mr-3">
-                        	            <img alt="Pic" src="assets/media/users/300_11.jpg" />
+                        	            <img alt="Pic" src="media/users/300_11.jpg" />
                         	        </div>
                         	        <div class="d-flex flex-column align-items-start">
                         	            <span class="text-dark-50 font-weight-bold mb-1">SEO Optimization</span>
@@ -287,7 +287,7 @@ var KTKanbanBoardDemo = function() {
                             'title': `
                                 <div class="d-flex align-items-center">
                         	        <div class="symbol symbol-success mr-3">
-                        	            <img alt="Pic" src="assets/media/users/300_20.jpg" />
+                        	            <img alt="Pic" src="media/users/300_20.jpg" />
                         	        </div>
                         	        <div class="d-flex flex-column align-items-start">
                         	            <span class="text-dark-50 font-weight-bold mb-1">Product Team</span>
@@ -340,7 +340,7 @@ var KTKanbanBoardDemo = function() {
                     'title': `
                         <div class="d-flex align-items-center">
                             <div class="symbol symbol-light-primary mr-3">
-                                <img alt="Pic" src="assets/media/users/300_14.jpg" />
+                                <img alt="Pic" src="media/users/300_14.jpg" />
                             </div>
                             <div class="d-flex flex-column align-items-start">
                                 <span class="text-dark-50 font-weight-bold mb-1">Requirement Study</span>
@@ -363,7 +363,7 @@ var KTKanbanBoardDemo = function() {
                             'title': `
                                 <div class="d-flex align-items-center">
                                     <div class="symbol symbol-success mr-3">
-                                        <img alt="Pic" src="assets/media/users/300_13.jpg" />
+                                        <img alt="Pic" src="media/users/300_13.jpg" />
                                     </div>
                                     <div class="d-flex flex-column align-items-start">
                                         <span class="text-dark-50 font-weight-bold mb-1">Payment Modules</span>
@@ -374,7 +374,7 @@ var KTKanbanBoardDemo = function() {
                             'title': `
                                 <div class="d-flex align-items-center">
                                     <div class="symbol symbol-success mr-3">
-                                        <img alt="Pic" src="assets/media/users/300_12.jpg" />
+                                        <img alt="Pic" src="media/users/300_12.jpg" />
                                     </div>
                                     <div class="d-flex flex-column align-items-start">
                                     <span class="text-dark-50 font-weight-bold mb-1">New Project</span>

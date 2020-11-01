@@ -604,7 +604,7 @@ var KTDatatableModal = function() {
                 title: 'Profile Picture',
                 template: function(data, i) {
                     var number = KTUtil.getRandomInt(1, 14);
-                    var user_img = 'background-image:url(\'assets/media/users/100_' + number + '.jpg\')';
+                    var user_img = 'background-image:url(\'media/users/100_' + number + '.jpg\')';
 
                     var output = '';
                     if (number > 8) {

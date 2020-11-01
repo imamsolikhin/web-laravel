@@ -11,7 +11,7 @@
         </div>
         <div class="card-toolbar">
             <a id="add-btn" class="btn btn-primary py-2">
-                <i class="menu-icon">{{ Metronic::getSVG("assets/media/svg/icons/Code/Plus.svg", "svg-icon svg-icon-md") }}</i>
+                <i class="menu-icon">{{ Metronic::getSVG("media/svg/icons/Code/Plus.svg", "svg-icon svg-icon-md") }}</i>
                 Add User
             </a>
         </div>
@@ -144,7 +144,7 @@
 @section('styles')
     <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.css">
     <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.min.css">
-    <link rel="stylesheet" href="{{ config('app.url') }}assets/examples/css/tables/datatable.css">
+    <link rel="stylesheet" href="{{ config('app.url') }}examples/css/tables/datatable.css">
 @endsection
 
 {{-- Scripts Section --}}
