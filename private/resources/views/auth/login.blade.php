@@ -18,7 +18,7 @@
                   </div>
               </div>
           </div>
-          <div class="flex-row-fluid d-flex flex-column position-relative p-7 overflow-hidden">
+          <div class="flex-row-fluid d-flex flex-column position-relative p-1 overflow-hidden">
               <div class="d-flex flex-column-fluid flex-center mt-30 mt-lg-0">
                   <div class="login-form login-signin">
                       <div class="text-center mb-0 mb-lg-5">
@@ -40,21 +40,21 @@
                           @include('inc.success-notif')
 
                           <div class="form-group">
-                              <input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8 mb-5" type="text" placeholder="Email" name="login" value="{{ old('login') }}" required autocomplete="off"/>
+                              <input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-50 rounded-pill border-0 py-4 px-8 mb-5" type="text" placeholder="username" name="login" value="{{ old('login') }}" required autocomplete="off"/>
                           </div>
                           <div class="form-group">
-                              <input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8 mb-5" type="password" placeholder="Password" name="password" required/>
+                              <input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-50 rounded-pill border-0 py-4 px-8 mb-5" type="password" placeholder="password" name="password" required autocomplete="off"/>
                           </div>
                           <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
-                              <div class="col-12 row">
-                                  <div class="col-4">
+                              <div class="col-md-12 row">
+                                  <div class="col-md-4">
                                       <div class="form-group row">
                                           <button type="submit" href="javascript:void(0)" class="btn btn-primary font-weight-bold px-9 py-2 my-2">Login</button>
                                       </div>
                                   </div>
                                   <div class="col-4">
-                                      <div class="form-group justify">
-                                          <select class="form-control" name="sess_month" required>
+                                      <div class="form-group">
+                                          <select class="custom-select form-control" name="sess_month" required>
                                               <?php $mytime = Carbon\Carbon::now();?>
                                               <?php for ($m = 1; $m <= 12; ++$m) { ?>
                                                   <option value="<?php echo $m; ?>" <?php echo $active = (date("m", strtotime($mytime->toDateTimeString())) == $m) ? 'Selected' : ''; ?>><?php echo date('F', mktime(0, 0, 0, $m, 1)); ?></option>
@@ -63,8 +63,8 @@
                                       </div>
                                   </div>
                                   <div class="col-4">
-                                      <div class="form-group justify">
-                                          <select class="form-control" name="sess_year" required>
+                                      <div class="form-group">
+                                          <select class="custom-select form-control" name="sess_year" required>
                                               <?php for ($m = 2019; $m <= 2025; ++$m) { ?>
                                                   <option value="<?php echo $m; ?>" <?php echo $active = (date("Y", strtotime($mytime->toDateTimeString())) == $m) ? 'Selected' : ''; ?>><?php echo $m; ?></option>
                                               <?php } ?>
@@ -77,7 +77,7 @@
                   </div>
               </div>
               <div class="d-flex d-lg-none flex-column-auto flex-column flex-sm-row justify-content-between align-items-center mt-5 p-5">
-                  <div class="text-white-50 font-weight-bold order-2 order-sm-1 my-2">� 2020 TEAM&nbsp;&nbsp;R&D</div>
+                  <div class="text-dark-50 font-weight-bold order-2 order-sm-1 my-2">� 2020 TEAM&nbsp;&nbsp;R&D</div>
               </div>
           </div>
       </div>

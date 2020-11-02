@@ -22,8 +22,8 @@ class DemoSeeder extends Seeder
             [ 'name' => 'Demo Mall II', 'property' => 'Mall' ]
         ];
         $data->userName = 'global admin demo';
-        $data->userEmail = 'globaladmin@demo.com';
-        $data->userUsername = 'globaladmindemo';
+        $data->userEmail = 'superadmin@demo.com';
+        $data->userUsername = 'admin';
         $data->userPassword = '123123';
         $data->servicePlanId = 6;
         $data->planPeriod = 'quarterly';
@@ -37,10 +37,10 @@ class DemoSeeder extends Seeder
         $user->client_group_id = $demoClientGroupId;
         $user->client_property_id = $demoClientPropertyId;
         $user->client_id = $demoClientId;
-        $user->name = 'Fandy Kurniawan';
-        $user->email = 'admin@admin.com';
+        $user->name = 'Imam Solikhin';
+        $user->email = 'de4imamsolikhin@gmail.com';
         $user->username = 'admin';
-        $user->password = bcrypt('123123');
+        $user->password = bcrypt('admin');
         $user->save();
         $user->attachRole(1);
     }
