@@ -242,6 +242,15 @@ function getControllerName($folder,$module) {
     return 'App\Http\Controllers\\'. $folder .'\\' . getKeyName($module) . 'Controller';
 }
 
+function generadeCode($folder, $table, $branch=Null, $prfix=Null, $numb=5)
+{
+   $branch = ($branch)? $branch."-":"";
+   $prfix = ($prfix)? $prfix."-":"";
+   $last_count = getResourceName($folder,$table)::count()+1;
+   $code = $branch.$prfix.str_pad($last_count, $numb, '0', STR_PAD_LEFT);
+   return $code;
+}
+
 function to_bool($val = null) {
     if ($val == "on" || $val != null) {
         return 1;

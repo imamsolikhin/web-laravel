@@ -12,7 +12,7 @@
           <a href="{{ route('dashboard') }}" class="text-muted">Dashboard</a>
         </li>
         <li class="breadcrumb-item">
-          <a href="{{ route('clinic.reservation.index') }}" class="text-muted">Reservation</a>
+          <a href="{{ route('clinic.index','Reservasi') }}" class="text-muted">Reservation</a>
         </li>
         <li class="breadcrumb-item">
           <a href="#view" class="text-muted">View</a>
@@ -109,7 +109,7 @@
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <form class="form" id="form-input" action="{{ route('clinic.reservation.store') }}" method="POST">
+            <form class="form" id="form-input" action="{{ route('clinic.save','Reservasi') }}" method="POST">
               {!! csrf_field() !!}
               <input type="hidden" class="form-control" id="method" id="_method" name="_method" placeholder="Enter method" value="POST"/>
                 <div class="card-body pt-3">
@@ -117,7 +117,7 @@
                         <div class="form-group row">
                             <label class="col-lg-4 col-form-label">Code</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="Code" name="Code" placeholder="Enter Code" value=""/>
+                                <input type="text" class="form-control" id="Code" name="Code" placeholder="AUTO" value="" readonly/>
                             </div>
                         </div>
                     </div>
@@ -262,7 +262,7 @@
 @section('styles')
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.css">
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.min.css">
-<link rel="stylesheet" href="{{ config('app.url') }}examples/css/tables/datatable.css">
+<link rel="stylesheet" href="{{ config('app.url') }}plugins/custom/datatables/datatables.bundle.css">
 <link rel="stylesheet" href="{{ config('app.url') }}css/inject.css">
 @endsection
 
@@ -329,7 +329,7 @@
     lengthMenu: [[5, 10, 25, 50, 100, 200, -1], [5, 10, 25, 50, 100, 200, "All"]],
     ajax: {
       method: 'POST',
-      url : '{{ route('clinic.reservation.data') }}',
+      url : '{{ route('clinic.list','Reservasi') }}',
       data: {from_date:start_date, to_date:end_date},
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -342,13 +342,7 @@
       {title: "Reservation", data: 'InteractionCode', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: true},
       {title: "Pasien", data: 'Pasien', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
       {title: "No Telf", data: 'Phone', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      // {title: "Age", data: 'Age', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
       {title: "Consultation", data: 'Consultation', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      // {title: "Address", data: 'Address', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      // {title: "CityCode", data: 'CityCode', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      // {title: "CofirmationCode", data: 'CofirmationCode', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      // {title: "ReservationDate", data: 'ReservationDate', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      // {title: "LockStatus", data: 'LockStatus', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
       {title: "Actions", data: 'action', orderable: false, responsivePriority: -1},
     ],
     order: [[1, 'asc']],
@@ -429,16 +423,15 @@
   function show_data(id = "") {
       if (id !== "") {
           $.ajax({
-              url: "{{ route('clinic.reservation.store')}}/" + id,
+              url: "{{ route('clinic.data',['Reservasi',''])}}/" + id,
               type: "GET",
               headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               success: function (response) {
-                  $("#form-input").attr("action", "{{ route('clinic.reservation.update','')}}/"+id);
+                  $("#form-input").attr("action", "{{ route('clinic.update',['Reservasi',''])}}/"+id);
                   $('#form-input').trigger("reset");
-                  $('#method').val("PUT");
-                  $('#Code').attr("readonly", true);
+                  $('#method').val("POST");
                   $('#Code').val(response.data.Code);
                   $('#CompanyCode').val(response.data.CompanyCode);
                   $('#BranchCode').val(response.data.BranchCode);
@@ -470,10 +463,10 @@
               }
           });
       } else {
-          $("#form-input").attr("action", "{{ route('clinic.reservation.store')}}");
+          $("#form-input").attr("action", "{{ route('clinic.save','Reservasi')}}");
           $('#form-input').trigger("reset");
           $('#method').val("POST");
-          $('#Code').attr("readonly", false);
+
           $('#Code').focus();
           $('#modal-form').modal('show');
           $('#Code').focus();

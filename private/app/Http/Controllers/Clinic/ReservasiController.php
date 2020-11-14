@@ -4,96 +4,94 @@ namespace App\Http\Controllers\Clinic;
 
 use DataTables;
 use Illuminate\Http\Request;
-use App\Http\Resources\Clinic\Closing;
+use App\Http\Resources\Clinic\Reservasi;
 use App\Http\Resources\Clinic\Interaksi;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-class ClosingController extends Controller {
+class ReservasiController extends Controller {
 
     public static function index() {
         $data["advertise_list"] = getResourceName("Master", "Advertise")::where('ActiveStatus',1)->get();
         $data["interaction_list"] = getResourceName("Master", "Interaction")::where('ActiveStatus',1)->get();
         $data["gender_list"] = getResourceName("Master", "Gender")::where('ActiveStatus',1)->get();
         $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('ActiveStatus',1)->get();
-        return view('clinic.closing',$data);
+        return view('clinic.reservasi',$data);
     }
 
     public static function data($id) {
-        $closing = Closing::withoutGlobalScopes(['active'])->findOrFail($id);
-        $closing->Schedule = date('d-m-Y H:i',strtotime($closing->Schedule));
+        $reservation = Reservasi::withoutGlobalScopes(['active'])->findOrFail($id);
+        $reservation->Schedule = date('d-m-Y H:i',strtotime($reservation->Schedule));
 
-        return makeResponse(200, 'success', null, $closing);
+        return makeResponse(200, 'success', null, $reservation);
     }
 
     public static function save($request) {
-        $validator = getControllerName("Clinic", "Closing")::validation($request);
-        if ($validator->fails()) return redirect()->route('clinic.index','Closing')->with('notif_danger', 'New Closing '. $request->Name .' can not be save!');
+        $validator = getControllerName("Clinic", "Reservasi")::validation($request);
+        if ($validator->fails()) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'New Reservasi '. $request->Name .' can not be save!');
 
-        $closing = getControllerName("Clinic", "Closing")::execute($request);
+        $reservation = getControllerName("Clinic", "Reservasi")::execute($request);
 
-        return redirect()->route('clinic.index','Closing')->with('notif_success', 'New Closing '. $request->Name .' has been added successfully!');
+        return redirect()->route('clinic.index','Reservasi')->with('notif_success', 'New Reservasi '. $request->Name .' has been added successfully!');
     }
 
     public static function update($id, $request) {
 
-        $validator = getControllerName("Clinic", "Closing")::validation($request, 'update');
-        if ($validator->fails()) return redirect()->route('clinic.index','Closing')->with('notif_danger', 'Closing '. $data->Name .' can not be update!');
+        $validator = getControllerName("Clinic", "Reservasi")::validation($request, 'update');
+        if ($validator->fails()) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'Reservasi '. $data->Name .' can not be update!');
 
-        $data = Closing::find(str_replace('%20', ' ', $id));
-        if (!$data) return redirect()->route('clinic.index','Closing')->with('notif_danger', 'Data '. $id .' not found!');
+        $data = Reservasi::find(str_replace('%20', ' ', $id));
+        if (!$data) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $closing = getControllerName("Clinic", "Closing")::execute($request,$data);
+        $reservation = getControllerName("Clinic", "Reservasi")::execute($request,$data);
 
-        $interaksi = Interaksi::where('Phone', '=', $closing->Phone)->update(['LockStatus'=>1]);
+        $interaksi = Interaksi::where('Phone', '=', $reservation->Phone)->update(['LockStatus'=>1]);
 
-        return redirect()->route('clinic.index','Closing')->with('notif_success', 'Closing '. $data->Name .' has been update successfully!');
+        return redirect()->route('clinic.index','Reservasi')->with('notif_success', 'Reservasi '. $data->Name .' has been update successfully!');
     }
 
     public static function delete($id) {
-        $data = Closing::find(str_replace('%20', ' ', $id));
-        if (!$data) return redirect()->route('clinic.index','Closing')->with('notif_danger', 'Data '. $id .' not found!');
+        $data = Reservasi::find(str_replace('%20', ' ', $id));
+        if (!$data) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $closing = $data->delete();
+        $reservation = $data->delete();
 
-        return redirect()->back()->with('notif_success', 'Closing '. $data->Name .' has been deleted!');
+        return redirect()->back()->with('notif_success', 'Reservasi '. $data->Name .' has been deleted!');
     }
 
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
-          $result = Closing::withoutGlobalScopes()
+          $result = Reservasi::withoutGlobalScopes()
                     ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
         }else{
-        	$result = Closing::withoutGlobalScopes();
+        	$result = Reservasi::withoutGlobalScopes();
         }
 
         return DataTables::of($result)
                         ->addIndexColumn()
-                        ->addColumn('active', function($closing) {
-                            $img = '<div class="symbol-label"><img alt="img" src="http://localhost/apps-sys/public/media/users/300_21.jpg" height="100"/>'.'</div>';
-                            $btn = '<a href="http://localhost/apps-sys/public/media/users/300_21.jpg" download target="_blank"><i class="icon-3x fas fa-cloud-download-alt text-primary"></i></a>';
-                            $status =  $closing->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Closing</span>';
-                            $newold = $closing->FollowupStatus ? '<span class="label font-weight-bold label-lg  label-light-primary label-inline">Baru</span>' : '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>';
-                            return $img.'<center>'.$btn."&nbsp".$newold."&nbsp".$status.'</center>';
+                        ->addColumn('active', function($reservation) {
+                            $status =  $reservation->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
+                            $newold = $reservation->FollowupStatus ? '<span class="label font-weight-bold label-lg  label-light-primary label-inline">Baru</span>' : '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>';
+                            return '<center>'.$newold."&nbsp".$status.'</center>';
                         })
-                        ->addColumn('ReservationDate', function($closing) {
-                            return date('d-m-Y H:i',strtotime($closing->Schedule));
+                        ->addColumn('ReservasiDate', function($reservation) {
+                            return date('d-m-Y H:i',strtotime($reservation->Schedule));
                         })
-                        ->addColumn('action', function($closing) {
-                            $data_id ="'".$closing->Code."'";
+                        ->addColumn('action', function($reservation) {
+                            $data_id ="'".$reservation->Code."'";
                             $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
-                          							    <span class="svg-icon svg-icon-md svg-icon-primary">
-                          							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                          							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                          							                <rect x="0" y="0" width="24" height="24"/>
-                          							                <path d="M12.2674799,18.2323597 L12.0084872,5.45852451 C12.0004303,5.06114792 12.1504154,4.6768183 12.4255037,4.38993949 L15.0030167,1.70195304 L17.5910752,4.40093695 C17.8599071,4.6812911 18.0095067,5.05499603 18.0083938,5.44341307 L17.9718262,18.2062508 C17.9694575,19.0329966 17.2985816,19.701953 16.4718324,19.701953 L13.7671717,19.701953 C12.9505952,19.701953 12.2840328,19.0487684 12.2674799,18.2323597 Z" fill="#000000" fill-rule="nonzero" transform="translate(14.701953, 10.701953) rotate(-135.000000) translate(-14.701953, -10.701953) "/>
-                          							                <path d="M12.9,2 C13.4522847,2 13.9,2.44771525 13.9,3 C13.9,3.55228475 13.4522847,4 12.9,4 L6,4 C4.8954305,4 4,4.8954305 4,6 L4,18 C4,19.1045695 4.8954305,20 6,20 L18,20 C19.1045695,20 20,19.1045695 20,18 L20,13 C20,12.4477153 20.4477153,12 21,12 C21.5522847,12 22,12.4477153 22,13 L22,18 C22,20.209139 20.209139,22 18,22 L6,22 C3.790861,22 2,20.209139 2,18 L2,6 C2,3.790861 3.790861,2 6,2 L12.9,2 Z" fill="#000000" fill-rule="nonzero" opainteraksi="0.3"/>
-                          							            </g>
-                          							        </svg>
-                          							    </span>
-                          							</a>';
-                            $delete = '<a data-href="' . route('clinic.delete',['Closing', $closing->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+                      							    <span class="svg-icon svg-icon-md svg-icon-primary">
+                      							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                      							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      							                <rect x="0" y="0" width="24" height="24"/>
+                      							                <path d="M12.2674799,18.2323597 L12.0084872,5.45852451 C12.0004303,5.06114792 12.1504154,4.6768183 12.4255037,4.38993949 L15.0030167,1.70195304 L17.5910752,4.40093695 C17.8599071,4.6812911 18.0095067,5.05499603 18.0083938,5.44341307 L17.9718262,18.2062508 C17.9694575,19.0329966 17.2985816,19.701953 16.4718324,19.701953 L13.7671717,19.701953 C12.9505952,19.701953 12.2840328,19.0487684 12.2674799,18.2323597 Z" fill="#000000" fill-rule="nonzero" transform="translate(14.701953, 10.701953) rotate(-135.000000) translate(-14.701953, -10.701953) "/>
+                      							                <path d="M12.9,2 C13.4522847,2 13.9,2.44771525 13.9,3 C13.9,3.55228475 13.4522847,4 12.9,4 L6,4 C4.8954305,4 4,4.8954305 4,6 L4,18 C4,19.1045695 4.8954305,20 6,20 L18,20 C19.1045695,20 20,19.1045695 20,18 L20,13 C20,12.4477153 20.4477153,12 21,12 C21.5522847,12 22,12.4477153 22,13 L22,18 C22,20.209139 20.209139,22 18,22 L6,22 C3.790861,22 2,20.209139 2,18 L2,6 C2,3.790861 3.790861,2 6,2 L12.9,2 Z" fill="#000000" fill-rule="nonzero" opainteraksi="0.3"/>
+                      							            </g>
+                      							        </svg>
+                      							    </span>
+                      							</a>';
+                            $delete = '<a data-href="' . route('clinic.delete',['Reservasi', $reservation->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
                         							    <span class="svg-icon svg-icon-md svg-icon-danger">
                         							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                         							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -106,9 +104,8 @@ class ClosingController extends Controller {
                         							</a>';
 
                             return $edit . ' ' . $delete;
-                            // return $detail . ' ' . $edit . ' ' . $delete;
                         })
-                        ->rawColumns(['ImgReservation','active', 'action'])
+                        ->rawColumns(['ImgReservasi','active', 'action'])
                         ->make(true);
     }
 
@@ -130,12 +127,12 @@ class ClosingController extends Controller {
 
      public static function execute($request, $data = null) {
         if (is_null($data)) {
-            $data = new Closing;
+            $data = new Reservasi;
         }
         if ($request->Code) {
             $data->Code = $request->Code;
         }else{
-            $data->Code = generadeCode("Clinic","Closing","TGA", "RSV", $numb=5);
+            $data->Code = generadeCode("Clinic","Reservasi","TGA", "RSV", $numb=5);
         }
         if ($request->CompanyCode){
           $data->CompanyCode = $request->CompanyCode;
@@ -177,7 +174,6 @@ class ClosingController extends Controller {
           $data->CofirmationCode = $request->CofirmationCode;
         }
         if ($request->Schedule){
-          // dd(Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i'));
           $data->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
         }
         if ($request->Status){
@@ -198,8 +194,8 @@ class ClosingController extends Controller {
         if ($request->ImgPatient){
           $data->ImgPatient = $request->ImgPatient;
         }
-        if ($request->ImgReservation){
-          $data->ImgReservation = $request->ImgReservation;
+        if ($request->ImgReservasi){
+          $data->ImgReservasi = $request->ImgReservasi;
         }
         if ($request->ImgConference){
           $data->ImgConference = $request->ImgConference;

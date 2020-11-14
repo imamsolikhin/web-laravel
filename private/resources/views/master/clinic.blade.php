@@ -70,7 +70,7 @@
                         <div class="form-group row">
                             <label class="col-lg-4 col-form-label">Code</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="Code" name="Code" placeholder="Enter Code" value=""/>
+                                <input type="text" class="form-control" id="Code" name="Code" placeholder="AUTO" value="" readonly/>
                             </div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
 @section('styles')
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.css">
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.min.css">
-<link rel="stylesheet" href="{{ config('app.url') }}examples/css/tables/datatable.css">
+<link rel="stylesheet" href="{{ config('app.url') }}plugins/custom/datatables/datatables.bundle.css">
 <link rel="stylesheet" href="{{ config('app.url') }}css/inject.css">
 @endsection
 
@@ -267,8 +267,8 @@
               success: function (response) {
                   $("#form-input").attr("action", "{{ route('master.clinic.update','')}}/"+id);
                   $('#form-input').trigger("reset");
-                  $('#method').val("PUT");
-                  $('#Code').attr("readonly", true);
+                  $('#method').val("POST");
+                  
                   $('#Code').val(response.data.Code);
                   $('#Name').val(response.data.Name);
                   if (response.data.ActiveStatus === 1) {
@@ -287,7 +287,7 @@
           $("#form-input").attr("action", "{{ route('master.clinic.store')}}");
           $('#form-input').trigger("reset");
           $('#method').val("POST");
-          $('#Code').attr("readonly", false);
+          
           $('#Code').focus();
           $('#modal-form').modal('show');
           $('#Code').focus();

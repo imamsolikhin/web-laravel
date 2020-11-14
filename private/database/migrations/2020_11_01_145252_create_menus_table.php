@@ -21,6 +21,7 @@ class CreateMenusTable extends Migration
             $table->boolean('new-tab');
             $table->string('icon');
             $table->string('page');
+            $table->boolean('status');
             $table->timestamps();
         });
     }

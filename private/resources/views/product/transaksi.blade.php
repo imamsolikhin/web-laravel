@@ -482,7 +482,7 @@
 @section('styles')
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.css">
 <link rel="stylesheet" href="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.min.css">
-<link rel="stylesheet" href="{{ config('app.url') }}examples/css/tables/datatable.css">
+<link rel="stylesheet" href="{{ config('app.url') }}plugins/custom/datatables/datatables.bundle.css">
 <link rel="stylesheet" href="{{ config('app.url') }}css/inject.css">
 @endsection
 
@@ -627,8 +627,8 @@
               success: function (response) {
                   $("#form-input").attr("action", "{{ route('master.city.update','')}}/"+id);
                   $('#form-input').trigger("reset");
-                  $('#method').val("PUT");
-                  $('#COde').attr("readonly", true);
+                  $('#method').val("POST");
+                  
                   $('#COde').val(response.data.Code);
                   $('#Name').val(response.data.Name);
                   if (response.data.ActiveStatus === 1) {
@@ -647,7 +647,7 @@
           $("#form-input").attr("action", "{{ route('master.city.store')}}");
           $('#form-input').trigger("reset");
           $('#method').val("POST");
-          $('#COde').attr("readonly", false);
+          
           $('#COde').focus();
           $('#modal-form').modal('show');
           $('#COde').focus();
