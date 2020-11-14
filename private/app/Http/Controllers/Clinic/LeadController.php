@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Clinic;
 
 use DataTables;
 use Illuminate\Http\Request;
-use App\Http\Resources\Clinic\Lead;
+use App\Http\Resources\Clinic\Patient;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -20,17 +20,17 @@ class LeadController extends Controller {
     }
 
     public static function data($id) {
-        $lead = Lead::withoutGlobalScopes(['active'])->findOrFail($id);
-        $lead->Schedule = date('d-m-Y H:i',strtotime($lead->Schedule));
+        $patient = Patient::withoutGlobalScopes(['active'])->findOrFail($id);
+        $patient->Schedule = date('d-m-Y H:i',strtotime($patient->Schedule));
 
-        return makeResponse(200, 'success', null, $lead);
+        return makeResponse(200, 'success', null, $patient);
     }
 
     public static function save($request) {
         $validator = getControllerName("Clinic", "Lead")::validation($request);
         if ($validator->fails()) return redirect()->route('clinic.index','lead')->with('notif_danger', 'New Lead '. $request->FullName .' can not be save!');
 
-        $lead = getControllerName("Clinic", "Lead")::execute($request);
+        $patient = getControllerName("Clinic", "Lead")::execute($request);
 
         return redirect()->route('clinic.index','lead')->with('notif_success', 'New Lead '. $request->FullName .' has been added successfully!');
     }
@@ -40,43 +40,46 @@ class LeadController extends Controller {
         $validator = getControllerName("Clinic", "Lead")::validation($request);
         if ($validator->fails()) return redirect()->route('clinic.index','lead')->with('notif_danger', 'New Lead '. $request->FullName .' can not be Update!');
 
-        $data = Lead::find(str_replace('%20', ' ', $id));
+        $data = Patient::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','lead')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $lead = getControllerName("Clinic", "Lead")::execute($request,$data);
+        $patient = getControllerName("Clinic", "Lead")::execute($request,$data);
 
-        return redirect()->route('clinic.index','lead')->with('notif_success', 'Lead '. $data->Name .' has been update successfully!');
+        
+
+        return redirect()->route('clinic.index','lead')->with('notif_success', 'Lead '. $data->FullName .' has been update successfully!');
     }
 
     public static function delete($id) {
-        $data = Lead::find(str_replace('%20', ' ', $id));
+        $data = Patient::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','lead')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $lead = $data->delete();
+        $visitor = Visitor::where('Code', '=', $data->Code)->update(['LockStatus'=>0]);
+        $patient = $data->delete();
 
-        return redirect()->back()->with('notif_success', 'Lead '. $data->Name .' has been deleted!');
+        return redirect()->back()->with('notif_success', 'Lead '. $data->FullName .' has been deleted!');
     }
 
     public static function list(Request $request) {
         if($request->from_date != '' && $request->from_date  != ''){
-          $result = Lead::withoutGlobalScopes()
+          $result = Patient::withoutGlobalScopes()
                     ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
         }else{
-        	$result = Lead::withoutGlobalScopes();
+        	$result = Patient::withoutGlobalScopes();
         }
 
         return DataTables::of($result)
           ->addIndexColumn()
-          ->addColumn('active', function($lead) {
-              $status =  $lead->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
-              $newold = $lead->FollowupStatus ? '<span class="label font-weight-bold label-lg  label-light-primary label-inline">Baru</span>' : '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>';
+          ->addColumn('active', function($patient) {
+              $status =  $patient->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
+              $newold = $patient->FollowupStatus ? '<span class="label font-weight-bold label-lg  label-light-primary label-inline">Baru</span>' : '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>';
               return $newold."&nbsp".$status;
           })
-          ->addColumn('ReservationDate', function($lead) {
-              return date('d-m-Y H:i',strtotime($lead->Schedule));
+          ->addColumn('ReservationDate', function($patient) {
+              return date('d-m-Y H:i',strtotime($patient->Schedule));
           })
-          ->addColumn('action', function($lead) {
-              $data_id ="'".$lead->Code."'";
+          ->addColumn('action', function($patient) {
+              $data_id ="'".$patient->Code."'";
               $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
           							    <span class="svg-icon svg-icon-md svg-icon-primary">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -88,7 +91,7 @@ class LeadController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              $delete = '<a data-href="' . route('clinic.delete', ['lead',$lead->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+              $delete = '<a data-href="' . route('clinic.delete', ['lead',$patient->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
             							    <span class="svg-icon svg-icon-md svg-icon-danger">
             							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
             							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -99,8 +102,15 @@ class LeadController extends Controller {
             							        </svg>
             							    </span>
             							</a>';
-
-              return $edit . ' ' . $delete;
+              if($patient->ClosingStatus){
+                return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
+              }else{
+                if($patient->LockStatus){
+                  return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Lock</span>';
+                }else{
+                  return $edit . ' ' . $delete;
+                }
+              }
           })
           ->rawColumns(['active', 'action'])
           ->make(true);
@@ -124,12 +134,12 @@ class LeadController extends Controller {
 
      public static function execute($request, $data = null) {
         if (is_null($data)) {
-            $data = new Lead;
+            $data = new Patient;
         }
         if ($request->Code) {
             $data->Code = $request->Code;
         }else{
-            $data->Code = generadeCode("Clinic","Lead","TGA", "RSV", $numb=5);
+            $data->Code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
         }
         if ($request->CompanyCode){
           $data->CompanyCode = $request->CompanyCode;
@@ -171,7 +181,6 @@ class LeadController extends Controller {
           $data->CofirmationCode = $request->CofirmationCode;
         }
         if ($request->Schedule){
-          // dd(Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i'));
           $data->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
         }
         if ($request->Status){
@@ -180,8 +189,8 @@ class LeadController extends Controller {
         if ($request->LockStatus){
           $data->LockStatus = $request->LockStatus;
         }
-        if ($request->ClosingStatusCode){
-          $data->ClosingStatusCode = $request->ClosingStatusCode;
+        if ($request->ClosingStatus){
+          $data->ClosingStatus = $request->ClosingStatus;
         }
         if ($request->ClosingBy){
           $data->ClosingBy = $request->ClosingBy;

@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Clinic;
 
 use DataTables;
 use Illuminate\Http\Request;
+use App\Http\Resources\Clinic\Visitor;
+use App\Http\Resources\Clinic\Patient;
 use App\Http\Resources\Clinic\Followup;
-use App\Http\Resources\Clinic\Lead;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -21,10 +22,10 @@ class FollowupController extends Controller {
     }
 
     public static function data($id) {
-        $followup = Followup::withoutGlobalScopes(['active'])->findOrFail($id);
-        $followup->Schedule = date('d-m-Y H:i',strtotime($followup->Schedule));
+        $visitor = Followup::withoutGlobalScopes(['active'])->findOrFail($id);
+        $visitor->Schedule = date('d-m-Y H:i',strtotime($visitor->Schedule));
 
-        return makeResponse(200, 'success', null, $followup);
+        return makeResponse(200, 'success', null, $visitor);
     }
 
     public static function save($request) {
@@ -32,14 +33,16 @@ class FollowupController extends Controller {
         if ($validator->fails()) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'New Followup '. $request->FullName .' can not be save!');
 
         $data = Followup::find(str_replace('%20', ' ', $request->Code));
-        $followup = getControllerName("Clinic", "Followup")::execute($request,$data);
+        $visitor = getControllerName("Clinic", "Followup")::execute($request,$data);
 
-        Lead::destroy($followup->Code);
-        if(!$followup->Status){
-          $lead = new Lead($followup->getOriginal());
-          $lead->Code = strtoupper(generateRandomString(5));
-          $lead->FollowupStatus = 1;
-          $lead->save();
+        Patient::destroy($visitor->Code);
+        if(!$visitor->Status){
+          $patient = new Patient($visitor->getOriginal());
+          $patient->Code = $visitor->Code;
+          $patient->FollowupStatus = 1;
+          $patient->ReservationStatus = "Schedule";
+          $patient->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
+          $patient->save();
         }
         return redirect()->route('clinic.index','Followup')->with('notif_success', 'New Followup '. $request->FullName .' has been added successfully!');
     }
@@ -47,31 +50,34 @@ class FollowupController extends Controller {
     public static function update($id, $request) {
 
         $validator = getControllerName("Clinic", "Followup")::validation($request, 'update');
-        if ($validator->fails()) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'Followup '. $data->Name .' can not be update!');
+        if ($validator->fails()) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'Followup '. $data->FullName .' can not be update!');
 
         $data = Followup::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $followup = getControllerName("Clinic", "Followup")::execute($request,$data);
+        $visitor = getControllerName("Clinic", "Followup")::execute($request,$data);
 
-        Lead::destroy($followup->Code);
-        if(!$followup->Status){
-          $lead = new Lead($followup->getOriginal());
-          $lead->Code = $followup->Code;
-          $lead->FollowupStatus = 1;
-          $lead->save();
+        Patient::destroy($visitor->Code);
+        if(!$visitor->Status){
+          $patient = new Patient($visitor->getOriginal());
+          $patient->Code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
+          $patient->FollowupStatus = 1;
+          $patient->ReservationStatus = "Schedule";
+          $patient->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
+          $patient->save();
         }
 
-        return redirect()->route('clinic.index','Followup')->with('notif_success', 'Followup '. $data->Name .' has been update successfully!');
+        return redirect()->route('clinic.index','Followup')->with('notif_success', 'Followup '. $data->FullName .' has been update successfully!');
     }
 
     public static function delete($id) {
         $data = Followup::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $followup = $data->delete();
+        $visitor = Visitor::where('Code', '=', $data->Code)->update(['LockStatus'=>0]);
+        $visitor = $data->delete();
 
-        return redirect()->back()->with('notif_success', 'Followup '. $data->Name .' has been deleted!');
+        return redirect()->back()->with('notif_success', 'Followup '. $data->FullName .' has been deleted!');
     }
 
     public static function list($request) {
@@ -84,17 +90,17 @@ class FollowupController extends Controller {
 
         return DataTables::of($result)
           ->addIndexColumn()
-          ->addColumn('Pasien', function($followup) {
-              return $followup->GenderCode." ".$followup->FullName;
+          ->addColumn('Pasien', function($visitor) {
+              return $visitor->GenderCode." ".$visitor->FullName;
           })
-          ->addColumn('ReservationDate', function($followup) {
-              return date('d-m-Y H:i',strtotime($followup->Schedule));
+          ->addColumn('ReservationDate', function($visitor) {
+              return date('d-m-Y H:i',strtotime($visitor->Schedule));
           })
-          ->addColumn('active', function($followup) {
-              return $followup->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
+          ->addColumn('active', function($visitor) {
+              return $visitor->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
           })
-          ->addColumn('action', function($followup) {
-              $data_id ="'".$followup->Code."'";
+          ->addColumn('action', function($visitor) {
+              $data_id ="'".$visitor->Code."'";
               $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
             							    <span class="svg-icon svg-icon-md svg-icon-primary">
             							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -106,7 +112,7 @@ class FollowupController extends Controller {
             							        </svg>
             							    </span>
             							</a>';
-              $delete = '<a data-href="' . route('clinic.delete',['Followup', $followup->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+              $delete = '<a data-href="' . route('clinic.delete',['Followup', $visitor->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
           							    <span class="svg-icon svg-icon-md svg-icon-danger">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
           							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -117,7 +123,15 @@ class FollowupController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-                return $edit . ' ' . $delete;
+                if($visitor->ClosingStatus){
+                  return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
+                }else{
+                  if($visitor->LockStatus){
+                    return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Lock</span>';
+                  }else{
+                    return $edit . ' ' . $delete;
+                  }
+                }
           })
           ->rawColumns(['active', 'action'])
           ->make(true);
@@ -146,7 +160,7 @@ class FollowupController extends Controller {
         if ($request->Code) {
             $data->Code = strtoupper($request->Code);
         }else{
-            $data->Code = generadeCode("Clinic","Followup","TGA", "RSV", $numb=5);
+            $data->Code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
         }
         if ($request->CompanyCode){
           $data->CompanyCode = $request->CompanyCode;
@@ -194,12 +208,9 @@ class FollowupController extends Controller {
         if ($request->Status){
           $data->Status = $request->Status;
         }
-        // if ($request->LockStatus){
-          // $data->LockStatus = $request->LockStatus;
-          $data->LockStatus = 0;
-        // }
-        if ($request->ClosingStatusCode){
-          $data->ClosingStatusCode = $request->ClosingStatusCode;
+
+        if ($request->ClosingStatus){
+          $data->ClosingStatus = $request->ClosingStatus;
         }
         if ($request->ClosingBy){
           $data->ClosingBy = $request->ClosingBy;
@@ -240,7 +251,8 @@ class FollowupController extends Controller {
         if ($request->except('Status')) {
             $data->Status = to_bool($request->Status);
         }
-        $data->FollowupBy = 'Imam';
+
+        $data->LockStatus = 0;
         $data->FollowupDate = date('Y-m-d H:i');
         $data->ActiveStatus = 1;
         $data->save();

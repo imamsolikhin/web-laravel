@@ -218,20 +218,16 @@
                         <div class="form-group row">
                             <label class="col-lg-4 col-form-label">Konfirmasi</label>
                             <div class="col-lg-8">
-                                <select class="form-control select2" id="ConfirmationCode" name="ConfirmationCode" style="width: 100%;">
-                                  <option value="">Chose </option>
-                                   @isset ($confirmation_list)
-                                     @foreach($confirmation_list as $confirmation)
-                                      <option value="{{ $confirmation->Code }}">{{ $confirmation->Name }}</option>
-                                     @endforeach
-                                   @endisset
+                                <select class="form-control select2" id="ReservationStatus" name="ReservationStatus" style="width: 100%;">
+                                  <option value="Schedule">Schedule</option>
+                                  <option value="Closing">Closing</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="mb-2">
                         <div class="form-group row">
-                            <label class="col-lg-4 col-form-label">Kedatangan</label>
+                            <label class="col-lg-4 col-form-label">Reservation</label>
                             <div class="col-lg-8">
                                 <div class="input-icon">
                                     <input type="input" class="form-control datetimepicker-input" placeholder="dd/mm/yyyy" id="Schedule" name="Schedule" data-date-format="dd-mm-yyyy hh:ii" value="<?php echo date('d-m-Y H:i'); ?>"/>
@@ -439,7 +435,7 @@
                   $('#AdvertiseCode').val(response.data.AdvertiseCode).trigger('change');
                   $('#InteractionCode').val(response.data.InteractionCode).trigger('change');
                   $('#GenderCode').val(response.data.GenderCode).trigger('change');
-                  $('#ConfirmationCode').val(response.data.ConfirmationCode).trigger('change');
+                  $('#ReservationStatus').val(response.data.ReservationStatus).trigger('change');
                   $('#FullName').val(response.data.FullName);
                   $('#Age').val(response.data.Age);
                   $('#Phone').val(response.data.Phone);
@@ -448,7 +444,7 @@
                   $('#CityCode').val(response.data.CityCode);
                   $('#Schedule').val(response.data.Schedule);
                   $('#LockStatus').val(response.data.LockStatus);
-                  $('#ClosingStatusCode').val(response.data.ClosingStatusCode);
+                  $('#ClosingStatus').val(response.data.ClosingStatus);
                   $('#ClosingBy').val(response.data.ClosingBy);
                   $('#ClosingDate').val(response.data.ClosingDate);
                   $('#ImgPatient').val(response.data.ImgPatient);

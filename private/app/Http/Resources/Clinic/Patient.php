@@ -4,7 +4,7 @@ namespace App\Http\Resources\Clinic;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Lead extends Model {
+class Patient extends Model {
 
       /**
        * The table associated with the model.
@@ -63,7 +63,7 @@ class Lead extends Model {
          'Schedule',
          'Status',
          'LockStatus',
-         'ClosingStatusCode',
+         'ClosingStatus',
          'ClosingBy',
          'ClosingDate',
          'ImgPatient',
@@ -71,13 +71,15 @@ class Lead extends Model {
          'ImgConference',
          'ImgClosing',
          'SalesCode',
+         'FollowupStatus',
+         'FollowupDate',
+         'ReservationStatus',
+         'ReservationDate',
          'ActiveStatus',
          'CreatedBy',
          'CreatedDate',
          'UpdatedBy',
          'UpdatedDate',
-         'FollowupStatus',
-         'FollowupDate',
        ];
 
       /**

@@ -17,6 +17,7 @@ class User extends Authenticatable
     use LaratrustUserTrait;
     use Notifiable, SoftDeletes;
 
+    protected $table = 'sys_user';
     protected $fillable = ['name', 'email', 'password'];
     protected $hidden = ['password', 'remember_token'];
 
@@ -26,7 +27,7 @@ class User extends Authenticatable
     protected static function boot()
     {
         parent::boot();
-        
+
         if (! Auth::guest()) {
             static::addGlobalScope('client-group', function(Builder $builder) {
                 $builder->where('users.client_group_id', clientGroupId());
@@ -58,7 +59,7 @@ class User extends Authenticatable
     {
         return $this->roles->first();
     }
-    
+
     public function clientGroup()
     {
         return $this->belongsTo(ClientGroup::class);

@@ -4,7 +4,7 @@ namespace App\Http\Resources\Clinic;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Closing extends Model {
+class Visitor extends Model {
 
     /**
      * The table associated with the model.
@@ -63,7 +63,7 @@ class Closing extends Model {
        'Schedule',
        'Status',
        'LockStatus',
-       'ClosingStatusCode',
+       'ClosingStatus',
        'ClosingBy',
        'ClosingDate',
        'ImgPatient',

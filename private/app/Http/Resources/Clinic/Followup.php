@@ -6,85 +6,83 @@ use Illuminate\Database\Eloquent\Model;
 
 class Followup extends Model {
 
-      /**
-       * The table associated with the model.
-       *
-       * @var string
-       */
-      protected $table = 'sls_clinic_visitor';
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'sls_clinic_followup';
 
-      /**
-       * The primary key associated with the table.
-       *
-       * @var string
-       */
-      protected $primaryKey = 'Code';
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'Code';
 
-      /**
-       * Indicates if the primary key is auto-incrementing.
-       *
-       * @var bool
-       */
-      public $incrementing = false;
+    /**
+     * Indicates if the primary key is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
-      /**
-       * The name of the "created at" column.
-       *
-       * @const string
-       */
-      const CREATED_AT = 'CreatedDate';
+    /**
+     * The name of the "created at" column.
+     *
+     * @const string
+     */
+    const CREATED_AT = 'CreatedDate';
 
-      /**
-       * The name of the "updated at" column.
-       *
-       * @const string
-       */
-      const UPDATED_AT = 'UpdatedDate';
+    /**
+     * The name of the "updated at" column.
+     *
+     * @const string
+     */
+    const UPDATED_AT = 'UpdatedDate';
 
-      /**
-       * The attributes that are mass assignable.
-       *
-       * @var array
-       */
-       protected $fillable = [
-         'CompanyCode',
-         'BranchCode',
-         'ShipWorkCode',
-         'AdvertiseCode',
-         'InteractionCode',
-         'GenderCode',
-         'FullName',
-         'Age',
-         'Phone',
-         'Consultation',
-         'Address',
-         'CityCode',
-         'CofirmationCode',
-         'Schedule',
-         'Status',
-         'LockStatus',
-         'ClosingStatusCode',
-         'ClosingBy',
-         'ClosingDate',
-         'ImgPatient',
-         'ImgReservation',
-         'ImgConference',
-         'ImgClosing',
-         'SalesCode',
-         'ActiveStatus',
-         'CreatedBy',
-         'CreatedDate',
-         'UpdatedBy',
-         'UpdatedDate',
-         'FollowupBy',
-         'FollowupDate',
-       ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+     protected $fillable = [
+       'CompanyCode',
+       'BranchCode',
+       'ShipWorkCode',
+       'AdvertiseCode',
+       'InteractionCode',
+       'GenderCode',
+       'FullName',
+       'Age',
+       'Phone',
+       'Consultation',
+       'Address',
+       'CityCode',
+       'CofirmationCode',
+       'Schedule',
+       'Status',
+       'LockStatus',
+       'ClosingStatus',
+       'ClosingBy',
+       'ClosingDate',
+       'ImgPatient',
+       'ImgReservation',
+       'ImgConference',
+       'ImgClosing',
+       'SalesCode',
+       'ActiveStatus',
+       'CreatedBy',
+       'CreatedDate',
+       'UpdatedBy',
+       'UpdatedDate',
+     ];
 
-      /**
-       * The attributes excluded from the model's JSON form.
-       *
-       * @var array
-       */
-      protected $hidden = [];
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [];
 
-  }
+}

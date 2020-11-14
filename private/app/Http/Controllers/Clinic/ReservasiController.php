@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Clinic;
 
 use DataTables;
 use Illuminate\Http\Request;
-use App\Http\Resources\Clinic\Reservasi;
-use App\Http\Resources\Clinic\Interaksi;
+use App\Http\Resources\Clinic\Patient;
+use App\Http\Resources\Clinic\Visitor;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -21,65 +21,57 @@ class ReservasiController extends Controller {
     }
 
     public static function data($id) {
-        $reservation = Reservasi::withoutGlobalScopes(['active'])->findOrFail($id);
-        $reservation->Schedule = date('d-m-Y H:i',strtotime($reservation->Schedule));
+        $patient = Patient::withoutGlobalScopes(['active'])->findOrFail($id);
+        $patient->Schedule = date('d-m-Y H:i',strtotime($patient->Schedule));
 
-        return makeResponse(200, 'success', null, $reservation);
-    }
-
-    public static function save($request) {
-        $validator = getControllerName("Clinic", "Reservasi")::validation($request);
-        if ($validator->fails()) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'New Reservasi '. $request->FullName .' can not be save!');
-
-        $reservation = getControllerName("Clinic", "Reservasi")::execute($request);
-
-        return redirect()->route('clinic.index','Reservasi')->with('notif_success', 'New Reservasi '. $request->FullName .' has been added successfully!');
+        return makeResponse(200, 'success', null, $patient);
     }
 
     public static function update($id, $request) {
 
         $validator = getControllerName("Clinic", "Reservasi")::validation($request, 'update');
-        if ($validator->fails()) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'Reservasi '. $data->Name .' can not be update!');
+        if ($validator->fails()) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'Reservasi '. $data->FullName .' can not be update!');
 
-        $data = Reservasi::find(str_replace('%20', ' ', $id));
+        $data = Patient::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $reservation = getControllerName("Clinic", "Reservasi")::execute($request,$data);
+        $patient = getControllerName("Clinic", "Reservasi")::execute($request,$data);
 
-        $interaksi = Interaksi::where('Phone', '=', $reservation->Phone)->update(['LockStatus'=>1]);
+        $visitor = Visitor::where('Code', '=', $patient->Code)->update(['LockStatus'=>1]);
 
-        return redirect()->route('clinic.index','Reservasi')->with('notif_success', 'Reservasi '. $data->Name .' has been update successfully!');
+        return redirect()->route('clinic.index','Reservasi')->with('notif_success', 'Reservasi '. $data->FullName .' has been update successfully!');
     }
 
     public static function delete($id) {
-        $data = Reservasi::find(str_replace('%20', ' ', $id));
+        $data = Patient::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','Reservasi')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $reservation = $data->delete();
+        $visitor = Visitor::where('Code', '=', $data->Code)->update(['LockStatus'=>0]);
+        $patient = $data->delete();
 
-        return redirect()->back()->with('notif_success', 'Reservasi '. $data->Name .' has been deleted!');
+        return redirect()->back()->with('notif_success', 'Reservasi '. $data->FullName .' has been deleted!');
     }
 
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
-          $result = Reservasi::withoutGlobalScopes()
+          $result = Patient::withoutGlobalScopes()
                     ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
         }else{
-        	$result = Reservasi::withoutGlobalScopes();
+        	$result = Patient::withoutGlobalScopes();
         }
 
         return DataTables::of($result)
           ->addIndexColumn()
-          ->addColumn('active', function($reservation) {
-              $status =  $reservation->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
-              $newold = $reservation->FollowupStatus ? '<span class="label font-weight-bold label-lg  label-light-primary label-inline">Baru</span>' : '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>';
+          ->addColumn('active', function($patient) {
+              $status =  $patient->ReservationStatus == "Closing" ? '<span class="label font-weight-bold label-lg  label-light-danger label-inline">'.$patient->ReservationStatus.'</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">'.$patient->ReservationStatus.'</span>';
+              $newold = $patient->FollowupStatus ? '<span class="label font-weight-bold label-lg  label-light-primary label-inline">Baru</span>' : '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>';
               return '<center>'.$newold."&nbsp".$status.'</center>';
           })
-          ->addColumn('ReservasiDate', function($reservation) {
-              return date('d-m-Y H:i',strtotime($reservation->Schedule));
+          ->addColumn('ReservasiDate', function($patient) {
+              return date('d-m-Y H:i',strtotime($patient->Schedule));
           })
-          ->addColumn('action', function($reservation) {
-              $data_id ="'".$reservation->Code."'";
+          ->addColumn('action', function($patient) {
+              $data_id ="'".$patient->Code."'";
               $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
         							    <span class="svg-icon svg-icon-md svg-icon-primary">
         							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -91,7 +83,7 @@ class ReservasiController extends Controller {
         							        </svg>
         							    </span>
         							</a>';
-              $delete = '<a data-href="' . route('clinic.delete',['Reservasi', $reservation->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+              $delete = '<a data-href="' . route('clinic.delete',['Reservasi', $patient->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
           							    <span class="svg-icon svg-icon-md svg-icon-danger">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
           							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -102,8 +94,11 @@ class ReservasiController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-
-              return $edit . ' ' . $delete;
+              if($patient->ClosingStatus){
+                return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
+              }else{
+                return $edit . ' ' . $delete;
+              }
           })
           ->rawColumns(['ImgReservasi','active', 'action'])
           ->make(true);
@@ -131,8 +126,6 @@ class ReservasiController extends Controller {
         }
         if ($request->Code) {
             $data->Code = $request->Code;
-        }else{
-            $data->Code = generadeCode("Clinic","Reservasi","TGA", "RSV", $numb=5);
         }
         if ($request->CompanyCode){
           $data->CompanyCode = $request->CompanyCode;
@@ -182,8 +175,8 @@ class ReservasiController extends Controller {
         if ($request->LockStatus){
           $data->LockStatus = $request->LockStatus;
         }
-        if ($request->ClosingStatusCode){
-          $data->ClosingStatusCode = $request->ClosingStatusCode;
+        if ($request->ClosingStatus){
+          $data->ClosingStatus = $request->ClosingStatus;
         }
         if ($request->ClosingBy){
           $data->ClosingBy = $request->ClosingBy;
@@ -206,6 +199,17 @@ class ReservasiController extends Controller {
         if ($request->SalesCode){
           $data->SalesCode = $request->SalesCode;
         }
+        if ($request->ReservationStatus) {
+            $data->ReservationStatus = $request->ReservationStatus;
+            if($request->ReservationStatus == "Closing"){
+              $data->LockStatus = 1;
+            }else{
+              $data->LockStatus = 0;
+            }
+        }
+        if ($request->ReservationDate) {
+            $data->ReservationDate = Carbon::createFromFormat('d-m-Y H:i', $request->ReservationDate)->format('Y-m-d H:i');
+        }
         if ($request->CreatedBy) {
             $data->CreatedBy = $request->CreatedBy;
         }
@@ -221,6 +225,7 @@ class ReservasiController extends Controller {
         if ($request->except('Status')) {
             $data->Status = to_bool($request->Status);
         }
+
         $data->ActiveStatus = 1;
         $data->save();
 

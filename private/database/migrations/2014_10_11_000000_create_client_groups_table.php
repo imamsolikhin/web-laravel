@@ -13,7 +13,7 @@ class CreateClientGroupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('client_groups', function (Blueprint $table) {
+        Schema::create('sys_client_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code', 3);
             $table->string('name');
@@ -30,6 +30,6 @@ class CreateClientGroupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('client_groups');
+        Schema::dropIfExists('sys_client_groups');
     }
 }

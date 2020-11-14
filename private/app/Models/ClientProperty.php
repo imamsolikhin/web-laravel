@@ -10,6 +10,7 @@ class ClientProperty extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'sys_client_properties';
     protected static function boot()
     {
         parent::boot();

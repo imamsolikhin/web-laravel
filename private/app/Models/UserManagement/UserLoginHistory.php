@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UserLoginHistory extends Model
 {
+    protected $table = 'sys_user_login_histories';
     protected static function boot()
     {
         parent::boot();

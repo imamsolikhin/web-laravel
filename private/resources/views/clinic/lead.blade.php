@@ -450,7 +450,7 @@
                   $('#CityCode').val(response.data.CityCode);
                   $('#Schedule').val(response.data.Schedule);
                   $('#LockStatus').val(response.data.LockStatus);
-                  $('#ClosingStatusCode').val(response.data.ClosingStatusCode);
+                  $('#ClosingStatus').val(response.data.ClosingStatus);
                   $('#ClosingBy').val(response.data.ClosingBy);
                   $('#ClosingDate').val(response.data.ClosingDate);
                   $('#ImgPatient').val(response.data.ImgPatient);

@@ -10,6 +10,7 @@ class Client extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'sys_clients';
     protected $dates = ['expired_on'];
 
     protected static function boot()

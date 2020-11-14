@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
+    protected $table = 'sys_menus';
     protected $fillable = ['title','parent_id'];
 
     public function childs() {

@@ -71,6 +71,8 @@ class LoginController extends Controller
             $credentials['username'] = $login;
         }
 
+        // dd($this->guard()->attempt($credentials, $request->has('remember')));
+
         if ($this->guard()->attempt($credentials, $request->has('remember'))) {
             $user = user();
 

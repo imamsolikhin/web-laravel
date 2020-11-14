@@ -1,13 +1,16 @@
 <?php
 namespace App\Http\Controllers\Clinic;
 
+use Session;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ClinicController extends Controller
 {
-    public function index($table)
+    public function index($table, Request $request)
     {
+
+        dd(Session::all());
       return getControllerName("Clinic", $table)::index();
     }
 

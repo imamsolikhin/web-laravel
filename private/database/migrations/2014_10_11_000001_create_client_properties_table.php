@@ -13,12 +13,12 @@ class CreateClientPropertiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('client_properties', function (Blueprint $table) {
+        Schema::create('sys_client_properties', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('client_group_id')->unsigned()->index();
-            $table->foreign('client_group_id')->references('id')->on('client_groups');
+            $table->foreign('client_group_id')->references('id')->on('sys_client_groups');
             $table->string('code', 5);
-            $table->enum('name', ['Mall' ,'Hotel' ,'Residence' ,'Restaurant' ,'Community' ,'Departement Store' ,'Supermarket' ,'Retail' ,'Entertainment' ,'Others' ,'Transportation' ,'Telecommunication' ,'Bank' ,'Oil & Gas' ,'Goverment' ,'e-commerce' ,'Medicine' ,'Hospital' ,'BUMN / BUMD' ,'Tourist Attraction' ,'Tour & Travel' ,'Insurrance', 'SaaS', 'Manufacture']);
+            $table->enum('name', ['Clinic','Product']);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +31,6 @@ class CreateClientPropertiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('client_properties');
+        Schema::dropIfExists('sys_client_properties');
     }
 }

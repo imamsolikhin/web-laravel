@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Role extends LaratrustRole
 {
+    protected $table = 'sys_role';
     protected static function boot()
     {
         parent::boot();

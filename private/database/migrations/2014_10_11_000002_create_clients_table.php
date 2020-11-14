@@ -13,12 +13,12 @@ class CreateClientsTable extends Migration
      */
     public function up()
     {
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('sys_clients', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('client_group_id')->unsigned()->index();
-            $table->foreign('client_group_id')->references('id')->on('client_groups');
+            $table->foreign('client_group_id')->references('id')->on('sys_client_groups');
             $table->integer('client_property_id')->unsigned()->index();
-            $table->foreign('client_property_id')->references('id')->on('client_properties');
+            $table->foreign('client_property_id')->references('id')->on('sys_client_properties');
             $table->enum('scope_of_level', ['client-group', 'client-property', 'client'])->default('client');
             $table->string('code', 7);
             $table->string('name');
@@ -44,6 +44,6 @@ class CreateClientsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('clients');
+        Schema::dropIfExists('sys_clients');
     }
 }

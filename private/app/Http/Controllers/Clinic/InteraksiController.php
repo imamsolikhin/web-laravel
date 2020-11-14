@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Clinic;
 
 use DataTables;
 use Illuminate\Http\Request;
-use App\Http\Resources\Clinic\Interaksi;
-use App\Http\Resources\Clinic\Lead;
+use App\Http\Resources\Clinic\Visitor;
+use App\Http\Resources\Clinic\Patient;
+use App\Http\Resources\Clinic\Followup;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -21,10 +22,10 @@ class InteraksiController extends Controller {
     }
 
     public static function data($id) {
-        $interaksi = Interaksi::withoutGlobalScopes(['active'])->findOrFail($id);
-        $interaksi->Schedule = date('d-m-Y H:i',strtotime($interaksi->Schedule));
+        $visitor = Visitor::withoutGlobalScopes(['active'])->findOrFail($id);
+        $visitor->Schedule = date('d-m-Y H:i',strtotime($visitor->Schedule));
 
-        return makeResponse(200, 'success', null, $interaksi);
+        return makeResponse(200, 'success', null, $visitor);
     }
 
     public static function save($request) {
@@ -32,13 +33,21 @@ class InteraksiController extends Controller {
         $validator = getControllerName("Clinic", "Interaksi")::validation($request);
         if ($validator->fails()) return redirect()->route('clinic.index','Interaksi')->with('notif_danger', 'New Interaksi '. $request->FullName .' can not be save!');
 
-        $interaksi = getControllerName("Clinic", "Interaksi")::execute($request);
+        $visitor = getControllerName("Clinic", "Interaksi")::execute($request);
 
-        Lead::destroy($interaksi->Code);
-        if(!$interaksi->Status){
-          $lead = new Lead($interaksi->getOriginal());
-          $lead->Code = $interaksi->Code;
-          $lead->save();
+        Patient::destroy($visitor->Code);
+        Followup::destroy($visitor->Code);
+        if(!$visitor->Status){
+          $patient = new Patient($visitor->getOriginal());
+          $patient->Code = $visitor->Code;
+          $patient->ReservationStatus = "Schedule";
+          $patient->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
+          $patient->save();
+        }else {
+          $followup = new Followup($visitor->getOriginal());
+          $followup->Code = $visitor->Code;
+          $followup->FollowupStatus = 0;
+          $followup->save();
         }
         return redirect()->route('clinic.index','Interaksi')->with('notif_success', 'New Interaksi '. $request->FullName .' has been added successfully!');
     }
@@ -48,28 +57,36 @@ class InteraksiController extends Controller {
         $validator = getControllerName("Clinic", "Interaksi")::validation($request,'update');
         if ($validator->fails()) return redirect()->route('clinic.index','Interaksi')->with('notif_danger', 'New Interaksi '. $request->FullName .' can not be udate!');
 
-        $data = Interaksi::find(str_replace('%20', ' ', $id));
+        $data = Visitor::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','Interaksi')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $interaksi = getControllerName("Clinic", "Interaksi")::execute($request,$data);
+        $visitor = getControllerName("Clinic", "Interaksi")::execute($request,$data);
 
-        Lead::destroy($interaksi->Code);
-        if(!$interaksi->Status){
-          $lead = new Lead($interaksi->getOriginal());
-          $lead->Code = $interaksi->Code;
-          $lead->save();
+        Patient::destroy($visitor->Code);
+        Followup::destroy($visitor->Code);
+        if(!$visitor->Status){
+          $patient = new Patient($visitor->getOriginal());
+          $patient->Code = $visitor->Code;
+          $patient->ReservationStatus = "Schedule";
+          $patient->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
+          $patient->save();
+        }else {
+          $followup = new Followup($visitor->getOriginal());
+          $followup->Code = $visitor->Code;
+          $followup->FollowupStatus = 0;
+          $followup->save();
         }
 
-        return redirect()->route('clinic.index','Interaksi')->with('notif_success', 'Interaksi '. $data->Name .' has been update successfully!');
+        return redirect()->route('clinic.index','Interaksi')->with('notif_success', 'Interaksi '. $data->FullName .' has been update successfully!');
     }
 
     public static function delete($id) {
-        $data = Interaksi::find(str_replace('%20', ' ', $id));
+        $data = Visitor::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','Interaksi')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $interaksi = $data->delete();
+        $visitor = $data->delete();
 
-        return redirect()->back()->with('notif_success', 'Interaksi '. $data->Name .' has been deleted!');
+        return redirect()->back()->with('notif_success', 'Interaksi '. $data->FullName .' has been deleted!');
     }
 
     public static function validation($request, $type = null) {
@@ -80,35 +97,30 @@ class InteraksiController extends Controller {
              'UpdatedBy' => 'nullable|max:250',
              'UpdatedDate' => 'nullable|date_format:Y-m-d H:i:s',
          ];
-
-         if (is_null($type)) {
-             $rules = array_merge($rules, ['Code' => 'nullable|max:50|unique:sls_clinic_visitor,Code']);
-         }
-
          return Validator::make($request->all(), $rules);
    }
 
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
-          $result = Interaksi::withoutGlobalScopes()
+          $result = Visitor::withoutGlobalScopes()
                     ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
         }else{
-        	$result = Interaksi::withoutGlobalScopes();
+        	$result = Visitor::withoutGlobalScopes();
         }
 
         return DataTables::of($result)
           ->addIndexColumn()
-          ->addColumn('Pasien', function($interaksi) {
-              return $interaksi->GenderCode." ".$interaksi->FullName;
+          ->addColumn('Pasien', function($visitor) {
+              return $visitor->GenderCode." ".$visitor->FullName;
           })
-          ->addColumn('ReservationDate', function($interaksi) {
-              return date('d-m-Y H:i',strtotime($interaksi->Schedule));
+          ->addColumn('ReservationDate', function($visitor) {
+              return date('d-m-Y H:i',strtotime($visitor->Schedule));
           })
-          ->addColumn('active', function($interaksi) {
-              return $interaksi->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
+          ->addColumn('active', function($visitor) {
+              return $visitor->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
           })
-          ->addColumn('action', function($interaksi) {
-              $data_id ="'".$interaksi->Code."'";
+          ->addColumn('action', function($visitor) {
+              $data_id ="'".$visitor->Code."'";
               $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
           							    <span class="svg-icon svg-icon-md svg-icon-primary">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -120,7 +132,7 @@ class InteraksiController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              $delete = '<a data-href="' . route('clinic.delete',['interaksi',$interaksi->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+              $delete = '<a data-href="' . route('clinic.delete',['interaksi',$visitor->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
           							    <span class="svg-icon svg-icon-md svg-icon-danger">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
           							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -131,10 +143,14 @@ class InteraksiController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              if($interaksi->LockStatus){
-                return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Lock</span>';
+              if($visitor->ClosingStatus){
+                return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
               }else{
-                return $edit . ' ' . $delete;
+                if($visitor->LockStatus){
+                  return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Lock</span>';
+                }else{
+                  return $edit . ' ' . $delete;
+                }
               }
           })
           ->rawColumns(['active', 'action'])
@@ -143,12 +159,12 @@ class InteraksiController extends Controller {
 
      public static function execute($request, $data = null) {
         if (is_null($data)) {
-            $data = new Interaksi;
+            $data = new Visitor;
         }
         if ($request->Code) {
             $data->Code = strtoupper($request->Code);
         }else{
-            $data->Code = generadeCode("Clinic","Interaksi","TGA", "RSV", $numb=5);
+            $data->Code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
         }
         if ($request->CompanyCode){
           $data->CompanyCode = $request->CompanyCode;
@@ -200,8 +216,8 @@ class InteraksiController extends Controller {
           // $data->LockStatus = $request->LockStatus;
           $data->LockStatus = 0;
         // }
-        if ($request->ClosingStatusCode){
-          $data->ClosingStatusCode = $request->ClosingStatusCode;
+        if ($request->ClosingStatus){
+          $data->ClosingStatus = $request->ClosingStatus;
         }
         if ($request->ClosingBy){
           $data->ClosingBy = $request->ClosingBy;

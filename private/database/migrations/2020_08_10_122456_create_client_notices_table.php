@@ -13,10 +13,10 @@ class CreateClientNoticesTable extends Migration
      */
     public function up()
     {
-        Schema::create('client_notices', function (Blueprint $table) {
+        Schema::create('sys_client_notices', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('client_id')->unsigned()->index();
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreign('client_id')->references('id')->on('sys_clients');
             $table->text('content');
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ class CreateClientNoticesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('client_notices');
+        Schema::dropIfExists('sys_client_notices');
     }
 }
