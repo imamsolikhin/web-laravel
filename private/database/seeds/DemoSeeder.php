@@ -18,13 +18,13 @@ class DemoSeeder extends Seeder
         $data->clientGroupCode = '01';
         $data->clientGroupName = 'Demo Group';
         $data->clients = [
-            [ 'name' => 'Demo Clini c', 'property' => 'Clinic' ],
-            [ 'name' => 'Demo Product', 'property' => 'Product' ]
+            [ 'name' => 'Demo Mall I', 'property' => 'Mall' ],
+            [ 'name' => 'Demo Mall II', 'property' => 'Mall' ]
         ];
-        $data->userName = 'Demo clinic';
-        $data->userEmail = 'clinic@demo.com';
-        $data->userUsername = 'clinic';
-        $data->userPassword = 'clinic';
+        $data->userName = 'global admin demo';
+        $data->userEmail = 'globaladmin@demo.com';
+        $data->userUsername = 'globaladmindemo';
+        $data->userPassword = '123123';
         $data->servicePlanId = 6;
         $data->planPeriod = 'quarterly';
         dispatch(new RegisterNewClient($data));
@@ -37,10 +37,10 @@ class DemoSeeder extends Seeder
         $user->client_group_id = $demoClientGroupId;
         $user->client_property_id = $demoClientPropertyId;
         $user->client_id = $demoClientId;
-        $user->name = 'Product';
-        $user->email = 'product@demo.com';
-        $user->username = 'product';
-        $user->password = bcrypt('product');
+        $user->name = 'Fandy Kurniawan';
+        $user->email = 'admin@admin.com';
+        $user->username = 'admin';
+        $user->password = bcrypt('123123');
         $user->save();
         $user->attachRole(1);
     }

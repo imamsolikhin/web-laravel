@@ -13,12 +13,12 @@ class CreateUserLoginHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sys_user_login_histories', function (Blueprint $table) {
+        Schema::create('user_login_histories', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('client_group_id')->unsigned()->index();
-            $table->foreign('client_group_id')->references('id')->on('sys_client_groups');
+            $table->foreign('client_group_id')->references('id')->on('client_groups');
             $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('sys_users');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('ip');
             $table->string('browser');
             $table->string('platform');
@@ -33,6 +33,6 @@ class CreateUserLoginHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sys_user_login_histories');
+        Schema::dropIfExists('user_login_histories');
     }
 }

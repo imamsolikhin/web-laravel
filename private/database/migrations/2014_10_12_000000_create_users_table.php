@@ -13,14 +13,14 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('sys_users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('client_group_id')->unsigned()->index();
-            $table->foreign('client_group_id')->references('id')->on('sys_client_groups');
+            $table->foreign('client_group_id')->references('id')->on('client_groups');
             $table->integer('client_property_id')->nullable()->unsigned()->index();
-            $table->foreign('client_property_id')->references('id')->on('sys_client_properties');
+            $table->foreign('client_property_id')->references('id')->on('client_properties');
             $table->integer('client_id')->nullable()->unsigned()->index();
-            $table->foreign('client_id')->references('id')->on('sys_clients');
+            $table->foreign('client_id')->references('id')->on('clients');
             $table->string('name');
             $table->string('email')->index();
             $table->string('username')->index();
@@ -43,6 +43,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sys_users');
+        Schema::dropIfExists('users');
     }
 }

@@ -4,7 +4,7 @@ npm-debug.log
 yarn-error.log
 *.lock
 *.DS_Store
-
+upload/
 # Laravel 4 specific
 private/bootstrap/chache
 private/app/storage

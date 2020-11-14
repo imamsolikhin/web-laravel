@@ -9,7 +9,6 @@ class ClientGroup extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'sys_client_groups';
     public function getLogoAttribute()
     {
         return optional($this->logo()->first())->url;
@@ -24,7 +23,7 @@ class ClientGroup extends Model
     {
         return $this->hasMany(Client::class);
     }
-
+    
     public function images()
     {
         return $this->morphMany(Image::class, 'entity');

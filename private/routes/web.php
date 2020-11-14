@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Route;
   |
  */
 
-
  $router->group(['prefix' => 'clinic', 'namespace' => 'Clinic'], function () use ($router) {
      $router->group(['prefix' => '{table}'], function () use ($router) {
          $router->get('/', [
