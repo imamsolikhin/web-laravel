@@ -37,10 +37,10 @@ class DemoSeeder extends Seeder
         $user->client_group_id = $demoClientGroupId;
         $user->client_property_id = $demoClientPropertyId;
         $user->client_id = $demoClientId;
-        $user->name = 'Fandy Kurniawan';
+        $user->name = 'Imam Solikhin';
         $user->email = 'admin@admin.com';
         $user->username = 'admin';
-        $user->password = bcrypt('123123');
+        $user->password = bcrypt('admin123');
         $user->save();
         $user->attachRole(1);
     }

@@ -218,8 +218,8 @@ function getKeyName($module) {
  * @param  string  $module
  * @return string
  */
-function getModelName($folder, $module) {
-    return 'App\Http\Models\\' . $folder .'\\' . getKeyName($module);
+function getModelName($module) {
+    return 'App\Http\Models\\' . getKeyName($module);
 }
 
 /**
@@ -228,8 +228,8 @@ function getModelName($folder, $module) {
  * @param  string  $module
  * @return string
  */
-function getResourceName($folder, $module) {
-    return 'App\Http\Resources\\' . $folder .'\\' . getKeyName($module);
+function getResourceName($module) {
+    return 'App\Http\Resources\\' . getKeyName($module);
 }
 
 /**
@@ -238,17 +238,8 @@ function getResourceName($folder, $module) {
  * @param  string  $module
  * @return string
  */
-function getControllerName($folder,$module) {
-    return 'App\Http\Controllers\\'. $folder .'\\' . getKeyName($module) . 'Controller';
-}
-
-function generadeCode($folder, $table, $branch=Null, $prfix=Null, $numb=5)
-{
-   $branch = ($branch)? $branch."-":"";
-   $prfix = ($prfix)? $prfix."-":"";
-   $last_count = getResourceName($folder,$table)::count()+1;
-   $code = $branch.$prfix.str_pad($last_count, $numb, '0', STR_PAD_LEFT);
-   return $code;
+function getControllerName($module) {
+    return 'App\Http\Controllers\API\v1\\' . getKeyName($module) . 'Controller';
 }
 
 function to_bool($val = null) {
@@ -257,22 +248,4 @@ function to_bool($val = null) {
     } else {
         return 0;
     }
-}
-
-function generateRandomString($length = 20, $company = null, $branch = null) {
-    if($company==null){
-      $company= env('APP_COMPANY');
-    }
-
-    if($branch==null){
-      $branch=env('APP_BRANCH');
-    }
-
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $company.$branch.$randomString;
 }

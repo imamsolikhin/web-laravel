@@ -71,16 +71,14 @@ class LoginController extends Controller
             $credentials['username'] = $login;
         }
 
-        // dd($this->guard()->attempt($credentials, $request->has('remember')));
-
         if ($this->guard()->attempt($credentials, $request->has('remember'))) {
             $user = user();
 
-            // if ($user->clientGroup->suspended) {
-            //     Auth::logout();
+            if ($user->clientGroup->suspended) {
+                Auth::logout();
 
-            //     return validationError('Your service has been suspended.');
-            // }
+                return validationError('Your service has been suspended.');
+            }
 
             $clientPropertyId = $user->client_property_id;
             $clientId = $user->client_id;
@@ -99,6 +97,9 @@ class LoginController extends Controller
             Session::put('locked_client_property', $clientPropertyId ? ClientProperty::find($clientPropertyId) : defaultClientProperty());
             Session::put('locked_client', $clientId ? Client::find($clientId) : defaultClient($clientPropertyId));
 
+            // GET session
+            $clientP = Session::get('locked_client_property');
+            $clientP->id;
             return $this->sendLoginResponse($request);
         }
 

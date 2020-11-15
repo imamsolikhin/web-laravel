@@ -58,20 +58,20 @@ Route::get('dashboard', 'HomeController@dashboard')->name('dashboard');
 
 Route::get('/quick-search', 'PagesController@quickSearch')->name('quick-search');
 Auth::routes();
-
-Route::prefix('management')->namespace('Management')->as('management.')->group(function() {
-    Route::prefix('user')->as('user.')->group(function() {
-        Route::post('data', 'UserController@getData')->name('data');
-        Route::get('{id}/change-password', 'UserController@changeOtherPassword')->name('other.change-password');
-        Route::put('{id}/update-password', 'UserController@updateOtherPassword')->name('other.update-password');
-    });
-    Route::resource('user', 'UserController', ['except' => ['create', 'show']]);
-    Route::get('login-history', 'UserController@showLoginHistory')->name('login-history');
-    Route::post('login-history/data', 'UserController@getLoginHistoryData')->name('login-history.data');
-
-    Route::resource('role', 'RoleController', ['except' => ['show']]);
-    Route::post('role/data', 'RoleController@getData')->name('role.data');
-});
+//
+// Route::prefix('management')->namespace('Management')->as('management.')->group(function() {
+//     Route::prefix('user')->as('user.')->group(function() {
+//         Route::post('data', 'UserController@getData')->name('data');
+//         Route::get('{id}/change-password', 'UserController@changeOtherPassword')->name('other.change-password');
+//         Route::put('{id}/update-password', 'UserController@updateOtherPassword')->name('other.update-password');
+//     });
+//     Route::resource('user', 'UserController', ['except' => ['create', 'show']]);
+//     Route::get('login-history', 'UserController@showLoginHistory')->name('login-history');
+//     Route::post('login-history/data', 'UserController@getLoginHistoryData')->name('login-history.data');
+//
+//     Route::resource('role', 'RoleController', ['except' => ['show']]);
+//     Route::post('role/data', 'RoleController@getData')->name('role.data');
+// });
 
 // Route::get('/home', 'HomeController@index')->name('home');
 //
