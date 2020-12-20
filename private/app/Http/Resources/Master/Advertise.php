@@ -18,43 +18,10 @@ class Advertise extends Model {
      *
      * @var string
      */
-    protected $primaryKey = 'Code';
+    protected $primaryKey = 'id';
 
-    /**
-     * Indicates if the primary key is auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
+   public $incrementing = false;
 
-    /**
-     * The name of the "created at" column.
-     *
-     * @const string
-     */
-    const CREATED_AT = 'CreatedDate';
-
-    /**
-     * The name of the "updated at" column.
-     *
-     * @const string
-     */
-    const UPDATED_AT = 'UpdatedDate';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'Name', 'CompanyCode', 'BranchCode', 'ActiveStatus', 'CreatedBy', 'CreatedDate', 'UpdatedBy', 'UpdatedDate'
-    ];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = [];
-
+   // In Laravel 6.0+ make sure to also set $keyType
+   protected $keyType = 'string';
 }

@@ -7,10 +7,8 @@ use Illuminate\Http\Request;
 
 class ClinicController extends Controller
 {
-    public function index($table, Request $request)
+    public function index($table)
     {
-
-        dd(Session::all());
       return getControllerName("Clinic", $table)::index();
     }
 

@@ -69,7 +69,7 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
-            'table' => 'sys_user',
+            'table' => 'users',
         ],
 
         // 'users' => [
@@ -95,7 +95,7 @@ return [
 
     'passwords' => [
         'users' => [
-            'provider' => 'sys_user',
+            'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

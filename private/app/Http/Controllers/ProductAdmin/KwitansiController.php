@@ -59,7 +59,7 @@ class KwitansiController extends Controller {
         return DataTables::of($result)
                         ->addIndexColumn()
                         ->addColumn('active', function($lead) {
-                            return $lead->ActiveStatus ? '<i class="fa fa-check text-success"></i>' : '<i class="la la-close icon-lg text-danger"></i>';
+                            return $lead->active ? '<i class="fa fa-check text-success"></i>' : '<i class="la la-close icon-lg text-danger"></i>';
                         })
                         ->addColumn('action', function($lead) {
                             $detail = '<a href="' . route('product.lead.show', $lead->Code) . '" class="btn btn-icon btn-light btn-hover-success btn-sm" data-toggle="tooltip" data-placement="top" title="Detail">
@@ -145,8 +145,8 @@ class KwitansiController extends Controller {
         if ($request->UpdatedDate) {
             $data->UpdatedDate = $request->UpdatedDate;
         }
-        if ($request->except('ActiveStatus')) {
-            $data->ActiveStatus = to_bool($request->ActiveStatus);
+        if ($request->except('active')) {
+            $data->active = to_bool($request->active);
         }
         $data->save();
 

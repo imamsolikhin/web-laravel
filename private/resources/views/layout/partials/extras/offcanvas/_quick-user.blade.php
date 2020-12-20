@@ -24,7 +24,7 @@
             </div>
             <div class="d-flex flex-column">
                 <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">
-					James Jones
+					{{Session::get('user')['name']}}
 				</a>
                 <div class="text-muted mt-1">
                     Application Developer
@@ -35,7 +35,7 @@
                             <span class="navi-icon mr-1">
 								{{ Metronic::getSVG("media/svg/icons/Communication/Mail-notification.svg", "svg-icon-lg svg-icon-primary") }}
 							</span>
-                            <span class="navi-text text-muted text-hover-primary">jm@softplus.com</span>
+                            <span class="navi-text text-muted text-hover-primary">{{Session::get('user')['email']}}</span>
                         </span>
                     </a>
                 </div>

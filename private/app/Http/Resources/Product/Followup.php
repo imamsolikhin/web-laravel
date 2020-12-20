@@ -11,7 +11,7 @@ class Followup extends Model {
      *
      * @var string
      */
-    protected $table = 'mst_followup';
+    protected $table = 'sls_product_followup';
 
     /**
      * The primary key associated with the table.

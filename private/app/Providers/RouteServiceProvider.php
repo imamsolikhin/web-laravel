@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -15,13 +15,6 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'App\Http\Controllers';
-
-    /**
-     * The path to the "home" route for your application.
-     *
-     * @var string
-     */
-    public const HOME = '/home';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -58,18 +51,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::prefix('master')
-             ->middleware(['web', 'auth'])
-             ->as('master.')
-             ->namespace($this->namespace . '\Master')
-             ->group(base_path('routes/master.php'));
-             
-        Route::middleware(['web', 'auth'])
+        Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
-
-        Route::namespace($this->namespace)
-             ->group(base_path('routes/general.php'));
     }
 
     /**

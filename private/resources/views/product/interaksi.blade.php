@@ -12,7 +12,7 @@
           <a href="{{ route('dashboard') }}" class="text-muted">Dashboard</a>
         </li>
         <li class="breadcrumb-item">
-          <a href="{{ route('master.city.index') }}" class="text-muted">Interaksi</a>
+          <a href="{{ route('product.index','interaksi') }}" class="text-muted">Interaksi</a>
         </li>
         <li class="breadcrumb-item">
           <a href="#view" class="text-muted">View</a>
@@ -62,38 +62,21 @@
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <form class="form" id="form-input" action="{{ route('master.city.store') }}" method="POST">
+            <form class="form" id="form-input" action="{{ route('product.save','interaksi') }}" method="POST">
               {!! csrf_field() !!}
               <input type="hidden" class="form-control" id="method" name="_method" placeholder="Enter method" value="POST"/>
                 <div class="card-body pt-3">
                 <div class="mb-2">
                     <div class="form-group row">
-                        <label class="col-lg-4 col-form-label">Ship Kerja</label>
-                        <div class="col-lg-8">
-                            <select class="form-control select2" name="param" style="width:100%;">
-                                <option>Ship Kerja 1</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-2">
-                    <div class="form-group row">
-                        <label class="col-lg-4 col-form-label">Produk</label>
-                        <div class="col-lg-8">
-                            <select class="form-control select2" name="param" style="width:100%;">
-                                <option>Madu Hijau</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-2">
-                    <div class="form-group row">
                         <label class="col-lg-4 col-form-label">Iklan</label>
                         <div class="col-lg-8">
-                            <select class="form-control select2" name="param" style="width:100%;">
-                                <option>Web</option>
-                                <option>Facebook</option>
-                                <option>Instagram</option>
+                            <select class="form-control select2" id="advertise" name="advertise" style="width: 100%;">
+                              <option value="" selected>Chose Advertise</option>
+                               @isset ($advertise_list)
+                                 @foreach($advertise_list as $advertise)
+                                  <option value="{{ $advertise->Code }}">{{ $advertise->Name }}</option>
+                                 @endforeach
+                               @endisset
                             </select>
                         </div>
                     </div>
@@ -102,12 +85,14 @@
                     <div class="form-group row">
                         <label class="col-lg-4 col-form-label">Interaksi</label>
                         <div class="col-lg-8">
-                            <select class="form-control select2" name="param" style="width:100%;">
-                                <option>Email</option>
-                                <option>Whatsapp</option>
-                                <option>Telfon</option>
-                                <option>Sms</option>
-                            </select>
+                            <select class="form-control select2" id="interaction" name="interaction" style="width: 100%;">
+                              <option value="" selected>Chose Interaksi</option>
+                               @isset ($interaction_list)
+                                 @foreach($interaction_list as $interaction)
+                                  <option value="{{ $interaction->Code }}">{{ $interaction->Name }}</option>
+                                 @endforeach
+                               @endisset
+                           </select>
                         </div>
                     </div>
                 </div>
@@ -115,10 +100,14 @@
                     <div class="form-group row">
                         <label class="col-lg-4 col-form-label">Sapaan</label>
                         <div class="col-lg-8">
-                            <select class="form-control select2" name="param" style="width:100%;">
-                                <option>Bapak</option>
-                                <option>Ibu</option>
-                            </select>
+                            <select class="form-control select2" id="gender" name="gender" style="width: 100%;">
+                              <option value="" selected>Chose </option>
+                               @isset ($gender_list)
+                                 @foreach($gender_list as $gender)
+                                  <option value="{{ $gender->Code }}">{{ $gender->Name }}</option>
+                                 @endforeach
+                               @endisset
+                           </select>
                         </div>
                     </div>
                 </div>
@@ -150,7 +139,7 @@
                     <div class="form-group row">
                         <label class="col-lg-4 col-form-label">Status</label>
                         <div class="col-lg-8">
-                            <input id="switch" data-switch="true" type="checkbox" checked="checked" data-on-text="Kunjungan" data-handle-width="200" data-off-text="Transaksi" data-on-color="info" data-off-color="warning" />
+                            <input id="status" id="status" data-switch="true" type="checkbox" checked="checked" data-on-text="Kunjungan" data-handle-width="200" data-off-text="Transaksi" data-on-color="info" data-off-color="warning" />
                         </div>
                     </div>
                 </div>
@@ -232,10 +221,14 @@
                             <div class="form-group row">
                                 <label class="col-lg-4 col-form-label">Market</label>
                                 <div class="col-lg-8">
-                                    <select class="form-control select2" name="param" style="width:100%;">
-                                    <option>Shoope</option>
-                                    <option>Alternative</option>
-                                </select>
+                                    <select class="form-control select2" id="market" name="market" style="width: 100%;">
+                                      <option value="" selected>Chose </option>
+                                       @isset ($market_list)
+                                         @foreach($market_list as $market)
+                                          <option value="{{ $market->Code }}">{{ $market->Name }}</option>
+                                         @endforeach
+                                       @endisset
+                                   </select>
                                 </div>
                             </div>
                         </div>
@@ -243,10 +236,29 @@
                             <div class="form-group row">
                                 <label class="col-lg-4 col-form-label">Kurir</label>
                                 <div class="col-lg-8">
-                                    <select class="form-control select2" name="param" style="width:100%;">
-                                    <option>JNE</option>
-                                    <option>J&T</option>
-                                </select>
+                                    <select class="form-control select2" id="courier" name="courier" style="width: 100%;">
+                                      <option value="" selected>Chose </option>
+                                       @isset ($courier_list)
+                                         @foreach($courier_list as $courier)
+                                          <option value="{{ $courier->Code }}">{{ $courier->Name }}</option>
+                                         @endforeach
+                                       @endisset
+                                   </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="form-group row">
+                                <label class="col-lg-4 col-form-label">COD/TF</label>
+                                <div class="col-lg-8">
+                                    <select class="form-control select2" id="MarketCode" name="payment_type" style="width: 100%;">
+                                      <option value="" selected>Chose </option>
+                                       @isset ($payment_type_list)
+                                         @foreach($payment_type_list as $payment_type)
+                                          <option value="{{ $payment_type->Code }}">{{ $payment_type->Name }}</option>
+                                         @endforeach
+                                       @endisset
+                                   </select>
                                 </div>
                             </div>
                         </div>
@@ -440,33 +452,20 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $(".is_reqs").hide();
+    $('.select2').select2({});
     $("#datatable_wrapper").removeClass("dataTables_wrapper form-inline dt-bootstrap no-footer");
     $("#datatable_wrapper").addClass("dataTables_wrapper dt-bootstrap4 no-footer");
   });
 
   $('[data-switch=true]').bootstrapSwitch('state', true);
-  $('#switch').on('switchChange.bootstrapSwitch', function (event, state) {
+  $('#status').on('switchChange.bootstrapSwitch', function (event, state) {
       var x = $(this).data('on-text');
       var y = $(this).data('off-text');
-      if ($("#switch").is(':checked')) {
+      if ($("#status").is(':checked')) {
           $(".is_reqs").hide(500);
       } else {
           $(".is_reqs").show(500);
       }
-  });
-
-
-  // loading data from array
-  var data = [{
-          id: 0,
-          text: 'Pilih'
-      }, {
-          id: 1,
-          text: 'Optional'
-      }];
-  $('.select2').select2({
-      placeholder: "Select a value",
-      data: data
   });
 
 
@@ -485,7 +484,7 @@
     lengthMenu: [[5, 10, 25, 50, 100, 200, -1], [5, 10, 25, 50, 100, 200, "All"]],
     ajax: {
       method: 'POST',
-      url : '{{ route('master.city.data') }}',
+      url : '{{ route('product.list','interaksi') }}',
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       }
@@ -576,16 +575,16 @@
   function show_data(id = "") {
       if (id !== "") {
           $.ajax({
-              url: "{{ route('master.city.store')}}/" + id,
+              url: "{{ route('product.list','interaksi')}}/" + id,
               type: "GET",
               headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               success: function (response) {
-                  $("#form-input").attr("action", "{{ route('master.city.update','')}}/"+id);
+                  $("#form-input").attr("action", "{{ route('product.update',['interaksi',''])}}/"+id);
                   $('#form-input').trigger("reset");
                   $('#method').val("POST");
-                  
+
                   $('#COde').val(response.data.Code);
                   $('#Name').val(response.data.Name);
                   if (response.data.ActiveStatus === 1) {
@@ -601,10 +600,10 @@
               }
           });
       } else {
-          $("#form-input").attr("action", "{{ route('master.city.store')}}");
+        $("#form-input").attr("action", "{{ route('product.save','interaksi')}}");
           $('#form-input').trigger("reset");
           $('#method').val("POST");
-          
+
           $('#COde').focus();
           $('#modal-form').modal('show');
           $('#COde').focus();

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateUsersTable extends Migration
 {
@@ -15,15 +15,9 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('client_group_id')->unsigned()->index();
-            $table->foreign('client_group_id')->references('id')->on('client_groups');
-            $table->integer('client_property_id')->nullable()->unsigned()->index();
-            $table->foreign('client_property_id')->references('id')->on('client_properties');
-            $table->integer('client_id')->nullable()->unsigned()->index();
-            $table->foreign('client_id')->references('id')->on('clients');
             $table->string('name');
-            $table->string('email')->index();
-            $table->string('username')->index();
+            $table->string('email')->unique();
+            $table->string('username')->unique();
             $table->string('password');
             $table->boolean('active')->default('1');
             $table->boolean('billing_recipient')->default(0);

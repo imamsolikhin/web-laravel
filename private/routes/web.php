@@ -13,6 +13,158 @@ use Illuminate\Support\Facades\Route;
   |
  */
 
+ /*
+  * These routes require no users to be logged in
+  */
+
+Route::get('/', 'HomeController@index');
+Route::get('dashboard', 'HomeController@dashboard')->name('dashboard');
+Route::get('/quick-search', 'PagesController@quickSearch')->name('quick-search');
+
+Route::middleware('web')->group(function() {
+   Route::middleware('guest')->namespace('Auth')->group(function() {
+    Route::get('/', 'LoginController@showLoginForm')->name('login.main');
+   	Route::get('login', 'LoginController@showLoginForm')->name('login.show-form');
+   	Route::post('login', 'LoginController@login')->name('login');
+   });
+  Route::get('logout', 'Auth\LoginController@logout')->name('logout');
+});
+
+Route::prefix('management')->namespace('Management')->as('management.')->group(function() {
+    Route::prefix('user')->as('user.')->group(function() {
+        Route::post('data', 'UserController@getData')->name('data');
+        Route::get('{id}', 'UserController@edit')->name('show');
+        Route::get('{id}/change-password', 'UserController@changeOtherPassword')->name('other.change-password');
+        Route::put('{id}/update-password', 'UserController@updateOtherPassword')->name('other.update-password');
+    });
+    Route::resource('user', 'UserController', ['except' => ['create', 'show']]);
+
+
+    Route::get('login-history', 'UserHistoryController@showLoginHistory')->name('login-history');
+    Route::post('login-history/data', 'UserHistoryController@getLoginHistoryData')->name('login-history.data');
+
+    Route::prefix('role')->as('role.')->group(function() {
+        Route::post('data', 'RoleController@getData')->name('data');
+        Route::get('{id}', 'RoleController@show')->name('show');
+    });
+    Route::resource('role', 'RoleController', ['except' => ['create', 'show']]);
+});
+
+Route::prefix('master')->namespace('Master')->as('master.')->group(function() {
+    Route::resource('city', 'CityController', ['except' => ['create', 'show']]);
+
+    Route::prefix('advertise')->as('advertise.')->group(function() {
+        Route::post('data', 'AdvertiseController@getData')->name('data');
+        Route::get('data', 'AdvertiseController@getData')->name('data');
+        Route::get('{id}', 'AdvertiseController@show')->name('show');
+    });
+    Route::resource('advertise', 'AdvertiseController', ['except' => ['create', 'show']]);
+
+    Route::prefix('bank')->as('bank.')->group(function() {
+        Route::post('data', 'BankController@getData')->name('data');
+        Route::get('data', 'BankController@getData')->name('data');
+        Route::get('{id}', 'BankController@show')->name('show');
+    });
+    Route::resource('bank', 'BankController', ['except' => ['create', 'show']]);
+
+    Route::prefix('branch')->as('branch.')->group(function() {
+        Route::post('data', 'BranchController@getData')->name('data');
+        Route::get('data', 'BranchController@getData')->name('data');
+        Route::get('{id}', 'BranchController@show')->name('show');
+    });
+    Route::resource('branch', 'BranchController', ['except' => ['create', 'show']]);
+
+    Route::prefix('city')->as('city.')->group(function() {
+        Route::post('data', 'CityController@getData')->name('data');
+        Route::get('data', 'CityController@getData')->name('data');
+        Route::get('{id}', 'CityController@show')->name('show');
+    });
+
+    Route::prefix('clinci')->as('clinci.')->group(function() {
+        Route::post('data', 'ClinicController@getData')->name('data');
+        Route::get('data', 'ClinicController@getData')->name('data');
+        Route::get('{id}', 'ClinicController@show')->name('show');
+    });
+    Route::resource('clinci', 'ClinicController', ['except' => ['create', 'show']]);
+
+    Route::prefix('company')->as('company.')->group(function() {
+        Route::post('data', 'CompanyController@getData')->name('data');
+        Route::get('data', 'CompanyController@getData')->name('data');
+        Route::get('{id}', 'CompanyController@show')->name('show');
+    });
+    Route::resource('company', 'CompanyController', ['except' => ['create', 'show']]);
+
+    Route::prefix('confirmation')->as('confirmation.')->group(function() {
+        Route::post('data', 'CompanyController@getData')->name('data');
+        Route::get('data', 'CompanyController@getData')->name('data');
+        Route::get('{id}', 'CompanyController@show')->name('show');
+    });
+    Route::resource('confirmation', 'CompanyController', ['except' => ['create', 'show']]);
+
+    Route::prefix('courier')->as('courier.')->group(function() {
+        Route::post('data', 'CourierController@getData')->name('data');
+        Route::get('data', 'CourierController@getData')->name('data');
+        Route::get('{id}', 'CourierController@show')->name('show');
+    });
+    Route::resource('courier', 'CourierController', ['except' => ['create', 'show']]);
+
+    Route::prefix('gender')->as('gender.')->group(function() {
+        Route::post('data', 'GenderController@getData')->name('data');
+        Route::get('data', 'GenderController@getData')->name('data');
+        Route::get('{id}', 'GenderController@show')->name('show');
+    });
+    Route::resource('gender', 'GenderController', ['except' => ['create', 'show']]);
+
+    Route::prefix('interaction')->as('interaction.')->group(function() {
+        Route::post('data', 'InteractionController@getData')->name('data');
+        Route::get('data', 'InteractionController@getData')->name('data');
+        Route::get('{id}', 'InteractionController@show')->name('show');
+    });
+    Route::resource('interaction', 'InteractionController', ['except' => ['create', 'show']]);
+
+    Route::prefix('itemprice')->as('itemprice.')->group(function() {
+        Route::post('data', 'ItemPriceController@getData')->name('data');
+        Route::get('data', 'ItemPriceController@getData')->name('data');
+        Route::get('{id}', 'ItemPriceController@show')->name('show');
+    });
+    Route::resource('itemprice', 'ItemPriceController', ['except' => ['create', 'show']]);
+
+    Route::prefix('market')->as('market.')->group(function() {
+        Route::post('data', 'MarketController@getData')->name('data');
+        Route::get('data', 'MarketController@getData')->name('data');
+        Route::get('{id}', 'MarketController@show')->name('show');
+    });
+    Route::resource('market', 'MarketController', ['except' => ['create', 'show']]);
+
+    Route::prefix('paymenttype')->as('paymenttype.')->group(function() {
+        Route::post('data', 'PaymentTypeController@getData')->name('data');
+        Route::get('data', 'PaymentTypeController@getData')->name('data');
+        Route::get('{id}', 'PaymentTypeController@show')->name('show');
+    });
+    Route::resource('paymenttype', 'PaymentTypeController', ['except' => ['create', 'show']]);
+
+    Route::prefix('periode')->as('periode.')->group(function() {
+        Route::post('data', 'PeriodeController@getData')->name('data');
+        Route::get('data', 'PeriodeController@getData')->name('data');
+        Route::get('{id}', 'PeriodeController@show')->name('show');
+    });
+    Route::resource('periode', 'PeriodeController', ['except' => ['create', 'show']]);
+
+    Route::prefix('product')->as('product.')->group(function() {
+        Route::post('data', 'ProductController@getData')->name('data');
+        Route::get('data', 'ProductController@getData')->name('data');
+        Route::get('{id}', 'ProductController@show')->name('show');
+    });
+    Route::resource('product', 'ProductController', ['except' => ['create', 'show']]);
+
+    Route::prefix('shiftwork')->as('shiftwork.')->group(function() {
+        Route::post('data', 'ShiftWorkController@getData')->name('data');
+        Route::get('data', 'ShiftWorkController@getData')->name('data');
+        Route::get('{id}', 'ShiftWorkController@show')->name('show');
+    });
+    Route::resource('shiftwork', 'ShiftWorkController', ['except' => ['create', 'show']]);
+});
+
  $router->group(['prefix' => 'clinic', 'namespace' => 'Clinic'], function () use ($router) {
      $router->group(['prefix' => '{table}'], function () use ($router) {
          $router->get('/', [
@@ -38,203 +190,83 @@ use Illuminate\Support\Facades\Route;
          ]);
      });
  });
+ //
+ // $router->group(['prefix' => 'master', 'namespace' => 'Master', 'middleware' => 'web'], function () use ($router) {
+ //     $router->group(['prefix' => '{table}'], function () use ($router) {
+ //         $router->get('/', [
+ //             'as' => 'master.index', 'uses' => 'MasterController@index'
+ //         ]);
+ //         $router->post('list', [
+ //             'as' => 'master.list', 'uses' => 'MasterController@list'
+ //         ]);
+ //         $router->get('list', [
+ //             'as' => 'master.list', 'uses' => 'MasterController@list'
+ //         ]);
+ //         $router->get('data/{id}', [
+ //             'as' => 'master.data', 'uses' => 'MasterController@data'
+ //         ]);
+ //         $router->post('save', [
+ //             'as' => 'master.save', 'uses' => 'MasterController@save'
+ //         ]);
+ //         $router->post('update/{id}', [
+ //             'as' => 'master.update', 'uses' => 'MasterController@update'
+ //         ]);
+ //         $router->delete('{id}', [
+ //             'as' => 'master.delete', 'uses' => 'MasterController@delete'
+ //         ]);
+ //     });
+ // });
 
-// Route::get('/', 'PagesController@index');
+ $router->group(['prefix' => 'product', 'namespace' => 'Product'], function () use ($router) {
+     $router->group(['prefix' => '{table}'], function () use ($router) {
+         $router->get('/', [
+             'as' => 'product.index', 'uses' => 'ProductController@index'
+         ]);
+         $router->post('list', [
+             'as' => 'product.list', 'uses' => 'ProductController@list'
+         ]);
+         $router->get('list', [
+             'as' => 'product.list', 'uses' => 'ProductController@list'
+         ]);
+         $router->get('data/{id}', [
+             'as' => 'product.data', 'uses' => 'ProductController@data'
+         ]);
+         $router->post('save', [
+             'as' => 'product.save', 'uses' => 'ProductController@save'
+         ]);
+         $router->post('update/{id}', [
+             'as' => 'product.update', 'uses' => 'ProductController@update'
+         ]);
+         $router->delete('{id}', [
+             'as' => 'product.delete', 'uses' => 'ProductController@delete'
+         ]);
+     });
+ });
 
-Route::get('/', 'HomeController@index');
-Route::get('dashboard', 'HomeController@dashboard')->name('dashboard');
+ $router->group(['prefix' => 'warehouse', 'namespace' => 'Warehouse'], function () use ($router) {
+     $router->group(['prefix' => '{table}'], function () use ($router) {
+         $router->get('/', [
+             'as' => 'warehouse.index', 'uses' => 'WarehouseController@index'
+         ]);
+         $router->post('list', [
+             'as' => 'warehouse.list', 'uses' => 'WarehouseController@list'
+         ]);
+         $router->get('list', [
+             'as' => 'warehouse.list', 'uses' => 'WarehouseController@list'
+         ]);
+         $router->get('data/{id}', [
+             'as' => 'warehouse.data', 'uses' => 'WarehouseController@data'
+         ]);
+         $router->post('save', [
+             'as' => 'warehouse.save', 'uses' => 'WarehouseController@save'
+         ]);
+         $router->post('update/{id}', [
+             'as' => 'warehouse.update', 'uses' => 'WarehouseController@update'
+         ]);
+         $router->delete('{id}', [
+             'as' => 'product.delete', 'uses' => 'ProductController@delete'
+         ]);
+     });
+ });
 
-// Demo routes
-// Route::get('/datatables', 'PagesController@datatables')->name('datatables');
-// Route::get('/ktdatatables', 'PagesController@ktDatatables');
-// Route::get('/select2', 'PagesController@select2');
-// Route::get('/icons/custom-icons', 'PagesController@customIcons');
-// Route::get('/icons/flaticon', 'PagesController@flaticon');
-// Route::get('/icons/fontawesome', 'PagesController@fontawesome');
-// Route::get('/icons/lineawesome', 'PagesController@lineawesome');
-// Route::get('/icons/socicons', 'PagesController@socicons');
-// Route::get('/icons/svg', 'PagesController@svg');
-// Quick search dummy route to display html elements in search dropdown (header search)
-
-Route::get('/quick-search', 'PagesController@quickSearch')->name('quick-search');
 Auth::routes();
-//
-// Route::prefix('management')->namespace('Management')->as('management.')->group(function() {
-//     Route::prefix('user')->as('user.')->group(function() {
-//         Route::post('data', 'UserController@getData')->name('data');
-//         Route::get('{id}/change-password', 'UserController@changeOtherPassword')->name('other.change-password');
-//         Route::put('{id}/update-password', 'UserController@updateOtherPassword')->name('other.update-password');
-//     });
-//     Route::resource('user', 'UserController', ['except' => ['create', 'show']]);
-//     Route::get('login-history', 'UserController@showLoginHistory')->name('login-history');
-//     Route::post('login-history/data', 'UserController@getLoginHistoryData')->name('login-history.data');
-//
-//     Route::resource('role', 'RoleController', ['except' => ['show']]);
-//     Route::post('role/data', 'RoleController@getData')->name('role.data');
-// });
-
-// Route::get('/home', 'HomeController@index')->name('home');
-//
-// Route::prefix('product')->namespace('Product')->as('product.')->group(function() {
-//     Route::prefix('interaksi')->as('interaksi.')->group(function() {
-//         Route::post('data', 'InteraksiController@getData')->name('data');
-//         Route::get('/{id}', 'InteraksiController@show')->name('show');
-//     });
-//     Route::resource('interaksi', 'InteraksiController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('lead')->as('lead.')->group(function() {
-//         Route::post('data', 'LeadController@getData')->name('data');
-//         Route::get('/{id}', 'LeadController@show')->name('show');
-//     });
-//     Route::resource('lead', 'LeadController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('followup')->as('followup.')->group(function() {
-//         Route::post('data', 'FollowupController@getData')->name('data');
-//         Route::get('/{id}', 'FollowupController@show')->name('show');
-//     });
-//     Route::resource('followup', 'FollowupController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('transaksi')->as('transaksi.')->group(function() {
-//         Route::post('data', 'TransaksiController@getData')->name('data');
-//         Route::get('/{id}', 'TransaksiController@show')->name('show');
-//     });
-//     Route::resource('transaksi', 'TransaksiController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('closing')->as('closing.')->group(function() {
-//         Route::post('data', 'ClosingController@getData')->name('data');
-//         Route::get('/{id}', 'ClosingController@show')->name('show');
-//     });
-//     Route::resource('closing', 'ClosingController', ['except' => ['create', 'show']]);
-// });
-//
-// Route::prefix('product-admin')->namespace('ProductAdmin')->as('product-admin.')->group(function() {
-//
-//     Route::prefix('bank-received')->as('bank-received.')->group(function() {
-//         Route::post('data', 'BankReceivedController@getData')->name('data');
-//         Route::get('/{id}', 'BankReceivedController@show')->name('show');
-//     });
-//     Route::resource('bank-received', 'BankReceivedController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('bank-payment')->as('bank-payment.')->group(function() {
-//         Route::post('data', 'BankPaymentController@getData')->name('data');
-//         Route::get('/{id}', 'BankPaymentController@show')->name('show');
-//     });
-//     Route::resource('bank-payment', 'BankPaymentController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('omset')->as('omset.')->group(function() {
-//         Route::post('data', 'OmsetController@getData')->name('data');
-//         Route::get('/{id}', 'OmsetController@show')->name('show');
-//     });
-//     Route::resource('omset', 'OmsetController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('kwitansi')->as('kwitansi.')->group(function() {
-//         Route::post('data', 'KwitansiController@getData')->name('data');
-//         Route::get('/{id}', 'KwitansiController@show')->name('show');
-//     });
-//     Route::resource('kwitansi', 'KwitansiController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('closing-product')->as('closing-product.')->group(function() {
-//         Route::post('data', 'CLosingProductController@getData')->name('data');
-//         Route::get('/{id}', 'CLosingProductController@show')->name('show');
-//     });
-//     Route::resource('closing-product', 'CLosingProductController', ['except' => ['create', 'show']]);
-// });
-//
-// Route::prefix('product-warehouse')->namespace('ProductWarehouse')->as('product-warehouse.')->group(function() {
-//
-//     Route::prefix('stock-in')->as('stock-in.')->group(function() {
-//         Route::post('data', 'StockInController@getData')->name('data');
-//         Route::get('/{id}', 'StockInController@show')->name('show');
-//     });
-//     Route::resource('stock-in', 'StockInController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('stock-out')->as('stock-out.')->group(function() {
-//         Route::post('data', 'StockOutController@getData')->name('data');
-//         Route::get('/{id}', 'StockOutController@show')->name('show');
-//     });
-//     Route::resource('stock-out', 'StockOutController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('stock-opname')->as('stock-opname.')->group(function() {
-//         Route::post('data', 'StockOpnameController@getData')->name('data');
-//         Route::get('/{id}', 'StockOpnameController@show')->name('show');
-//     });
-//     Route::resource('stock-opname', 'StockOpnameController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('stock-product')->as('stock-product.')->group(function() {
-//         Route::post('data', 'StockProductController@getData')->name('data');
-//         Route::get('/{id}', 'StockProductController@show')->name('show');
-//     });
-//     Route::resource('stock-product', 'StockProductController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('delivery-order')->as('delivery-order.')->group(function() {
-//         Route::post('data', 'DeliveryOrderController@getData')->name('data');
-//         Route::get('/{id}', 'DeliveryOrderController@show')->name('show');
-//     });
-//     Route::resource('delivery-order', 'DeliveryOrderController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('delivery-return')->as('delivery-return.')->group(function() {
-//         Route::post('data', 'DeliveryReturnController@getData')->name('data');
-//         Route::get('/{id}', 'DeliveryReturnController@show')->name('show');
-//     });
-//     Route::resource('delivery-return', 'DeliveryReturnController', ['except' => ['create', 'show']]);
-// });
-//
-// // Route::prefix('clinic')->namespace('Clinic')->as('clinic.')->group(function() {
-// //     Route::prefix('interaksi')->as('interaksi.')->group(function() {
-// //         Route::post('data', 'InteraksiController@getData')->name('data');
-// //         Route::get('/{id}', 'InteraksiController@show')->name('show');
-// //     });
-// //     Route::resource('interaksi', 'InteraksiController', ['except' => ['create', 'show']]);
-// //
-// //     Route::prefix('lead')->as('lead.')->group(function() {
-// //         Route::post('data', 'LeadController@getData')->name('data');
-// //         Route::get('/{id}', 'LeadController@show')->name('show');
-// //     });
-// //     Route::resource('lead', 'LeadController', ['except' => ['create', 'show']]);
-// //
-// //     Route::prefix('followup')->as('followup.')->group(function() {
-// //         Route::post('data', 'FollowupController@getData')->name('data');
-// //         Route::get('/{id}', 'FollowupController@show')->name('show');
-// //     });
-// //     Route::resource('followup', 'FollowupController', ['except' => ['create', 'show']]);
-// //
-// //     Route::prefix('reservation')->as('reservation.')->group(function() {
-// //         Route::post('data', 'ReservationController@getData')->name('data');
-// //         Route::get('/{id}', 'ReservationController@show')->name('show');
-// //     });
-// //     Route::resource('reservation', 'ReservationController', ['except' => ['create', 'show']]);
-// //
-// //     Route::prefix('closing')->as('closing.')->group(function() {
-// //         Route::post('data', 'ClosingController@getData')->name('data');
-// //         Route::get('/{id}', 'ClosingController@show')->name('show');
-// //     });
-// //     Route::resource('closing', 'ClosingController', ['except' => ['create', 'show']]);
-// // });
-//
-// Route::prefix('clinic-admin')->namespace('ClinicAdmin')->as('clinic-admin.')->group(function() {
-//
-//     Route::prefix('pasien')->as('pasien.')->group(function() {
-//         Route::post('data', 'PasienController@getData')->name('data');
-//         Route::get('/{id}', 'PasienController@show')->name('show');
-//     });
-//     Route::resource('pasien', 'PasienController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('ramuan')->as('ramuan.')->group(function() {
-//         Route::post('data', 'RamuanController@getData')->name('data');
-//         Route::get('/{id}', 'RamuanController@show')->name('show');
-//     });
-//     Route::resource('ramuan', 'RamuanController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('kwitansi')->as('kwitansi.')->group(function() {
-//         Route::post('data', 'KwitansiController@getData')->name('data');
-//         Route::get('/{id}', 'KwitansiController@show')->name('show');
-//     });
-//     Route::resource('kwitansi', 'KwitansiController', ['except' => ['create', 'show']]);
-//
-//     Route::prefix('closing-clinic')->as('closing-clinic.')->group(function() {
-//         Route::post('data', 'CLosingClinicController@getData')->name('data');
-//         Route::get('/{id}', 'CLosingClinicController@show')->name('show');
-//     });
-//     Route::resource('closing-clinic', 'CLosingClinicController', ['except' => ['create', 'show']]);
-// });
-//

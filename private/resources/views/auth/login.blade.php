@@ -40,14 +40,21 @@
                           @include('inc.success-notif')
 
                           <div class="form-group">
-                              <input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-50 rounded-pill border-0 py-4 px-8 mb-5" type="text" placeholder="username" name="login" value="{{ old('login') }}" required autocomplete="off"/>
+                              <input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-50 rounded-pill border-0 py-4 px-8 mb-5" type="text" placeholder="username" name="username" value="{{ old('email') }}" required autocomplete="off"/>
                           </div>
                           <div class="form-group">
                               <input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-50 rounded-pill border-0 py-4 px-8 mb-5" type="password" placeholder="password" name="password" required autocomplete="off"/>
+                              <div class="checkbox">
+                                  <label class="checkbox checkbox-outline checkbox-white text-dark m-0">
+                                  <input type="checkbox" name="remember"/>
+                                  <span></span>
+                                  Remember me to login system
+                                  </label>
+                              </div>
                           </div>
                           <div class="form-group d-flex flex-wrap justify-content-between align-items-center">
                               <div class="col-md-12 row">
-                                  <div class="col-md-4">
+                                  <div class="col-4">
                                       <div class="form-group row">
                                           <button type="submit" href="javascript:void(0)" class="btn btn-primary font-weight-bold px-9 py-2 my-2">Login</button>
                                       </div>

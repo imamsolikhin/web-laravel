@@ -14,16 +14,16 @@ use Carbon\Carbon;
 class ClosingController extends Controller {
 
     public static function index() {
-        $data["advertise_list"] = getResourceName("Master", "Advertise")::where('ActiveStatus',1)->get();
-        $data["interaction_list"] = getResourceName("Master", "Interaction")::where('ActiveStatus',1)->get();
-        $data["gender_list"] = getResourceName("Master", "Gender")::where('ActiveStatus',1)->get();
-        $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('ActiveStatus',1)->get();
+        $data["advertise_list"] = getResourceName("Master", "Advertise")::where('active',1)->get();
+        $data["interaction_list"] = getResourceName("Master", "Interaction")::where('active',1)->get();
+        $data["gender_list"] = getResourceName("Master", "Gender")::where('active',1)->get();
+        $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('active',1)->get();
         return view('clinic.closing',$data);
     }
 
     public static function data($id) {
         $patient = Patient::withoutGlobalScopes(['active'])->findOrFail($id);
-        $patient->ClosingDate = date('d-m-Y H:i',strtotime($patient->ClosingDate));
+        $patient->closing_date = date('d-m-Y H:i',strtotime($patient->closing_date));
         $patient->ImgClosing = asset($patient->ImgClosing);
 
         return makeResponse(200, 'success', null, $patient);
@@ -40,28 +40,28 @@ class ClosingController extends Controller {
         $patient = getControllerName("Clinic", "Closing")::execute($request,$data);
         if($request->FileClosing){
           $file = $request->file('FileClosing');
-          $name_file = $patient->Code."-".$patient->FullName.".".$file->getClientOriginalExtension();
-          $path_upload = 'upload/'.date('Y/m/d',strtotime($patient->ClosingDate));
+          $name_file = $patient->code."-".$patient->FullName.".".$file->getClientOriginalExtension();
+          $path_upload = 'upload/'.date('Y/m/d',strtotime($patient->closing_date));
           $file->move($path_upload,$name_file);
           $data->ImgClosing = $path_upload."/".$name_file;
           $patient = getControllerName("Clinic", "Closing")::execute($request,$patient);
         }
 
-        if($patient->ClosingStatus){
-          $data = Visitor::find(str_replace('%20', ' ', $patient->Code));
+        if($patient->closing_status){
+          $data = Visitor::find(str_replace('%20', ' ', $patient->code));
           if($data){
             $visitor = new Visitor($data);
-            $visitor->ClosingStatus = 1;
-            $visitor->ClosingDate = $patient->ClosingDate;
+            $visitor->closing_status = 1;
+            $visitor->closing_date = $patient->closing_date;
             $visitor->save();
           }
 
-          $data = Followup::find(str_replace('%20', ' ', $patient->Code));
+          $data = Followup::find(str_replace('%20', ' ', $patient->code));
           $followup = new Followup();
           if($data){
             $followup = new Followup($data);
-            $followup->ClosingStatus = 1;
-            $followup->ClosingDate = $patient->ClosingDate;
+            $followup->closing_status = 1;
+            $followup->closing_date = $patient->closing_date;
             $followup->save();
           }
         }
@@ -74,7 +74,7 @@ class ClosingController extends Controller {
           $result = Patient::withoutGlobalScopes()
                     ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
         }else{
-        	$result = Patient::withoutGlobalScopes()->where("ReservationStatus","=","Closing");
+        	$result = Patient::withoutGlobalScopes()->where("reservation_status","=","Closing");
         }
 
         return DataTables::of($result)
@@ -89,14 +89,14 @@ class ClosingController extends Controller {
               return date('d-m-Y H:i',strtotime($patient->Schedule));
           })
           ->addColumn('action', function($patient) {
-              $data_id ="'".$patient->Code."'";
+              $data_id ="'".$patient->code."'";
               $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
         							    <span class="svg-icon svg-icon-xl svg-icon-primary">
         							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
         							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         							                <rect x="0" y="0" width="24" height="24"/>
         							                <path d="M12.2674799,18.2323597 L12.0084872,5.45852451 C12.0004303,5.06114792 12.1504154,4.6768183 12.4255037,4.38993949 L15.0030167,1.70195304 L17.5910752,4.40093695 C17.8599071,4.6812911 18.0095067,5.05499603 18.0083938,5.44341307 L17.9718262,18.2062508 C17.9694575,19.0329966 17.2985816,19.701953 16.4718324,19.701953 L13.7671717,19.701953 C12.9505952,19.701953 12.2840328,19.0487684 12.2674799,18.2323597 Z" fill="#000000" fill-rule="nonzero" transform="translate(14.701953, 10.701953) rotate(-135.000000) translate(-14.701953, -10.701953) "/>
-        							                <path d="M12.9,2 C13.4522847,2 13.9,2.44771525 13.9,3 C13.9,3.55228475 13.4522847,4 12.9,4 L6,4 C4.8954305,4 4,4.8954305 4,6 L4,18 C4,19.1045695 4.8954305,20 6,20 L18,20 C19.1045695,20 20,19.1045695 20,18 L20,13 C20,12.4477153 20.4477153,12 21,12 C21.5522847,12 22,12.4477153 22,13 L22,18 C22,20.209139 20.209139,22 18,22 L6,22 C3.790861,22 2,20.209139 2,18 L2,6 C2,3.790861 3.790861,2 6,2 L12.9,2 Z" fill="#000000" fill-rule="nonzero" opainteraksi="0.3"/>
+        							                <path d="M12.9,2 C13.4522847,2 13.9,2.44771525 13.9,3 C13.9,3.55228475 13.4522847,4 12.9,4 L6,4 C4.8954305,4 4,4.8954305 4,6 L4,18 C4,19.1045695 4.8954305,20 6,20 L18,20 C19.1045695,20 20,19.1045695 20,18 L20,13 C20,12.4477153 20.4477153,12 21,12 C21.5522847,12 22,12.4477153 22,13 L22,18 C22,20.209139 20.209139,22 18,22 L6,22 C3.790861,22 2,20.209139 2,18 L2,6 C2,3.790861 3.790861,2 6,2 L12.9,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
         							            </g>
         							        </svg>
         							    </span>
@@ -109,7 +109,7 @@ class ClosingController extends Controller {
 
      public static function validation($request, $type = null) {
          $rules = [
-             'CreatedBy' => 'nullable||max:250',
+             'created_by' => 'nullable||max:250',
              'CreatedDate' => 'nullable|date_format:Y-m-d H:i:s',
              'UpdatedBy' => 'nullable|max:250',
              'UpdatedDate' => 'nullable|date_format:Y-m-d H:i:s',
@@ -126,14 +126,14 @@ class ClosingController extends Controller {
         if (is_null($data)) {
             $data = new Patient;
         }
-        if ($request->Code) {
-            $data->Code = $request->Code;
+        if ($request->code) {
+            $data->code = $request->code;
         }
         if ($request->except('ClosingStatus')) {
-            $data->ClosingStatus = to_bool($request->ClosingStatus);
+            $data->closing_status = to_bool($request->closing_status);
         }
-        if ($request->ClosingDate){
-          $data->ClosingDate = Carbon::createFromFormat('d-m-Y H:i', $request->ClosingDate)->format('Y-m-d H:i');
+        if ($request->closing_date){
+          $data->closing_date = Carbon::createFromFormat('d-m-Y H:i', $request->closing_date)->format('Y-m-d H:i');
         }
         $data->save();
 

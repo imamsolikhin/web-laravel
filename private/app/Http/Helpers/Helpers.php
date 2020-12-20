@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\Client;
-use App\Models\ClientGroup;
-use App\Models\ClientProperty;
 use Illuminate\Support\Facades\Config;
 
 
@@ -20,7 +17,7 @@ use Illuminate\Support\Facades\Config;
 function makeResponse($statusCode, $status, $message, $data = null, $headers = [])
 {
     $result = [
-        'status_code' => $statusCode,
+        'status_id' => $statusCode,
         'status' => $status == 'pagination' ? 'success' : $status,
         'message' => $message,
         'data' => $data,
@@ -40,6 +37,23 @@ function makeResponse($statusCode, $status, $message, $data = null, $headers = [
 
 function prefix($str, $length) {
     return str_pad($str, $length, '0', STR_PAD_LEFT);
+}
+
+function currDate() {
+  return date("Y-m-d", time());
+}
+
+function sess_company($prm = null) {
+  if($prm){
+    return Session::get('com')[$prm];
+  }
+  return Session::get('com')['id'];
+}
+function sess_user($prm = null) {
+  if($prm){
+    return Session::get('user')[$prm];
+  }
+  return "system";
 }
 
 function getUserIP() {
@@ -70,117 +84,6 @@ function user() {
     $user = Auth::user();
 
     return $user;
-}
-
-function lockedClientProperty() {
-    return Session::get('locked_client_property');
-}
-
-function lockedClient() {
-    return Session::get('locked_client');
-}
-
-function updateLockedClientProperty($clientProperty) {
-    Session::put('locked_client_property', $clientProperty);
-    updateLockedClient(defaultClient($clientProperty->id));
-
-    return lockedClientProperty();
-}
-
-function updateLockedClient($client) {
-    Session::put('locked_client', $client);
-
-    return lockedClient();
-}
-
-function clientGroup() {
-    $defaultClientGroupId = Config::get('client.group_id');
-
-    if (!$defaultClientGroupId && Config::get('client.property_id') !== false) {
-        $defaultClientGroupId = clientProperty()->client_group_id;
-    }
-    if (!$defaultClientGroupId && Config::get('client.id') !== false) {
-        $defaultClientGroupId = client()->client_group_id;
-    }
-
-    if ($defaultClientGroupId !== false) {
-        return ClientGroup::find($defaultClientGroupId);
-    }
-
-    $user = user();
-
-    return $user && $user->client_group_id ? $user->clientGroup : null;
-}
-
-function clientProperty() {
-    $defaultClientPropertyId = Config::get('client.property_id');
-
-    if (!$defaultClientPropertyId && Config::get('client.id') !== false) {
-        $defaultClientPropertyId = client()->client_property_id;
-    }
-
-    if ($defaultClientPropertyId !== false) {
-        return ClientProperty::withoutGlobalScope('client-group')->find($defaultClientPropertyId);
-    }
-    $user = user();
-
-    return $user ? ($user->client_property_id ? $user->clientProperty : lockedClientProperty()) : null;
-}
-
-function client() {
-    $defaultClientId = Config::get('client.id');
-    if ($defaultClientId !== false) {
-        return Client::withoutGlobalScopes(['client-group', 'client-property'])->find($defaultClientId);
-    }
-    $user = user();
-
-    return $user ? ($user->client_id ? $user->client : lockedClient()) : null;
-}
-
-function clientGroupId() {
-    $clientGroup = clientGroup();
-
-    return $clientGroup ? $clientGroup->id : null;
-}
-
-function clientPropertyId() {
-    $clientProperty = clientProperty();
-
-    return $clientProperty ? $clientProperty->id : null;
-}
-
-function clientId() {
-    $client = client();
-
-    return $client ? $client->id : null;
-}
-
-function recordExistsForClient($table) {
-    return 'exists:' . $table . ',id,client_id,' . clientId() . ',deleted_at,NULL';
-}
-
-function lookupExists($table) {
-    return 'exists:' . $table . ',id,client_group_id,' . clientGroupId() . ',deleted_at,NULL';
-}
-
-function clientPropertyList() {
-    return ClientProperty::all()->pluck('name', 'id')->toArray();
-}
-
-function clientList($propertyId = null) {
-    if ($propertyId) {
-        return Client::withoutGlobalScope('client-property')->where('client_property_id', $propertyId)->pluck('name', 'id')->toArray();
-    } else {
-        return Client::withoutGlobalScope('client-property')->pluck('name', 'id')->toArray();
-    }
-}
-
-function defaultClientProperty() {
-    return ClientProperty::first();
-}
-
-function defaultClient($propertyId = null) {
-    return Client::withoutGlobalScope('client-property')->where('client_property_id', $propertyId ?: defaultClientProperty()->id)->first();
 }
 
 function getSql($model) {
@@ -218,8 +121,8 @@ function getKeyName($module) {
  * @param  string  $module
  * @return string
  */
-function getModelName($module) {
-    return 'App\Http\Models\\' . getKeyName($module);
+function getModelName($folder, $module) {
+    return 'App\Http\Models\\' . $folder .'\\' . getKeyName($module);
 }
 
 /**
@@ -228,8 +131,8 @@ function getModelName($module) {
  * @param  string  $module
  * @return string
  */
-function getResourceName($module) {
-    return 'App\Http\Resources\\' . getKeyName($module);
+function getResourceName($folder, $module) {
+    return 'App\Http\Resources\\' . $folder .'\\' . getKeyName($module);
 }
 
 /**
@@ -238,8 +141,17 @@ function getResourceName($module) {
  * @param  string  $module
  * @return string
  */
-function getControllerName($module) {
-    return 'App\Http\Controllers\API\v1\\' . getKeyName($module) . 'Controller';
+function getControllerName($folder,$module) {
+    return 'App\Http\Controllers\\'. $folder .'\\' . getKeyName($module) . 'Controller';
+}
+
+function generadeCode($folder, $table, $branch=Null, $prfix=Null, $numb=5)
+{
+   $branch = ($branch)? $branch."-":"";
+   $prfix = ($prfix)? $prfix."-":"";
+   $last_count = getResourceName($folder,$table)::count()+1;
+   $code = $branch.$prfix.str_pad($last_count, $numb, '0', STR_PAD_LEFT);
+   return $code;
 }
 
 function to_bool($val = null) {
@@ -248,4 +160,22 @@ function to_bool($val = null) {
     } else {
         return 0;
     }
+}
+
+function generateRandomString($length = 20, $company = null, $branch = null) {
+    if($company==null){
+      $company= env('APP_COMPANY');
+    }
+
+    if($branch==null){
+      $branch=env('APP_BRANCH');
+    }
+
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $company.$branch.$randomString;
 }

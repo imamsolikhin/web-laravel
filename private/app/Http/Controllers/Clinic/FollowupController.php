@@ -14,10 +14,10 @@ use Carbon\Carbon;
 class FollowupController extends Controller {
 
     public static function index() {
-        $data["advertise_list"] = getResourceName("Master", "Advertise")::where('ActiveStatus',1)->get();
-        $data["interaction_list"] = getResourceName("Master", "Interaction")::where('ActiveStatus',1)->get();
-        $data["gender_list"] = getResourceName("Master", "Gender")::where('ActiveStatus',1)->get();
-        $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('ActiveStatus',1)->get();
+        $data["advertise_list"] = getResourceName("Master", "Advertise")::where('active',1)->get();
+        $data["interaction_list"] = getResourceName("Master", "Interaction")::where('active',1)->get();
+        $data["gender_list"] = getResourceName("Master", "Gender")::where('active',1)->get();
+        $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('active',1)->get();
         return view('clinic.followup',$data);
     }
 
@@ -32,13 +32,13 @@ class FollowupController extends Controller {
         $validator = getControllerName("Clinic", "Followup")::validation($request);
         if ($validator->fails()) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'New Followup '. $request->FullName .' can not be save!');
 
-        $data = Followup::find(str_replace('%20', ' ', $request->Code));
+        $data = Followup::find(str_replace('%20', ' ', $request->code));
         $visitor = getControllerName("Clinic", "Followup")::execute($request,$data);
 
-        Patient::destroy($visitor->Code);
+        Patient::destroy($visitor->code);
         if(!$visitor->Status){
           $patient = new Patient($visitor->getOriginal());
-          $patient->Code = $visitor->Code;
+          $patient->code = $visitor->code;
           $patient->FollowupStatus = 1;
           $patient->ReservationStatus = "Schedule";
           $patient->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
@@ -57,10 +57,10 @@ class FollowupController extends Controller {
 
         $visitor = getControllerName("Clinic", "Followup")::execute($request,$data);
 
-        Patient::destroy($visitor->Code);
+        Patient::destroy($visitor->code);
         if(!$visitor->Status){
           $patient = new Patient($visitor->getOriginal());
-          $patient->Code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
+          $patient->code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
           $patient->FollowupStatus = 1;
           $patient->ReservationStatus = "Schedule";
           $patient->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
@@ -74,7 +74,7 @@ class FollowupController extends Controller {
         $data = Followup::find(str_replace('%20', ' ', $id));
         if (!$data) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $visitor = Visitor::where('Code', '=', $data->Code)->update(['LockStatus'=>0]);
+        $visitor = Visitor::where('Code', '=', $data->code)->update(['LockStatus'=>0]);
         $visitor = $data->delete();
 
         return redirect()->back()->with('notif_success', 'Followup '. $data->FullName .' has been deleted!');
@@ -100,7 +100,7 @@ class FollowupController extends Controller {
               return $visitor->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
           })
           ->addColumn('action', function($visitor) {
-              $data_id ="'".$visitor->Code."'";
+              $data_id ="'".$visitor->code."'";
               $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
             							    <span class="svg-icon svg-icon-md svg-icon-primary">
             							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -112,7 +112,7 @@ class FollowupController extends Controller {
             							        </svg>
             							    </span>
             							</a>';
-              $delete = '<a data-href="' . route('clinic.delete',['Followup', $visitor->Code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+              $delete = '<a data-href="' . route('clinic.delete',['Followup', $visitor->code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
           							    <span class="svg-icon svg-icon-md svg-icon-danger">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
           							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -140,7 +140,7 @@ class FollowupController extends Controller {
      public static function validation($request, $type = null) {
          $rules = [
              'FullName' => 'required|max:250',
-             'CreatedBy' => 'nullable||max:250',
+             'created_by' => 'nullable||max:250',
              'CreatedDate' => 'nullable|date_format:Y-m-d H:i:s',
              'UpdatedBy' => 'nullable|max:250',
              'UpdatedDate' => 'nullable|date_format:Y-m-d H:i:s',
@@ -157,16 +157,13 @@ class FollowupController extends Controller {
         if (is_null($data)) {
             $data = new Followup;
         }
-        if ($request->Code) {
-            $data->Code = strtoupper($request->Code);
+        if ($request->code) {
+            $data->code = strtoupper($request->code);
         }else{
-            $data->Code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
+            $data->code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
         }
-        if ($request->CompanyCode){
-          $data->CompanyCode = $request->CompanyCode;
-        }
-        if ($request->BranchCode){
-          $data->BranchCode = $request->BranchCode;
+        if ($request->companyCode){
+          $data->companyCode = $request->companyCode;
         }
         if ($request->ShipWorkCode){
           $data->ShipWorkCode = $request->ShipWorkCode;
@@ -233,28 +230,26 @@ class FollowupController extends Controller {
         if ($request->SalesCode){
           $data->SalesCode = $request->SalesCode;
         }
-        if ($request->CreatedBy) {
-            $data->CreatedBy = $request->CreatedBy;
+        
+        if ($request->created_by) {
+            $data->created_by = $request->created_by;
         }
-        if ($request->CreatedDate) {
-            $data->CreatedDate = $request->CreatedDate;
+        if ($request->created_date) {
+            $data->created_date = $request->created_date;
         }
-        if ($request->UpdatedBy) {
-            $data->UpdatedBy = $request->UpdatedBy;
+        if ($request->updatedby) {
+            $data->updatedby = $request->updatedby;
         }
-        if ($request->UpdatedDate) {
-            $data->UpdatedDate = $request->UpdatedDate;
+        if ($request->updated_date) {
+            $data->updated_date = $request->updated_date;
         }
-        if ($request->UpdatedBy) {
-            $data->UpdatedBy = $request->UpdatedBy;
-        }
-        if ($request->except('Status')) {
-            $data->Status = to_bool($request->Status);
+        if ($request->except('status')) {
+            $data->status = to_bool($request->status);
         }
 
         $data->LockStatus = 0;
         $data->FollowupDate = date('Y-m-d H:i');
-        $data->ActiveStatus = 1;
+        $data->active = 1;
         $data->save();
 
         return $data;

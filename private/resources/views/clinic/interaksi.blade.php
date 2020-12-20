@@ -130,7 +130,7 @@
                                   <option value="">Chose Advertise</option>
                                    @isset ($advertise_list)
                                      @foreach($advertise_list as $advertise)
-                                      <option value="{{ $advertise->Code }}">{{ $advertise->Name }}</option>
+                                      <option value="{{ $advertise->code }}">{{ $advertise->name }}</option>
                                      @endforeach
                                    @endisset
                                 </select>
@@ -145,7 +145,7 @@
                                   <option value="">Chose Interaksi</option>
                                    @isset ($interaction_list)
                                      @foreach($interaction_list as $interaction)
-                                      <option value="{{ $interaction->Code }}">{{ $interaction->Name }}</option>
+                                      <option value="{{ $interaction->code }}">{{ $interaction->name }}</option>
                                      @endforeach
                                    @endisset
                                </select>
@@ -160,7 +160,7 @@
                                   <option value="">Chose </option>
                                    @isset ($gender_list)
                                      @foreach($gender_list as $gender)
-                                      <option value="{{ $gender->Code }}">{{ $gender->Name }}</option>
+                                      <option value="{{ $gender->code }}">{{ $gender->name }}</option>
                                      @endforeach
                                    @endisset
                                </select>
@@ -232,7 +232,7 @@
                                       <option value="">Chose </option>
                                        @isset ($confirmation_list)
                                          @foreach($confirmation_list as $confirmation)
-                                          <option value="{{ $confirmation->Code }}">{{ $confirmation->Name }}</option>
+                                          <option value="{{ $confirmation->code }}">{{ $confirmation->name }}</option>
                                          @endforeach
                                        @endisset
                                     </select>
@@ -283,13 +283,12 @@
 <script src="{{ config('app.url') }}global/vendor/datatables/jquery.dataTables.js"></script>
 <script src="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.js"></script>
 <script src="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.js"></script>
+<script src="{{ config('app.url') }}js/inject.js"></script>
 <script type="text/javascript">
   var start_date = "";
   var end_date = "";
   $(document).ready(function() {
     $(".is_reqs").hide();
-    $("#datatable_wrapper").removeClass("dataTables_wrapper form-inline dt-bootstrap no-footer");
-    $("#datatable_wrapper").addClass("dataTables_wrapper dt-bootstrap4 no-footer");
     $("div.datesearchbox").html('<div class="input-group"> <div class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </div><input type="text" class="form-control pull-right" id="datesearch" placeholder="Search by date range"> </div>');
     document.getElementsByClassName("datesearchbox")[0].style.textAlign = "center";
     $("#datesearch").attr("readonly",true);
@@ -443,7 +442,7 @@
                   $("#form-input").attr("action", "{{ route('clinic.update',['interaksi',''])}}/"+id);
                   $('#form-input').trigger("reset");
                   $('#method').val("POST");
-                  
+
                   $('#Code').val(response.data.Code);
                   $('#CompanyCode').val(response.data.CompanyCode);
                   $('#BranchCode').val(response.data.BranchCode);
@@ -487,7 +486,7 @@
           $("#form-input").attr("action", "{{ route('clinic.save','interaksi')}}");
           $('#form-input').trigger("reset");
           $('#method').val("POST");
-          
+
           $('#Code').focus();
           $('#modal-form').modal('show');
           $('#Code').focus();

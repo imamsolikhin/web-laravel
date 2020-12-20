@@ -15,8 +15,6 @@ class CreateUserLoginHistoriesTable extends Migration
     {
         Schema::create('user_login_histories', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('client_group_id')->unsigned()->index();
-            $table->foreign('client_group_id')->references('id')->on('client_groups');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('ip');

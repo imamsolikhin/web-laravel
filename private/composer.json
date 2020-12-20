@@ -9,15 +9,16 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "barryvdh/laravel-dompdf": "^0.8.7",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^7.0",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^7.0",
-        "laravel/passport": "^9.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.1",
-        "santigarcor/laratrust": "^6.1",
+        "laravelcollective/html": "^6.2",
+        "spatie/laravel-permission": "^3.18",
         "venturecraft/revisionable": "1.*",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
@@ -29,9 +30,9 @@
         "phpunit/phpunit": "^8.5"
     },
     "config": {
-        "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "optimize-autoloader": true
     },
     "extra": {
         "laravel": {

@@ -2,109 +2,85 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Auth, Session;
+use Auth, Session, Hash;
 use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Client;
-use Jenssegers\Agent\Agent;
 use Illuminate\Http\Request;
-use App\Models\ClientProperty;
+use Jenssegers\Agent\Agent;
 use App\Http\Controllers\Controller;
-use App\Models\UserManagement\UserLoginHistory;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Models\UserLoginHistory;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
     use AuthenticatesUsers;
 
-    public function __construct()
-    {
-        $this->middleware('guest', ['except' => 'logout']);
-    }
+      public function __construct()
+      {
+         $this->middleware('guest')->except('logout');
+      }
 
-    public function username()
-    {
-        return 'login';
-    }
+      public function username()
+      {
+          return 'login';
+      }
 
-    protected function sendLoginResponse(Request $request)
-    {
-        $request->session()->regenerate();
+      protected function sendLoginResponse(Request $request)
+      {
+          $request->session()->regenerate();
+          $this->clearLoginAttempts($request);
 
-        $this->clearLoginAttempts($request);
+          return $this->authenticated($request, $this->guard()->user())
+                  ?: redirect()->route('dashboard');
+      }
 
-        return $this->authenticated($request, $this->guard()->user())
-                ?: redirect()->route('dashboard');
-    }
+      public function login(Request $request)
+      {
+          $this->validate($request, [
+              'username' => 'required|min:2|max:30',
+              'password' => 'required|min:5|max:20'
+          ]);
 
-    public function login(Request $request)
-    {
-        $this->validate($request, [
-            'login' => 'required|min:2|max:30',
-            'password' => 'required|min:6|max:20'
-        ]);
+          if ($this->hasTooManyLoginAttempts($request)) {
+              $this->fireLockoutEvent($request);
+              return $this->sendLockoutResponse($request);
+          }
 
-        if ($this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
+          $credentials = [
+              'password' => $request->input('password')
+          ];
+          $login = $request->input('username');
 
-            return $this->sendLockoutResponse($request);
-        }
+          if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+              $credentials['email'] = $login;
+          } else {
+              $credentials['username'] = $login;
+          }
 
-        $credentials = [
-            'password' => $request->input('password')
-        ];
-        $login = $request->input('login');
+          session(['com' => getResourceName("Master", "Company")::find('DEV')]);
 
-        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
-            $credentials['email'] = $login;
-        } else {
-            $credentials['username'] = $login;
-        }
+          if ($this->guard()->attempt($credentials, $request->has('remember'))) {
+              $user = user();
 
-        if ($this->guard()->attempt($credentials, $request->has('remember'))) {
-            $user = user();
+              $user->last_login = Carbon::now();
+              $user->save();
 
-            if ($user->clientGroup->suspended) {
-                Auth::logout();
+              $log = new UserLoginHistory();
+              $log->user_id = $user->id;
+              $log->ip = getUserIP();
+              $agent = new Agent();
+              $log->browser = $agent->browser();
+              $log->platform = $agent->platform();
+              $log->save();
 
-                return validationError('Your service has been suspended.');
-            }
+              session(['user' => $user->getOriginal()]);
+              session(['log' => $log->getOriginal()]);
 
-            $clientPropertyId = $user->client_property_id;
-            $clientId = $user->client_id;
-            $user->last_login = Carbon::now();
-            $user->save();
 
-            $log = new UserLoginHistory();
-            $log->user_id = $user->id;
-            $log->client_group_id = $user->client_group_id;
-            $log->ip = getUserIP();
-            $agent = new Agent();
-            $log->browser = $agent->browser();
-            $log->platform = $agent->platform();
-            $log->save();
+              return $this->sendLoginResponse($request);
+          }
 
-            Session::put('locked_client_property', $clientPropertyId ? ClientProperty::find($clientPropertyId) : defaultClientProperty());
-            Session::put('locked_client', $clientId ? Client::find($clientId) : defaultClient($clientPropertyId));
+          $this->incrementLoginAttempts($request);
 
-            // GET session
-            $clientP = Session::get('locked_client_property');
-            $clientP->id;
-            return $this->sendLoginResponse($request);
-        }
-
-        $this->incrementLoginAttempts($request);
-
-        return $this->sendFailedLoginResponse($request);
-    }
+          return $this->sendFailedLoginResponse($request);
+      }
 }

@@ -59,7 +59,7 @@ class PasienController extends Controller {
         return DataTables::of($result)
                         ->addIndexColumn()
                         ->addColumn('active', function($pasien) {
-                            return $pasien->ActiveStatus ? '<i class="fa fa-check text-success"></i>' : '<i class="la la-close icon-lg text-danger"></i>';
+                            return $pasien->active ? '<i class="fa fa-check text-success"></i>' : '<i class="la la-close icon-lg text-danger"></i>';
                         })
                         ->addColumn('action', function($pasien) {
                             $detail = '<a href="' . route('clinic-admin.pasien.show', $pasien->Code) . '" class="btn btn-icon btn-light btn-hover-success btn-sm" data-toggle="tooltip" data-placement="top" title="Detail">
@@ -145,8 +145,8 @@ class PasienController extends Controller {
         if ($request->UpdatedDate) {
             $data->UpdatedDate = $request->UpdatedDate;
         }
-        if ($request->except('ActiveStatus')) {
-            $data->ActiveStatus = to_bool($request->ActiveStatus);
+        if ($request->except('active')) {
+            $data->active = to_bool($request->active);
         }
         $data->save();
 

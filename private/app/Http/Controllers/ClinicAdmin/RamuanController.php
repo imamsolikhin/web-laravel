@@ -59,7 +59,7 @@ class RamuanController extends Controller {
         return DataTables::of($result)
                         ->addIndexColumn()
                         ->addColumn('active', function($ramuan) {
-                            return $ramuan->ActiveStatus ? '<i class="fa fa-check text-success"></i>' : '<i class="la la-close icon-lg text-danger"></i>';
+                            return $ramuan->active ? '<i class="fa fa-check text-success"></i>' : '<i class="la la-close icon-lg text-danger"></i>';
                         })
                         ->addColumn('action', function($ramuan) {
                             $detail = '<a href="' . route('clinic-admin.ramuan.show', $ramuan->Code) . '" class="btn btn-icon btn-light btn-hover-success btn-sm" data-toggle="tooltip" data-placement="top" title="Detail">
@@ -145,8 +145,8 @@ class RamuanController extends Controller {
         if ($request->UpdatedDate) {
             $data->UpdatedDate = $request->UpdatedDate;
         }
-        if ($request->except('ActiveStatus')) {
-            $data->ActiveStatus = to_bool($request->ActiveStatus);
+        if ($request->except('active')) {
+            $data->active = to_bool($request->active);
         }
         $data->save();
 

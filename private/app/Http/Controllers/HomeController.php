@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -28,6 +29,8 @@ class HomeController extends Controller
 
     public function dashboard()
     {
+
+        // dd(session('log'));
         // $menus = Menu::where('status', '=', 1)->get();
         // $listmenu = Menu::pluck('title','id')->all();
         // dd($listmenu);
