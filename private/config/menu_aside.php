@@ -240,7 +240,7 @@ return [
                   'root' => true,
                   'icon' => 'media/svg/icons/Code/Terminal.svg',
                   'bullet' => 'dot',
-                  'page' => 'master/advertise'
+                  'page' => 'master/ads'
                 ],
                 [
                   'title' => 'Bank',
@@ -289,7 +289,7 @@ return [
                   'root' => true,
                   'icon' => 'media/svg/icons/Code/Terminal.svg',
                   'bullet' => 'dot',
-                  'page' => 'master/cender'
+                  'page' => 'master/gender'
                 ],
                 [
                   'title' => 'Interaction',

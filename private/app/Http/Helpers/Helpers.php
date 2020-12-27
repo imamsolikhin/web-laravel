@@ -47,13 +47,20 @@ function sess_company($prm = null) {
   if($prm){
     return Session::get('com')[$prm];
   }
-  return Session::get('com')['id'];
+  return null;
 }
 function sess_user($prm = null) {
   if($prm){
     return Session::get('user')[$prm];
   }
-  return "system";
+  return null;
+}
+
+function sess_shift($prm = null) {
+  if($prm){
+    return Session::get('shift')[$prm];
+  }
+  return null;
 }
 
 function getUserIP() {
@@ -148,9 +155,9 @@ function getControllerName($folder,$module) {
 function generadeCode($folder, $table, $branch=Null, $prfix=Null, $numb=5)
 {
    $branch = ($branch)? $branch."-":"";
-   $prfix = ($prfix)? $prfix."-":"";
-   $last_count = getResourceName($folder,$table)::count()+1;
-   $code = $branch.$prfix.str_pad($last_count, $numb, '0', STR_PAD_LEFT);
+   $prfix = ($prfix)? $branch.$prfix."-":$branch;
+   $last_count = getResourceName($folder,$table)::where('company_id',sess_company('id'))->count();
+   $code = $prfix.str_pad(($last_count+1), $numb, '0', STR_PAD_LEFT);
    return $code;
 }
 

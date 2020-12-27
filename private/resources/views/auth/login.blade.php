@@ -59,25 +59,31 @@
                                           <button type="submit" href="javascript:void(0)" class="btn btn-primary font-weight-bold px-9 py-2 my-2">Login</button>
                                       </div>
                                   </div>
-                                  <div class="col-4">
+                                  <div class="col-8 px-5 py-1">
                                       <div class="form-group">
-                                          <select class="custom-select form-control" name="sess_month" required>
-                                              <?php $mytime = Carbon\Carbon::now();?>
-                                              <?php for ($m = 1; $m <= 12; ++$m) { ?>
-                                                  <option value="<?php echo $m; ?>" <?php echo $active = (date("m", strtotime($mytime->toDateTimeString())) == $m) ? 'Selected' : ''; ?>><?php echo date('F', mktime(0, 0, 0, $m, 1)); ?></option>
-                                              <?php } ?>
+                                          <select class="custom-select form-control" id="shiftwork" name="shiftwork" style="width:100%;" required>
+                                            <option value="" selected>Chose Shift</option>
                                           </select>
                                       </div>
                                   </div>
-                                  <div class="col-4">
-                                      <div class="form-group">
-                                          <select class="custom-select form-control" name="sess_year" required>
-                                              <?php for ($m = 2019; $m <= 2025; ++$m) { ?>
-                                                  <option value="<?php echo $m; ?>" <?php echo $active = (date("Y", strtotime($mytime->toDateTimeString())) == $m) ? 'Selected' : ''; ?>><?php echo $m; ?></option>
-                                              <?php } ?>
-                                          </select>
-                                      </div>
-                                  </div>
+
+                                  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                                  <script>
+                                    $(document).ready(function() {
+                                        $.ajax({
+                                            url: "{{ route('login.attribute')}}",
+                                            type: "GET",
+                                            success: function (datas) {
+                                              if (datas.data){
+                                                var result = datas.data;
+                                                for (var i in result.shift_list){
+                                                  $('#shiftwork').append('<option value="'+result.shift_list[i].id +'">'+result.shift_list[i].name+'</option>');
+                                                }
+                                              }
+                                            }
+                                        });
+                                    });
+                                  </script>
                               </div>
                           </div>
                       </form>

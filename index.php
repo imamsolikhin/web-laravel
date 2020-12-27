@@ -8,6 +8,7 @@
  */
 
 define('LARAVEL_START', microtime(true));
+define('COMPANY_ID', "DEV");
 
 /*
 |--------------------------------------------------------------------------

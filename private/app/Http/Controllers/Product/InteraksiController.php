@@ -14,7 +14,7 @@ use Carbon\Carbon;
 class InteraksiController extends Controller {
 
     public static function index() {
-      $data["advertise_list"] = getResourceName("Master", "Advertise")::where('active',1)->get();
+      $data["Ads_list"] = getResourceName("Master", "Ads")::where('active',1)->get();
       $data["interaction_list"] = getResourceName("Master", "Interaction")::where('active',1)->get();
       $data["gender_list"] = getResourceName("Master", "Gender")::where('active',1)->get();
       $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('active',1)->get();
@@ -172,8 +172,8 @@ class InteraksiController extends Controller {
         if ($request->ShipWorkCode){
           $data->ShipWorkCode = $request->ShipWorkCode;
         }
-        if ($request->AdvertiseCode){
-          $data->AdvertiseCode = $request->AdvertiseCode;
+        if ($request->AdsCode){
+          $data->AdsCode = $request->AdsCode;
         }
         if ($request->InteractionCode){
           $data->InteractionCode = $request->InteractionCode;

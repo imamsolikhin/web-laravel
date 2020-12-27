@@ -62,7 +62,7 @@
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <form class="form" id="form-input" action="{{ $path }}" method="POST">
+            <form class="form" id="form-input" action="{{ $path }}/save" method="POST">
               {!! csrf_field() !!}
               <input type="hidden" class="form-control" id="method" name="_method" placeholder="Enter method" value="POST"/>
                 <div class="card-body pt-3">
@@ -163,7 +163,7 @@
   function show_data(id = "") {
       if (id !== "") {
           $.ajax({
-              url: "{{ $path }}/" + id,
+              url: "{{ $path }}/data/" + id,
               type: "GET",
               headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -180,6 +180,7 @@
                   $('#name').val(response.data.name);
                   $('#status').bootstrapSwitch('state', response.data.status);
                   $('#modal-form').modal('show');
+                  $('#id').attr('readonly',true)
               },
               error: function (xhr, status, error) {
                   showDialog.show(xhr.status + " " + status + " " + error, false);
@@ -190,6 +191,7 @@
           $("#form-input").attr("action", "{{ $path }}");
           $('#method').val("POST");
           $('#modal-form').modal('show');
+          $('#id').attr('readonly',false)
           document.getElementById("id").focus();
       }
   }

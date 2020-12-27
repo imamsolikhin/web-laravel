@@ -181,8 +181,8 @@
                         <div class="form-group row">
                             <label class="col-lg-4 col-form-label">Role</label>
                             <div class="col-lg-8">
-                                <select class="form-control select2" id="GenderCode" name="GenderCode" style="width: 100%;">
-                                  <option value="">Chose </option>
+                                <select class="form-control select2" id="role_id" name="role_id" style="width: 100%;">
+                                  <option value="" selected>Chose </option>
                                    @isset ($roles)
                                      @foreach($roles as $role)
                                       <option value="{{ $role->id }}">{{ $role->display_name }} - {{$role->description }}</option>
@@ -382,6 +382,7 @@
                   $('#username').val(response.data.username);
                   $('#username').attr('readonly',true);
                   $('#active').bootstrapSwitch('state', response.data.active);
+                  $('#role_id').val(response.data.role_id).trigger('change');
                   $('#modal-form').modal('show');
                   $('#id').focus();
               },

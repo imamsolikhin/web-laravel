@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Clinic;
 
 use DataTables;
 use Illuminate\Http\Request;
+use App\Http\Resources\Clinic\Visitor;
 use App\Http\Resources\Clinic\Patient;
+use App\Http\Resources\Clinic\Followup;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -12,55 +14,59 @@ use Carbon\Carbon;
 class LeadController extends Controller {
 
     public static function index() {
-        $data["advertise_list"] = getResourceName("Master", "Advertise")::where('active',1)->get();
-        $data["interaction_list"] = getResourceName("Master", "Interaction")::where('active',1)->get();
-        $data["gender_list"] = getResourceName("Master", "Gender")::where('active',1)->get();
-        $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('active',1)->get();
-        return view('clinic.lead',$data);
+      $data["advertise_list"] = getResourceName("Master", "Ads")::where('status',1)->where('company_id',sess_company('id'))->get();
+      $data["interaction_list"] = getResourceName("Master", "Interaction")::where('status',1)->where('company_id',sess_company('id'))->get();
+      $data["gender_list"] = getResourceName("Master", "Gender")::where('status',1)->where('company_id',sess_company('id'))->get();
+      $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('status',1)->where('company_id',sess_company('id'))->get();
+      return view('clinic.lead',$data);
     }
 
     public static function data($id) {
-        $patient = Patient::withoutGlobalScopes(['active'])->findOrFail($id);
-        $patient->Schedule = date('d-m-Y H:i',strtotime($patient->Schedule));
+        $module = Patient::withoutGlobalScopes(['active'])->findOrFail($id);
+        $module->schedule_date = date('d-m-Y H:i',strtotime($module->schedule_date));
 
-        return makeResponse(200, 'success', null, $patient);
+        return makeResponse(200, 'success', null, $module);
     }
 
     public static function save($request) {
+
         $validator = getControllerName("Clinic", "Lead")::validation($request);
-        if ($validator->fails()) return redirect()->route('clinic.index','lead')->with('notif_danger', 'New Lead '. $request->FullName .' can not be save!');
+        if ($validator->fails()) return redirect()->route('clinic.index','Lead')->with('notif_danger', 'New Lead '. $request->full_name .' can not be save!');
 
-        $patient = getControllerName("Clinic", "Lead")::execute($request);
-
-        return redirect()->route('clinic.index','lead')->with('notif_success', 'New Lead '. $request->FullName .' has been added successfully!');
+        $module = getControllerName("Clinic", "Lead")::execute($request);
+        return redirect()->route('clinic.index','Lead')->with('notif_success', 'New Lead '. $request->full_name .' has been added successfully!');
     }
 
     public static function update($id, $request) {
 
-        $validator = getControllerName("Clinic", "Lead")::validation($request);
-        if ($validator->fails()) return redirect()->route('clinic.index','lead')->with('notif_danger', 'New Lead '. $request->FullName .' can not be Update!');
+        $validator = getControllerName("Clinic", "Lead")::validation($request,'update');
+        if ($validator->fails()) return redirect()->route('clinic.index','Lead')->with('notif_danger', 'New Lead '. $request->full_name .' can not be udate!');
 
         $data = Patient::find(str_replace('%20', ' ', $id));
-        if (!$data) return redirect()->route('clinic.index','lead')->with('notif_danger', 'Data '. $id .' not found!');
+        if (!$data) return redirect()->route('clinic.index','Lead')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $patient = getControllerName("Clinic", "Lead")::execute($request,$data);
+        $module = getControllerName("Clinic", "Lead")::execute($request,$data);
 
-        
-
-        return redirect()->route('clinic.index','lead')->with('notif_success', 'Lead '. $data->FullName .' has been update successfully!');
+        return redirect()->route('clinic.index','Lead')->with('notif_success', 'Lead '. $data->full_name .' has been update successfully!');
     }
 
     public static function delete($id) {
         $data = Patient::find(str_replace('%20', ' ', $id));
-        if (!$data) return redirect()->route('clinic.index','lead')->with('notif_danger', 'Data '. $id .' not found!');
+        if (!$data) return redirect()->route('clinic.index','Lead')->with('notif_danger', 'Data '. $id .' not found!');
 
-        $visitor = Visitor::where('Code', '=', $data->code)->update(['LockStatus'=>0]);
-        $patient = $data->delete();
+        $module = $data->delete();
 
-        return redirect()->back()->with('notif_success', 'Lead '. $data->FullName .' has been deleted!');
+        return redirect()->back()->with('notif_success', 'Lead '. $data->full_name .' has been deleted!');
     }
 
-    public static function list(Request $request) {
+    public static function validation($request, $type = null) {
+         $rules = [
+             'full_name' => 'required|max:250',
+         ];
+         return Validator::make($request->all(), $rules);
+   }
+
+    public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
           $result = Patient::withoutGlobalScopes()
                     ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
@@ -70,16 +76,17 @@ class LeadController extends Controller {
 
         return DataTables::of($result)
           ->addIndexColumn()
-          ->addColumn('active', function($patient) {
-              $status =  $patient->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
-              $newold = $patient->FollowupStatus ? '<span class="label font-weight-bold label-lg  label-light-primary label-inline">Baru</span>' : '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>';
-              return $newold."&nbsp".$status;
+          ->addColumn('Pasien', function($module) {
+              return $module->gender_id." ".$module->full_name;
           })
-          ->addColumn('ReservationDate', function($patient) {
-              return date('d-m-Y H:i',strtotime($patient->Schedule));
+          ->addColumn('ReservationDate', function($module) {
+              return date('d-m-Y H:i',strtotime($module->schedule_date));
           })
-          ->addColumn('action', function($patient) {
-              $data_id ="'".$patient->code."'";
+          ->addColumn('active', function($module) {
+              return $module->status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
+          })
+          ->addColumn('action', function($module) {
+              $data_id ="'".$module->id."'";
               $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
           							    <span class="svg-icon svg-icon-md svg-icon-primary">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -91,21 +98,21 @@ class LeadController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              $delete = '<a data-href="' . route('clinic.delete', ['lead',$patient->code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
-            							    <span class="svg-icon svg-icon-md svg-icon-danger">
-            							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-            							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-            							                <rect x="0" y="0" width="24" height="24"/>
-            							                <path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"/>
-            							                <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>
-            							            </g>
-            							        </svg>
-            							    </span>
-            							</a>';
-              if($patient->ClosingStatus){
+              $delete = '<a data-href="' . route('clinic.delete',['lead',$module->id]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+          							    <span class="svg-icon svg-icon-md svg-icon-danger">
+          							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+          							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          							                <rect x="0" y="0" width="24" height="24"/>
+          							                <path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"/>
+          							                <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>
+          							            </g>
+          							        </svg>
+          							    </span>
+          							</a>';
+              if($module->Closingstatus){
                 return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
               }else{
-                if($patient->LockStatus){
+                if($module->lock_status){
                   return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Lock</span>';
                 }else{
                   return $edit . ' ' . $delete;
@@ -116,119 +123,93 @@ class LeadController extends Controller {
           ->make(true);
     }
 
-     public static function validation($request, $type = null) {
-         $rules = [
-             'FullName' => 'required|max:250',
-             'created_by' => 'nullable||max:250',
-             'CreatedDate' => 'nullable|date_format:Y-m-d H:i:s',
-             'UpdatedBy' => 'nullable|max:250',
-             'UpdatedDate' => 'nullable|date_format:Y-m-d H:i:s',
-         ];
-
-         if (is_null($type)) {
-             $rules = array_merge($rules, ['Code' => 'nullable|max:50|unique:sls_clinic_visitor,Code']);
-         }
-
-         return Validator::make($request->all(), $rules);
-     }
-
      public static function execute($request, $data = null) {
         if (is_null($data)) {
             $data = new Patient;
-        }
-        if ($request->code) {
-            $data->code = $request->code;
+            $data->author = sess_user('name');
+            $data->sales_id = sess_user('id');
+            $data->created_by = sess_user('id');
+            $data->created_at = currDate();
+            $data->shift_work_id = sess_shift('id');
         }else{
-            $data->code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
+            $data->updated_by = sess_user('id');
+            $data->updated_at = currDate();
         }
-        if ($request->CompanyCode){
-          $data->CompanyCode = $request->CompanyCode;
+
+        if ($request->company_id){
+          $data->company_id = $request->company_id;
+        }else{
+          $data->company_id = sess_company('id');
         }
-        if ($request->BranchCode){
-          $data->BranchCode = $request->BranchCode;
+
+        if ($request->id) {
+            $data->id = strtoupper($request->id);
+        }else{
+            $data->id = generadeCode("Clinic","Visitor",sess_company('id'), "VST", $numb=5);
         }
-        if ($request->ShipWorkCode){
-          $data->ShipWorkCode = $request->ShipWorkCode;
+
+        if ($request->shift_work_id){
+          $data->shift_work_id = $request->shift_work_id;
         }
-        if ($request->AdvertiseCode){
-          $data->AdvertiseCode = $request->AdvertiseCode;
+        if ($request->advertise_id){
+          $data->advertise_id = $request->advertise_id;
         }
-        if ($request->InteractionCode){
-          $data->InteractionCode = $request->InteractionCode;
+        if ($request->interaction_id){
+          $data->interaction_id = $request->interaction_id;
         }
-        if ($request->GenderCode){
-          $data->GenderCode = $request->GenderCode;
+        if ($request->gender_id){
+          $data->gender_id = $request->gender_id;
         }
-        if ($request->FullName){
-          $data->FullName = $request->FullName;
+        if ($request->full_name){
+          $data->full_name = $request->full_name;
         }
-        if ($request->Age){
-          $data->Age = $request->Age;
+        if ($request->age){
+          $data->age = $request->age;
         }
-        if ($request->Phone){
-          $data->Phone = $request->Phone;
+        if ($request->phone){
+          $data->phone = $request->phone;
         }
-        if ($request->Consultation){
-          $data->Consultation = $request->Consultation;
+        if ($request->consultation){
+          $data->consultation = $request->consultation;
         }
-        if ($request->Address){
-          $data->Address = $request->Address;
+        if ($request->address){
+          $data->address = $request->address;
         }
-        if ($request->CityCode){
-          $data->CityCode = $request->CityCode;
+        if ($request->city_id){
+          $data->city_id = $request->city_id;
         }
-        if ($request->CofirmationCode){
-          $data->CofirmationCode = $request->CofirmationCode;
+        if ($request->confirmation_id){
+          $data->confirmation_id = $request->confirmation_id;
         }
-        if ($request->Schedule){
-          $data->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
+        if ($request->schedule_date){
+          // dd($request->schedule_date);
+          $data->schedule_date = Carbon::createFromFormat('d-m-Y H:i', $request->schedule_date)->format('Y-m-d H:i');
         }
-        if ($request->Status){
-          $data->Status = $request->Status;
+        if ($request->closingstatus){
+          $data->closingstatus = $request->closingstatus;
         }
-        if ($request->LockStatus){
-          $data->LockStatus = $request->LockStatus;
+        if ($request->closingby){
+          $data->closingby = $request->closingby;
         }
-        if ($request->ClosingStatus){
-          $data->ClosingStatus = $request->ClosingStatus;
+        if ($request->closing_date){
+          $data->closing_date = $request->closing_date;
         }
-        if ($request->ClosingBy){
-          $data->ClosingBy = $request->ClosingBy;
+        if ($request->img_patient){
+          $data->img_patient = $request->img_patient;
         }
-        if ($request->ClosingDate){
-          $data->ClosingDate = $request->ClosingDate;
+        if ($request->img_reservation){
+          $data->img_reservation = $request->img_reservation;
         }
-        if ($request->ImgPatient){
-          $data->ImgPatient = $request->ImgPatient;
+        if ($request->img_conference){
+          $data->img_conference = $request->img_conference;
         }
-        if ($request->ImgReservation){
-          $data->ImgReservation = $request->ImgReservation;
+        if ($request->img_closing){
+          $data->img_closing = $request->img_closing;
         }
-        if ($request->ImgConference){
-          $data->ImgConference = $request->ImgConference;
+        if ($request->except("status")) {
+            $data->status = to_bool($request->status);
         }
-        if ($request->ImgClosing){
-          $data->ImgClosing = $request->ImgClosing;
-        }
-        if ($request->SalesCode){
-          $data->SalesCode = $request->SalesCode;
-        }
-        if ($request->created_by) {
-            $data->created_by = $request->created_by;
-        }
-        if ($request->CreatedDate) {
-            $data->CreatedDate = $request->CreatedDate;
-        }
-        if ($request->UpdatedBy) {
-            $data->UpdatedBy = $request->UpdatedBy;
-        }
-        if ($request->UpdatedDate) {
-            $data->UpdatedDate = $request->UpdatedDate;
-        }
-        if ($request->except('Status')) {
-            $data->Status = to_bool($request->Status);
-        }
-        $data->active = 1;
+        $data->lock_status = 1;
         $data->save();
 
         return $data;

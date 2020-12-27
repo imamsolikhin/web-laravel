@@ -13,10 +13,10 @@ use Carbon\Carbon;
 class ReservasiController extends Controller {
 
     public static function index() {
-        $data["advertise_list"] = getResourceName("Master", "Advertise")::where('active',1)->get();
-        $data["interaction_list"] = getResourceName("Master", "Interaction")::where('active',1)->get();
-        $data["gender_list"] = getResourceName("Master", "Gender")::where('active',1)->get();
-        $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('active',1)->get();
+        $data["Ads_list"] = getResourceName("Master", "Ads")::where('status',1)->get();
+        $data["interaction_list"] = getResourceName("Master", "Interaction")::where('status',1)->get();
+        $data["gender_list"] = getResourceName("Master", "Gender")::where('status',1)->get();
+        $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('status',1)->get();
         return view('clinic.reservasi',$data);
     }
 
@@ -55,7 +55,7 @@ class ReservasiController extends Controller {
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
           $result = Patient::withoutGlobalScopes()
-                    ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
+                    ->whereBetween('schedule_date', array($request->from_date, $request->to_date)) ;
         }else{
         	$result = Patient::withoutGlobalScopes();
         }
@@ -122,111 +122,90 @@ class ReservasiController extends Controller {
 
      public static function execute($request, $data = null) {
         if (is_null($data)) {
-            $data = new Reservasi;
-        }
-        if ($request->code) {
-            $data->code = $request->code;
-        }
-        if ($request->CompanyCode){
-          $data->CompanyCode = $request->CompanyCode;
-        }
-        if ($request->BranchCode){
-          $data->BranchCode = $request->BranchCode;
-        }
-        if ($request->ShipWorkCode){
-          $data->ShipWorkCode = $request->ShipWorkCode;
-        }
-        if ($request->AdvertiseCode){
-          $data->AdvertiseCode = $request->AdvertiseCode;
-        }
-        if ($request->InteractionCode){
-          $data->InteractionCode = $request->InteractionCode;
-        }
-        if ($request->GenderCode){
-          $data->GenderCode = $request->GenderCode;
-        }
-        if ($request->FullName){
-          $data->FullName = $request->FullName;
-        }
-        if ($request->Age){
-          $data->Age = $request->Age;
-        }
-        if ($request->Phone){
-          $data->Phone = $request->Phone;
-        }
-        if ($request->Consultation){
-          $data->Consultation = $request->Consultation;
-        }
-        if ($request->Address){
-          $data->Address = $request->Address;
-        }
-        if ($request->CityCode){
-          $data->CityCode = $request->CityCode;
-        }
-        if ($request->CofirmationCode){
-          $data->CofirmationCode = $request->CofirmationCode;
-        }
-        if ($request->Schedule){
-          $data->Schedule = Carbon::createFromFormat('d-m-Y H:i', $request->Schedule)->format('Y-m-d H:i');
-        }
-        if ($request->Status){
-          $data->Status = $request->Status;
-        }
-        if ($request->LockStatus){
-          $data->LockStatus = $request->LockStatus;
-        }
-        if ($request->ClosingStatus){
-          $data->ClosingStatus = $request->ClosingStatus;
-        }
-        if ($request->ClosingBy){
-          $data->ClosingBy = $request->ClosingBy;
-        }
-        if ($request->ClosingDate){
-          $data->ClosingDate = $request->ClosingDate;
-        }
-        if ($request->ImgPatient){
-          $data->ImgPatient = $request->ImgPatient;
-        }
-        if ($request->ImgReservasi){
-          $data->ImgReservasi = $request->ImgReservasi;
-        }
-        if ($request->ImgConference){
-          $data->ImgConference = $request->ImgConference;
-        }
-        if ($request->ImgClosing){
-          $data->ImgClosing = $request->ImgClosing;
-        }
-        if ($request->SalesCode){
-          $data->SalesCode = $request->SalesCode;
-        }
-        if ($request->ReservationStatus) {
-            $data->ReservationStatus = $request->ReservationStatus;
-            if($request->ReservationStatus == "Closing"){
-              $data->LockStatus = 1;
-            }else{
-              $data->LockStatus = 0;
-            }
-        }
-        if ($request->ReservationDate) {
-            $data->ReservationDate = Carbon::createFromFormat('d-m-Y H:i', $request->ReservationDate)->format('Y-m-d H:i');
-        }
-        if ($request->created_by) {
-            $data->created_by = $request->created_by;
-        }
-        if ($request->CreatedDate) {
-            $data->CreatedDate = $request->CreatedDate;
-        }
-        if ($request->UpdatedBy) {
-            $data->UpdatedBy = $request->UpdatedBy;
-        }
-        if ($request->UpdatedDate) {
-            $data->UpdatedDate = $request->UpdatedDate;
-        }
-        if ($request->except('Status')) {
-            $data->Status = to_bool($request->Status);
+            $data = new Patient;
+            $data->author = sess_user('name');
+            $data->sales_id = sess_user('id');
+            $data->created_by = sess_user('id');
+            $data->created_at = currDate();
+            $data->shift_work_id = sess_shift('id');
+        }else{
+            $data->updated_by = sess_user('id');
+            $data->updated_at = currDate();
         }
 
-        $data->active = 1;
+        if ($request->company_id){
+          $data->company_id = $request->company_id;
+        }else{
+          $data->company_id = sess_company('id');
+        }
+
+        if ($request->id) {
+            $data->id = strtoupper($request->id);
+        }else{
+            $data->id = generadeCode("Clinic","Visitor",sess_company('id'), "VST", $numb=5);
+        }
+
+        if ($request->shift_work_id){
+          $data->shift_work_id = $request->shift_work_id;
+        }
+        if ($request->advertise_id){
+          $data->advertise_id = $request->advertise_id;
+        }
+        if ($request->interaction_id){
+          $data->interaction_id = $request->interaction_id;
+        }
+        if ($request->gender_id){
+          $data->gender_id = $request->gender_id;
+        }
+        if ($request->full_name){
+          $data->full_name = $request->full_name;
+        }
+        if ($request->age){
+          $data->age = $request->age;
+        }
+        if ($request->phone){
+          $data->phone = $request->phone;
+        }
+        if ($request->consultation){
+          $data->consultation = $request->consultation;
+        }
+        if ($request->address){
+          $data->address = $request->address;
+        }
+        if ($request->city_id){
+          $data->city_id = $request->city_id;
+        }
+        if ($request->confirmation_id){
+          $data->confirmation_id = $request->confirmation_id;
+        }
+        if ($request->schedule_date){
+          $data->schedule_date = Carbon::createFromFormat('d-m-Y H:i', $request->schedule_date)->format('Y-m-d H:i');
+        }
+        if ($request->closingstatus){
+          $data->closingstatus = $request->closingstatus;
+        }
+        if ($request->closingby){
+          $data->closingby = $request->closingby;
+        }
+        if ($request->closing_date){
+          $data->closing_date = $request->closing_date;
+        }
+        if ($request->img_patient){
+          $data->img_patient = $request->img_patient;
+        }
+        if ($request->img_reservation){
+          $data->img_reservation = $request->img_reservation;
+        }
+        if ($request->img_conference){
+          $data->img_conference = $request->img_conference;
+        }
+        if ($request->img_closing){
+          $data->img_closing = $request->img_closing;
+        }
+        if ($request->status) {
+            $data->status = to_bool($request->status);
+        }
+        $data->lock_status = 0;
         $data->save();
 
         return $data;

@@ -31,6 +31,7 @@ class UserController extends Controller {
             'username'  => 'required|min:2|max:30|unique:users,username',
             'password'  => 'required|min:5|max:20|confirmed',
             'email'     => 'required|email|unique:users,email',
+            'role_id'     => 'required',
         ];
 
         $this->validate($request, $rules);
@@ -49,6 +50,7 @@ class UserController extends Controller {
         $user->name               = $request->input('name');
         $user->username           = $request->input('username');
         $user->email              = $request->input('email');
+        $user->role_id              = $request->input('role_id');
         $user->active             = to_bool($request->input('active'));
         $user->save();
 
@@ -74,6 +76,7 @@ class UserController extends Controller {
             'name'      => 'required',
             'username'  => 'required|min:2|max:30|unique:users,username,' . $user->id,
             'email'     => 'required|email|unique:users,email,' . $user->id,
+            'role_id'     => 'required',
         ];
 
         $this->validate($request, $rules);
@@ -92,6 +95,7 @@ class UserController extends Controller {
         $user->name               = $request->input('name');
         $user->username           = $request->input('username');
         $user->email              = $request->input('email');
+        $user->role_id              = $request->input('role_id');
         $user->active             = to_bool($request->input('active'));
         $user->save();
 
@@ -112,8 +116,7 @@ class UserController extends Controller {
     {
     	$result = User::withoutGlobalScopes()
                      ->select(['users.*', 'roles.display_name as role_display_name'])
-                     ->leftJoin('role_user', 'users.id', '=', 'role_user.user_id')
-                     ->leftJoin('roles', 'role_user.role_id', '=', 'roles.id');
+                     ->leftJoin('roles', 'users.role_id', '=', 'roles.id');
 
        return DataTables::of($result)
          ->addIndexColumn()
@@ -141,7 +144,7 @@ class UserController extends Controller {
            							        </svg>
            							    </span>
            							</a>';
-          return $edit . ' ' . $delete;
+          return $edit;
          })
          ->rawColumns(['active', 'action'])
          ->make(true);

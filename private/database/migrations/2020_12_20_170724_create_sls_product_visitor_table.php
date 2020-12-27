@@ -16,7 +16,7 @@ class CreateSlsProductVisitorTable extends Migration
         Schema::create('sls_product_visitor', function (Blueprint $table) {
           $table->string('id')->primary();
           $table->string('company_id')->nullable();
-          $table->string('ship_work_id')->nullable();
+          $table->string('shift_work_id')->nullable();
           $table->string('product_id')->nullable();
           $table->string('advertise_id')->nullable();
           $table->string('customer_id')->nullable();

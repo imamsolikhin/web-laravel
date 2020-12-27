@@ -14,10 +14,10 @@ use Carbon\Carbon;
 class InteraksiController extends Controller {
 
     public static function index() {
-      $data["advertise_list"] = getResourceName("Master", "Advertise")::where('status',1)->get();
-      $data["interaction_list"] = getResourceName("Master", "Interaction")::where('status',1)->get();
-      $data["gender_list"] = getResourceName("Master", "Gender")::where('status',1)->get();
-      $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('status',1)->get();
+      $data["advertise_list"] = getResourceName("Master", "Ads")::where('status',1)->where('company_id',sess_company('id'))->get();
+      $data["interaction_list"] = getResourceName("Master", "Interaction")::where('status',1)->where('company_id',sess_company('id'))->get();
+      $data["gender_list"] = getResourceName("Master", "Gender")::where('status',1)->where('company_id',sess_company('id'))->get();
+      $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('status',1)->where('company_id',sess_company('id'))->get();
       return view('clinic.interaksi',$data);
     }
 
@@ -35,18 +35,13 @@ class InteraksiController extends Controller {
 
         $visitor = getControllerName("Clinic", "Interaksi")::execute($request);
 
-        Patient::destroy($visitor->code);
-        Followup::destroy($visitor->code);
-        if(!$visitor->Status){
+        Patient::destroy($visitor->id);
+        Followup::destroy($visitor->id);
+        if(!$visitor->status){
           $patient = new Patient($visitor->getOriginal());
-          $patient->code = $visitor->code;
-          $patient->reservation_status = "Schedule";
-          $patient->schedule_date = Carbon::createFromFormat('d-m-Y H:i', $request->schedule_date)->format('Y-m-d H:i');
           $patient->save();
         }else {
           $followup = new Followup($visitor->getOriginal());
-          $followup->code = $visitor->code;
-          $followup->followup_status = 0;
           $followup->save();
         }
         return redirect()->route('clinic.index','Interaksi')->with('notif_success', 'New Interaksi '. $request->full_name .' has been added successfully!');
@@ -62,17 +57,14 @@ class InteraksiController extends Controller {
 
         $visitor = getControllerName("Clinic", "Interaksi")::execute($request,$data);
 
-        Patient::destroy($visitor->code);
-        Followup::destroy($visitor->code);
-        if(!$visitor->Status){
+        Patient::destroy($visitor->id);
+        Followup::destroy($visitor->id);
+        if(!$visitor->status){
           $patient = new Patient($visitor->getOriginal());
-          $patient->code = $visitor->code;
-          $patient->reservation_status = "Schedule";
-          $patient->schedule_date = Carbon::createFromFormat('d-m-Y H:i', $request->schedule_date)->format('Y-m-d H:i');
+          $patient->reservation_status = 1;
           $patient->save();
         }else {
           $followup = new Followup($visitor->getOriginal());
-          $followup->code = $visitor->code;
           $followup->followup_status = 0;
           $followup->save();
         }
@@ -107,16 +99,16 @@ class InteraksiController extends Controller {
         return DataTables::of($result)
           ->addIndexColumn()
           ->addColumn('Pasien', function($visitor) {
-              return $visitor->GenderCode." ".$visitor->full_name;
+              return $visitor->gender_id." ".$visitor->full_name;
           })
           ->addColumn('ReservationDate', function($visitor) {
               return date('d-m-Y H:i',strtotime($visitor->schedule_date));
           })
           ->addColumn('active', function($visitor) {
-              return $visitor->Status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
+              return $visitor->status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
           })
           ->addColumn('action', function($visitor) {
-              $data_id ="'".$visitor->code."'";
+              $data_id ="'".$visitor->id."'";
               $edit = '<a href="#edithost" onclick="show_data(' .$data_id. ')" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Edit">
           							    <span class="svg-icon svg-icon-md svg-icon-primary">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -128,7 +120,7 @@ class InteraksiController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              $delete = '<a data-href="' . route('clinic.delete',['interaksi',$visitor->code]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+              $delete = '<a data-href="' . route('clinic.delete',['interaksi',$visitor->id]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
           							    <span class="svg-icon svg-icon-md svg-icon-danger">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
           							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -139,10 +131,10 @@ class InteraksiController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              if($visitor->ClosingStatus){
+              if($visitor->Closing_status){
                 return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
               }else{
-                if($visitor->LockStatus){
+                if($visitor->lock_status){
                   return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Lock</span>';
                 }else{
                   return $edit . ' ' . $delete;
@@ -157,8 +149,10 @@ class InteraksiController extends Controller {
         if (is_null($data)) {
             $data = new Visitor;
             $data->author = sess_user('name');
+            $data->sales_id = sess_user('id');
             $data->created_by = sess_user('id');
             $data->created_at = currDate();
+            $data->shift_work_id = sess_shift('id');
         }else{
             $data->updated_by = sess_user('id');
             $data->updated_at = currDate();
@@ -170,14 +164,14 @@ class InteraksiController extends Controller {
           $data->company_id = sess_company('id');
         }
 
-        if ($request->code) {
-            $data->code = strtoupper($request->code);
+        if ($request->id) {
+            $data->id = strtoupper($request->id);
         }else{
-            $data->code = generadeCode("Clinic","Patient","TGA", "RSV", $numb=5);
+            $data->id = generadeCode("Clinic","Visitor",sess_company('id'), "VST", $numb=5);
         }
 
-        if ($request->shipwork_id){
-          $data->shipwork_id = $request->shipwork_id;
+        if ($request->shift_work_id){
+          $data->shift_work_id = $request->shift_work_id;
         }
         if ($request->advertise_id){
           $data->advertise_id = $request->advertise_id;
@@ -188,8 +182,8 @@ class InteraksiController extends Controller {
         if ($request->gender_id){
           $data->gender_id = $request->gender_id;
         }
-        if ($request->fullname){
-          $data->fullname = $request->fullname;
+        if ($request->full_name){
+          $data->full_name = $request->full_name;
         }
         if ($request->age){
           $data->age = $request->age;
@@ -210,6 +204,7 @@ class InteraksiController extends Controller {
           $data->confirmation_id = $request->confirmation_id;
         }
         if ($request->schedule_date){
+          // dd($request->schedule_date);
           $data->schedule_date = Carbon::createFromFormat('d-m-Y H:i', $request->schedule_date)->format('Y-m-d H:i');
         }
         if ($request->closingstatus){
@@ -233,15 +228,11 @@ class InteraksiController extends Controller {
         if ($request->img_closing){
           $data->img_closing = $request->img_closing;
         }
-        if ($request->salescode){
-          $data->salescode = $request->salescode;
-        }
-        if ($request->except('status')) {
+        if ($request->except("status")) {
             $data->status = to_bool($request->status);
+            $data->lock_status = to_bool($request->status);
         }
 
-        $data->LockStatus = 0;
-        $data->active = 1;
         $data->save();
 
         return $data;

@@ -178,7 +178,8 @@
     },
     columns: [
       {title: "No", data: 'DT_RowIndex', defaultContent: '-', class: 'text-center dt-body-nowrap', orderable: false, searchable: false, autoHide: false},
-      {title: "Name", data: 'Name', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
+      {title: "Role ID", data: 'id', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
+      {title: "Role Name", data: 'name', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
       {title: "Display Name", data: 'display_name', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
       {title: "Description", data: 'description', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
       {title: "Status", data: 'active', defaultContent: '-', class: 'text-center dt-body-nowrap'},

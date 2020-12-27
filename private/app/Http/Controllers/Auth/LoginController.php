@@ -19,6 +19,12 @@ class LoginController extends Controller
          $this->middleware('guest')->except('logout');
       }
 
+      public function attribute()
+      {
+          $data["shift_list"] = getResourceName("Master", "ShiftWork")::where('status',1)->where('company_id',COMPANY_ID)->get();
+
+          return makeResponse(200, 'success', null, $data);
+      }
       public function username()
       {
           return 'login';
@@ -56,7 +62,8 @@ class LoginController extends Controller
               $credentials['username'] = $login;
           }
 
-          session(['com' => getResourceName("Master", "Company")::find('DEV')]);
+          session(['shift' => getResourceName("Master", "ShiftWork")::withoutGlobalScopes(['active'])->findOrFail($request->shiftwork)]);
+          session(['com' => getResourceName("Master", "Company")::find(COMPANY_ID)]);
 
           if ($this->guard()->attempt($credentials, $request->has('remember'))) {
               $user = user();
