@@ -139,7 +139,7 @@
                     </div>
                     <div class="mb-2">
                         <div class="form-group row">
-                            <label class="col-lg-4 col-form-label">Follow Up</label>
+                            <label class="col-lg-4 col-form-label">Interaksi</label>
                             <div class="col-lg-8">
                                 <select class="form-control select2" id="interaction_id" name="interaction_id" style="width: 100%;">
                                   <option value="" selected>Chose Follow Up</option>
@@ -195,7 +195,7 @@
                         <div class="form-group row">
                             <label class="col-lg-4 col-form-label">status</label>
                             <div class="col-lg-8">
-                                <input id="status" name="status" data-switch="true" type="checkbox" checked="checked" data-on-text="Kunjungan" data-handle-width="200" data-off-text="Reservasi" data-on-color="info" data-off-color="warning" />
+                                <input id="status" name="status" data-switch="true" type="checkbox" checked="checked" data-off-text="Kunjungan" data-handle-width="200" data-on-text="Reservasi" data-off-color="info" data-on-color="warning" />
                             </div>
                         </div>
                     </div>
@@ -311,14 +311,13 @@
       });
   });
 
-  $('[data-switch=true]').bootstrapSwitch('state', true);
   $('#status').on('switchChange.bootstrapSwitch', function (event, state) {
       var x = $(this).data('on-text');
       var y = $(this).data('off-text');
       if ($("#status").is(':checked')) {
-          $(".is_reqs").hide(500);
-      } else {
           $(".is_reqs").show(500);
+      } else {
+          $(".is_reqs").hide(500);
       }
   });
 
@@ -458,11 +457,11 @@
                   $('#lock_status').val(response.data.lock_status);
                   $('#closing_status').val(response.data.closing_status);
                   if (response.data.status === 1 || response.data.status === "1") {
-                      $('#status').bootstrapSwitch('state', true);
-                      $(".is_reqs").hide(500);
+                      $('#status').bootstrapSwitch('state', response.data.status);
+                      $(".is_reqs").show(500);
                   } else {
                       $('#status').bootstrapSwitch('state', false);
-                      $(".is_reqs").show(500);
+                      $(".is_reqs").hide(500);
                   }
                   $('#modal-form').modal('show');
                   $('#id').focus();
@@ -479,7 +478,7 @@
           $('#id').focus();
           $('#modal-form').modal('show');
           $('#id').focus();
-          $('#status').bootstrapSwitch('state', true);
+          $('#status').bootstrapSwitch('state', false);
           $(".is_reqs").hide(500);
       }
   }

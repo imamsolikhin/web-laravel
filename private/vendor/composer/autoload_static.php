@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit10c6a3d472726d0431e607b760081b2a
+class ComposerStaticInit58448b1f364d0e630d8154721889c167
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -576,14 +576,14 @@ class ComposerStaticInit10c6a3d472726d0431e607b760081b2a
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
         'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
         'App\\Http\\Controllers\\Clinic\\ClinicController' => __DIR__ . '/../..' . '/app/Http/Controllers/Clinic/ClinicController.php',
-        'App\\Http\\Controllers\\Clinic\\ClosingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Product/ClosingController.php',
+        'App\\Http\\Controllers\\Clinic\\ClosingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Clinic/ClosingController.php',
         'App\\Http\\Controllers\\Clinic\\FollowupController' => __DIR__ . '/../..' . '/app/Http/Controllers/Clinic/FollowupController.php',
         'App\\Http\\Controllers\\Clinic\\InteraksiController' => __DIR__ . '/../..' . '/app/Http/Controllers/Clinic/InteraksiController.php',
         'App\\Http\\Controllers\\Clinic\\KwitansiController' => __DIR__ . '/../..' . '/app/Http/Controllers/ClinicAdmin/KwitansiController.php',
         'App\\Http\\Controllers\\Clinic\\LeadController' => __DIR__ . '/../..' . '/app/Http/Controllers/Clinic/LeadController.php',
         'App\\Http\\Controllers\\Clinic\\PasienController' => __DIR__ . '/../..' . '/app/Http/Controllers/ClinicAdmin/PasienController.php',
         'App\\Http\\Controllers\\Clinic\\RamuanController' => __DIR__ . '/../..' . '/app/Http/Controllers/ClinicAdmin/RamuanController.php',
-        'App\\Http\\Controllers\\Clinic\\ReservasiController' => __DIR__ . '/../..' . '/app/Http/Controllers/Clinic/ReservasiController.php',
+        'App\\Http\\Controllers\\Clinic\\ReservationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Clinic/ReservationController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\Management\\RoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/Management/RoleController.php',
@@ -591,7 +591,7 @@ class ComposerStaticInit10c6a3d472726d0431e607b760081b2a
         'App\\Http\\Controllers\\Management\\UserHistoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Management/UserHistoryController.php',
         'App\\Http\\Controllers\\Master\\AdsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/AdsController.php',
         'App\\Http\\Controllers\\Master\\BankController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/BankController.php',
-        'App\\Http\\Controllers\\Master\\BranchController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/MarketController.php',
+        'App\\Http\\Controllers\\Master\\BranchController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/BranchController.php',
         'App\\Http\\Controllers\\Master\\CityController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/CityController.php',
         'App\\Http\\Controllers\\Master\\ClinicController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/ClinicController.php',
         'App\\Http\\Controllers\\Master\\CompanyController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/CompanyController.php',
@@ -600,6 +600,7 @@ class ComposerStaticInit10c6a3d472726d0431e607b760081b2a
         'App\\Http\\Controllers\\Master\\GenderController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/GenderController.php',
         'App\\Http\\Controllers\\Master\\InteractionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/InteractionController.php',
         'App\\Http\\Controllers\\Master\\ItemPriceController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/ItemPriceController.php',
+        'App\\Http\\Controllers\\Master\\MarketController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/MarketController.php',
         'App\\Http\\Controllers\\Master\\MasterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/MasterController.php',
         'App\\Http\\Controllers\\Master\\PaymentTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/PaymentTypeController.php',
         'App\\Http\\Controllers\\Master\\PeriodeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Master/PeriodeController.php',
@@ -5391,10 +5392,10 @@ class ComposerStaticInit10c6a3d472726d0431e607b760081b2a
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit10c6a3d472726d0431e607b760081b2a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit10c6a3d472726d0431e607b760081b2a::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit10c6a3d472726d0431e607b760081b2a::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit10c6a3d472726d0431e607b760081b2a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit58448b1f364d0e630d8154721889c167::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit58448b1f364d0e630d8154721889c167::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit58448b1f364d0e630d8154721889c167::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit58448b1f364d0e630d8154721889c167::$classMap;
 
         }, null, ClassLoader::class);
     }

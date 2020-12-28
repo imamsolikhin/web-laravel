@@ -19,7 +19,7 @@ class LaratrustSetupTables extends Migration
             $table->string('name');
             $table->string('display_name');
             $table->string('description')->nullable();
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

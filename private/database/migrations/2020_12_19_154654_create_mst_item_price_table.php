@@ -18,7 +18,7 @@ class CreateMstItemPriceTable extends Migration
             $table->string('company_id',100)->nullable();
             $table->string('name');
             $table->string('author',100)->nullable();
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(0);
             $table->string('created_by',100)->nullable();
             $table->string('updated_by',100)->nullable();
             $table->timestamps();

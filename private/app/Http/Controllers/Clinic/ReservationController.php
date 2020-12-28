@@ -11,18 +11,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
-class FollowupController extends Controller {
+class ReservationController extends Controller {
 
     public static function index() {
       $data["advertise_list"] = getResourceName("Master", "Ads")::where('status',1)->where('company_id',sess_company('id'))->get();
       $data["interaction_list"] = getResourceName("Master", "Interaction")::where('status',1)->where('company_id',sess_company('id'))->get();
       $data["gender_list"] = getResourceName("Master", "Gender")::where('status',1)->where('company_id',sess_company('id'))->get();
       $data["confirmation_list"] = getResourceName("Master", "Confirmation")::where('status',1)->where('company_id',sess_company('id'))->get();
-      return view('clinic.followup',$data);
+      return view('clinic.reservation',$data);
     }
 
     public static function data($id) {
-        $module = Followup::withoutGlobalScopes(['active'])->findOrFail($id);
+        $module = Patient::withoutGlobalScopes(['active'])->findOrFail($id);
         $module->schedule_date = date('d-m-Y H:i',strtotime($module->schedule_date));
 
         return makeResponse(200, 'success', null, $module);
@@ -30,64 +30,64 @@ class FollowupController extends Controller {
 
     public static function save($request) {
 
-        $validator = getControllerName("Clinic", "Followup")::validation($request);
-        if ($validator->fails()) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'New Followup '. $request->full_name .' can not be save!');
+        $validator = getControllerName("Clinic", "Reservation")::validation($request);
+        if ($validator->fails()) return redirect()->route('clinic.index','Reservation')->with('notif_danger', 'New Reservation '. $request->full_name .' can not be save!');
 
-        $module = getControllerName("Clinic", "Followup")::execute($request);
-
-        $visitor = new Visitor($module->getOriginal());
-        $visitor->lock_status = 1;
-        $visitor->followup_status = 1;
-        $visitor->followup_date = currDate();
-        getControllerName("Clinic", "Interaksi")::execute($request,$visitor);
-
-        Patient::destroy($module->id);
-        if(!$module->status){
-          $patient = new Patient($module->getOriginal());
-          $patient->followup_status = 1;
-          $patient->followup_date = currDate();
-          $patient->save();
-        }
-
-        return redirect()->route('clinic.index','Followup')->with('notif_success', 'New Followup '. $request->full_name .' has been added successfully!');
+        $module = getControllerName("Clinic", "Reservation")::execute($request);
+        return redirect()->route('clinic.index','Reservation')->with('notif_success', 'New Reservation '. $request->full_name .' has been added successfully!');
     }
 
     public static function update($id, $request) {
 
-        $validator = getControllerName("Clinic", "Followup")::validation($request,'update');
-        if ($validator->fails()) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'New Followup '. $request->full_name .' can not be udate!');
+        $validator = getControllerName("Clinic", "Reservation")::validation($request,'update');
+        if ($validator->fails()) return redirect()->route('clinic.index','Reservation')->with('notif_danger', 'New Reservation '. $request->full_name .' can not be udate!');
 
-        $data = Followup::find(str_replace('%20', ' ', $id));
-        if (!$data) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'Data '. $id .' not found!');
+        $data = Patient::find(str_replace('%20', ' ', $id));
+        if (!$data) return redirect()->route('clinic.index','Reservation')->with('notif_danger', 'Data '. $id .' not found!');
 
-        Followup::destroy($id);
-        $module = getControllerName("Clinic", "Followup")::execute($request);
-
-        Visitor::destroy($id);
-        $visitor = new Visitor($module->getOriginal());
-        $visitor->lock_status = 1;
-        $visitor->followup_status = 1;
-        $visitor->followup_date = currDate();
-        getControllerName("Clinic", "Interaksi")::execute($request,$visitor);
-
-        Patient::destroy($module->id);
-        if($module->status){
-          $patient = new Patient($module->getOriginal());
-          $patient->followup_status = 1;
-          $patient->followup_date = currDate();
-          $patient->save();
+        $module = getControllerName("Clinic", "Reservation")::execute($request,$data);
+        if($request->file_reservation){
+          $file = $request->file('file_reservation');
+          $name_file = $module->id.".".$file->getClientOriginalExtension();
+          $path_upload = 'upload/'.sess_company("id").'/RSV'.'/'.date('Y/m-d',time());
+          $file->move($path_upload,$name_file);
+          $data->reservation_by = sess_user("id");
+          $data->reservation_status = 1;
+          $data->reservation_date = currDate();
+          $data->img_reservation = $path_upload."/".$name_file;
+          $module = getControllerName("Clinic", "Closing")::execute($request,$module);
+        }
+        $datas = Visitor::find(str_replace('%20', ' ', $id));
+        if ($datas){
+          getControllerName("Clinic", "Interaksi")::execute($request,$datas);
+        }
+        $datas = Followup::find(str_replace('%20', ' ', $id));
+        if ($datas){
+          getControllerName("Clinic", "Followup")::execute($request,$datas);
         }
 
-        return redirect()->route('clinic.index','Followup')->with('notif_success', 'Followup '. $data->full_name .' has been update successfully!');
+        return redirect()->route('clinic.index','Reservation')->with('notif_success', 'Reservation '. $data->full_name .' has been update successfully!');
     }
 
     public static function delete($id) {
-        $data = Followup::find(str_replace('%20', ' ', $id));
-        if (!$data) return redirect()->route('clinic.index','Followup')->with('notif_danger', 'Data '. $id .' not found!');
+        $data = Patient::find(str_replace('%20', ' ', $id));
+        if (!$data) return redirect()->route('clinic.index','Reservation')->with('notif_danger', 'Data '. $id .' not found!');
 
         $module = $data->delete();
 
-        return redirect()->back()->with('notif_success', 'Followup '. $data->full_name .' has been deleted!');
+        $datas = Visitor::find(str_replace('%20', ' ', $id));
+        if($datas){
+          $datas->lock_status = 0;
+          $datas->save();
+        }
+
+        $datas = Followup::find(str_replace('%20', ' ', $id));
+        if($datas){
+          $datas->lock_status = 0;
+          $datas->save();
+        }
+
+        return redirect()->back()->with('notif_success', 'Reservation '. $data->full_name .' has been deleted!');
     }
 
     public static function validation($request, $type = null) {
@@ -99,10 +99,10 @@ class FollowupController extends Controller {
 
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
-          $result = Followup::withoutGlobalScopes()
+          $result = Patient::withoutGlobalScopes()
                     ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
         }else{
-        	$result = Followup::withoutGlobalScopes()->orderBy('created_at','desc');
+        	$result = Patient::withoutGlobalScopes();
         }
 
         return DataTables::of($result)
@@ -111,13 +111,13 @@ class FollowupController extends Controller {
               return $module->gender_id." ".$module->full_name;
           })
           ->addColumn('ReservationDate', function($module) {
-              return date('d-m-Y H:i',strtotime($module->schedule_date));
+              return $module->advertise_id." <br> ".date('d-m-Y H:i',strtotime($module->schedule_date));
           })
           ->addColumn('active', function($module) {
-              $created =  "created: ".date('d-m-Y H:i',strtotime($module->created_at))."<br/>";
+              $img = '<div class="symbol-label"><img alt="img" src="'.asset($module->img_reservation).'" height="100" width="200"/>'.'</div>';
               $status =  $module->status ?  '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>' : '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>';
               $newold = $module->followup_status ? '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>' : '<span class="label font-weight-bold label-lg  label-light-info label-inline">Baru</span>';
-              return '<center>'.$created.$newold."&nbsp".$status.'</center>';
+              return $img.'<br/><center>'.$newold."&nbsp".$status.'</center>';
           })
           ->addColumn('action', function($module) {
               $data_id ="'".$module->id."'";
@@ -132,7 +132,7 @@ class FollowupController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              $delete = '<a data-href="' . route('clinic.delete',['followup',$module->id]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
+              $delete = '<a data-href="' . route('clinic.delete',['reservation',$module->id]) . '" class="btn btn-icon btn-light btn-hover-danger btn-sm" "data-toggle="tooltip" data-placement="top" title="Delete" data-toggle="modal" data-target="#confirm-delete-modal">
           							    <span class="svg-icon svg-icon-md svg-icon-danger">
           							        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
           							            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -146,20 +146,16 @@ class FollowupController extends Controller {
               if($module->closing_status){
                 return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
               }else{
-                if($module->lock_status){
-                  return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Lock</span>';
-                }else{
                   return $edit . ' ' . $delete;
-                }
               }
           })
-          ->rawColumns(['active', 'action'])
+          ->rawColumns(['ReservationDate','Pasien','active', 'action'])
           ->make(true);
     }
 
      public static function execute($request, $data = null) {
         if (is_null($data)) {
-            $data = new Followup;
+            $data = new Patient;
             $data->author = sess_user('name');
             $data->sales_id = sess_user('id');
             $data->created_by = sess_user('id');
@@ -179,7 +175,7 @@ class FollowupController extends Controller {
         if ($request->id) {
             $data->id = strtoupper($request->id);
         }else{
-            $data->id = generadeCode("Clinic","Followup",sess_company('id'), "FLW".date("ymd", time()), $numb=5);
+            $data->id = generadeCode("Clinic","Visitor",sess_company('id'), "RSV".date("ymd", time()), $numb=5);
         }
 
         if ($request->shift_work_id){
@@ -219,11 +215,20 @@ class FollowupController extends Controller {
           // dd($request->schedule_date);
           $data->schedule_date = Carbon::createFromFormat('d-m-Y H:i', $request->schedule_date)->format('Y-m-d H:i');
         }
+        if ($request->reservation_status){
+          $data->reservation_status = $request->reservation_status;
+        }
+        if ($request->reservation_by){
+          $data->reservation_by = $request->reservation_by;
+        }
+        if ($request->reservation_date){
+          $data->reservation_date = $request->reservation_date;
+        }
         if ($request->closing_status){
           $data->closing_status = $request->closing_status;
         }
-        if ($request->closingby){
-          $data->closingby = $request->closingby;
+        if ($request->closing_by){
+          $data->closing_by = $request->closing_by;
         }
         if ($request->closing_date){
           $data->closing_date = $request->closing_date;
@@ -240,15 +245,10 @@ class FollowupController extends Controller {
         if ($request->img_closing){
           $data->img_closing = $request->img_closing;
         }
-        if ($request->except("status")) {
-            $data->status = to_bool($request->status);
-            if ($data->status){
-                $data->lock_status = 1;
-            }
+        if ($request->except("closing_status")) {
+            $data->closing_status = to_bool($request->closing_status);
         }
-
-        $data->followup_status = 1;
-        $data->followup_date = currDate();
+        $data->lock_status = 1;
         $data->save();
 
         return $data;

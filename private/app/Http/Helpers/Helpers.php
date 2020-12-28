@@ -40,7 +40,8 @@ function prefix($str, $length) {
 }
 
 function currDate() {
-  return date("Y-m-d", time());
+  date_default_timezone_set ('Asia/Jakarta');
+  return date("Y-m-d H:i", time());
 }
 
 function sess_company($prm = null) {

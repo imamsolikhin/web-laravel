@@ -12,7 +12,7 @@
           <a href="{{ route('dashboard') }}" class="text-muted">Dashboard</a>
         </li>
         <li class="breadcrumb-item">
-          <a href="{{ route('clinic.index','Closing') }}" class="text-muted">Closing</a>
+          <a href="{{ route('clinic.index','closing') }}" class="text-muted">Closing</a>
         </li>
         <li class="breadcrumb-item">
           <a href="#view" class="text-muted">View</a>
@@ -88,79 +88,168 @@
   </div>
 </div>
 
+
 <!-- Modal-->
 <div class="modal fade" id="modal-form" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger pt-3 pb-3">
-                <h5 class="modal-title text-white bold" id="modal">New Closing</h5>
+                <h5 class="modal-title text-white bold" id="modal">New Interaksi</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
             </div>
-            <form class="form" id="form-input" action="{{ route('clinic.save','Closing') }}" method="POST" enctype="multipart/form-data">
+            <form class="form" id="form-input" action="{{ route('clinic.index','closing') }}" method="POST" enctype="multipart/form-data">
               {!! csrf_field() !!}
-              <input type="hidden" class="form-control" id="method" id="_method" name="_method" placeholder="Enter method" value="POST"/>
+              <input type="hidden" class="form-control" id="method" id="_method" name="_method" placeholder="Enter method" value="POST">
                 <div class="card-body pt-3">
                     <div class="mb-1">
                         <div class="form-group row">
-                            <div class="col-lg-12">
-                                <input type="text" class="form-control" id="Code" name="Code" placeholder="AUTO" value="" readonly/>
+                            <label class="col-lg-4 col-form-label">id</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="id" name="id" placeholder="AUTO" value="" readonly/>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body pt-4">
-												<!--begin::User-->
-												<div class="d-flex align-items-center">
-													<div class="symbol symbol-60 symbol-xxl-100 mr-5 align-self-start align-self-xxl-center">
-														<div id="img_show_form" class="symbol-label" style="background-image:url('')"></div>
-														<i class="symbol-badge bg-success"></i>
-													</div>
-													<div>
-														<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">James Jones</a>
-														<div class="text-muted">Application Developer</div>
-														<div class="mt-2">
-															<a href="#" class="btn btn-sm btn-primary font-weight-bold mr-2 py-2 px-3 px-xxl-5 my-1">Chat</a>
-															<a href="#" class="btn btn-sm btn-success font-weight-bold py-2 px-3 px-xxl-5 my-1">Follow</a>
-															<input type="file" name="FileClosing">
-														</div>
-													</div>
-												</div>
-												<!--end::User-->
-												<!--begin::Contact-->
-												<div class="pt-8 pb-6">
-													<div class="d-flex align-items-center justify-content-between mb-2">
-														<span class="font-weight-bold mr-2">Email:</span>
-														<span class="text-muted text-hover-primary">matt@fifestudios.com</span>
-													</div>
-													<div class="d-flex align-items-center justify-content-between mb-2">
-														<span class="font-weight-bold mr-2">Phone:</span>
-														<span class="text-muted">44(76)34254578</span>
-													</div>
-													<div class="d-flex align-items-center justify-content-between">
-														<span class="font-weight-bold mr-2">Location:</span>
-														<span class="text-muted">Melbourne</span>
-													</div>
-												</div>
-											</div>
-                    <div class="mb-2">
+                    <div class="mb-1">
                         <div class="form-group row">
-                            <label class="col-lg-4 col-form-label">Closing lock</label>
+                            <div class="col-lg-4 col-form-label">
+    													<div class="symbol symbol-100 symbol-xxl-400 mr-5 align-self-start align-self-xxl-center">
+    														<div id="img_show_form" class="symbol-label" style="background-image:url('')"></div>
+    														<i class="symbol-badge bg-success"></i>
+    													</div>
+                            </div>
                             <div class="col-lg-8">
-                                <input id="ClosingStatus" name="ClosingStatus" data-switch="true" type="checkbox" checked="checked" data-on-text="Data Lock" data-handle-width="200" data-off-text="Data Open" data-on-color="danger" data-off-color="warning" />
+                              <input type="file" name="file_closing" multiple>
                             </div>
                         </div>
                     </div>
                     <div class="mb-2">
                         <div class="form-group row">
-                            <label class="col-lg-4 col-form-label">Closing Date</label>
+                            <label class="col-lg-4 col-form-label">Iklan</label>
                             <div class="col-lg-8">
-                                <div class="input-icon">
-                                    <input type="input" class="form-control datetimepicker-input" placeholder="dd/mm/yyyy" id="ClosingDate" name="ClosingDate" data-date-format="dd-mm-yyyy hh:ii" value="<?php echo date('d-m-Y H:i'); ?>"/>
-                                    <span>
-                                        <i class="far fa-calendar-alt text-muted"></i>
-                                    </span>
-                                </div>
+                                <select class="form-control select2" id="advertise_id" name="advertise_id" style="width: 100%;">
+                                  <option value="" selected>Chose Advertise</option>
+                                   @isset ($advertise_list)
+                                     @foreach($advertise_list as $advertise)
+                                      <option value="{{ $advertise->id }}">{{ $advertise->name }}</option>
+                                     @endforeach
+                                   @endisset
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Interaksi</label>
+                            <div class="col-lg-8">
+                                <select class="form-control select2" id="interaction_id" name="interaction_id" style="width: 100%;">
+                                  <option value="" selected>Chose Interaksi</option>
+                                   @isset ($interaction_list)
+                                     @foreach($interaction_list as $interaction)
+                                      <option value="{{ $interaction->id }}">{{ $interaction->name }}</option>
+                                     @endforeach
+                                   @endisset
+                               </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Sapaan</label>
+                            <div class="col-lg-8">
+                                <select class="form-control select2" id="gender_id" name="gender_id" style="width: 100%;">
+                                  <option value="" selected>Chose </option>
+                                   @isset ($gender_list)
+                                     @foreach($gender_list as $gender)
+                                      <option value="{{ $gender->id }}">{{ $gender->name }}</option>
+                                     @endforeach
+                                   @endisset
+                               </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Name Pasien</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Enter Name" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">No Telfon</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter Name" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Keluhan</label>
+                            <div class="col-lg-8">
+                                <textarea class="form-control tagify" id="consultation" name='consultation' placeholder="keluhan" value=""></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Umur</label>
+                            <div class="col-lg-8">
+                                <input type="number" class="form-control" id="age" name="age" placeholder="Enter age" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Kota</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="city_id" name="city_id" placeholder="Enter City" value=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Alamat</label>
+                            <div class="col-lg-8">
+                                <textarea type="text" class="form-control" id="address" name="address" placeholder="Enter Alamat" value=""></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Konfirmasi</label>
+                            <div class="col-lg-8">
+                                <select class="form-control select2" id="confirmation_id" name="confirmation_id" style="width: 100%;">
+                                  <option value="" selected>Chose </option>
+                                   @isset ($confirmation_list)
+                                     @foreach($confirmation_list as $confirmation)
+                                      <option value="{{ $confirmation->id }}">{{ $confirmation->name }}</option>
+                                     @endforeach
+                                   @endisset
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                      <div class="form-group row">
+                          <label class="col-lg-4 col-form-label">Kedatangan</label>
+                          <div class="col-lg-8">
+                              <div class="input-icon">
+                                  <input type="input" class="form-control datetimepicker-input" placeholder="dd/mm/yyyy" id="schedule_date" name="schedule_date" data-date-format="dd-mm-yyyy hh:ii" value="<?php echo date('d-m-Y H:i'); ?>"/>
+                                  <span>
+                                      <i class="far fa-calendar-alt text-muted"></i>
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="form-group row">
+                            <label class="col-lg-4 col-form-label">Closing Status</label>
+                            <div class="col-lg-8">
+                                <input id="closing_status" name="closing_status" data-switch="true" type="checkbox" checked="checked" data-on-text="Closing" data-handle-width="200" data-off-text="Terjadwal" data-off-color="info" data-on-color="warning" />
                             </div>
                         </div>
                     </div>
@@ -194,19 +283,11 @@
 <script src="{{ config('app.url') }}global/vendor/datatables/jquery.dataTables.js"></script>
 <script src="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.js"></script>
 <script src="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.js"></script>
+<script src="{{ config('app.url') }}js/inject.js"></script>
 <script type="text/javascript">
   var start_date = "";
   var end_date = "";
   $(document).ready(function() {
-    $(".is_reqs").hide();
-    $("#datatable_wrapper").removeClass("dataTables_wrapper form-inline dt-bootstrap no-footer");
-    $("#datatable_wrapper").addClass("dataTables_wrapper dt-bootstrap4 no-footer");
-    $("div.datesearchbox").html('<div class="input-group"> <div class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </div><input type="text" class="form-control pull-right" id="datesearch" placeholder="Search by date range"> </div>');
-    document.getElementsByClassName("datesearchbox")[0].style.textAlign = "center";
-    $("#datesearch").attr("readonly",true);
-    $('#datesearch').daterangepicker({
-       autoUpdateInput: false
-     });
      //menangani proses saat apply date range
       $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
          $(this).val(picker.startDate.format('DD-MM-YYYY') + ' - ' + picker.endDate.format('DD-MM-YYYY'));
@@ -240,7 +321,7 @@
     lengthMenu: [[5, 10, 25, 50, 100, 200, -1], [5, 10, 25, 50, 100, 200, "All"]],
     ajax: {
       method: 'POST',
-      url : '{{ route('clinic.list','Closing') }}',
+      url : '{{ route('clinic.list','closing') }}',
       data: {from_date:start_date, to_date:end_date},
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -249,11 +330,11 @@
     columns: [
       {title: "No", data: 'DT_RowIndex', defaultContent: '-', class: 'text-center dt-body-nowrap', orderable: false, searchable: false, autoHide: false},
       {title: "Status", data: 'active', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      {title: "Iklan", data: 'AdvertiseCode', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: true},
-      {title: "Reservation", data: 'InteractionCode', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: true},
+      {title: "Reservasi", data: 'active_reservation', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
+      {title: "Closing  ", data: 'active_closing', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
       {title: "Pasien", data: 'Pasien', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      {title: "No Telf", data: 'Phone', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
-      {title: "Consultation", data: 'Consultation', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
+      {title: "No Telf", data: 'phone', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
+      {title: "Konsultasi", data: 'consultation', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: false},
       {title: "Actions", data: 'action', orderable: false, responsivePriority: -1},
     ],
     order: [[1, 'asc']],
@@ -334,41 +415,43 @@
   function show_data(id = "") {
       if (id !== "") {
           $.ajax({
-              url: "{{ route('clinic.data',['Closing',''])}}/" + id,
+              url: "{{ route('clinic.data',['closing',''])}}/" + id,
               type: "GET",
               headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
               },
               success: function (response) {
-                  $("#form-input").attr("action", "{{ route('clinic.update',['Closing',''])}}/"+id);
+                  $("#form-input").attr("action", "{{ route('clinic.update',['closing',''])}}/"+id);
                   $('#form-input').trigger("reset");
                   $('#method').val("POST");
 
-                  $('#Code').val(response.data.Code);
-                  $('#ClosingDate').val(response.data.ClosingDate);
-                  document.getElementById("img_show_form").style.backgroundImage = "url('"+response.data.ImgClosing+"')";
-
-                  if(response.data.ClosingStatus == true){
-                    $('#ClosingStatus').bootstrapSwitch('state', true);
-                  }else{
-                    $('#ClosingStatus').bootstrapSwitch('state', false);
-                  }
+                  $('#id').val(response.data.id);
+                  $('#advertise_id').val(response.data.advertise_id).trigger('change');
+                  $('#interaction_id').val(response.data.interaction_id).trigger('change');
+                  $('#gender_id').val(response.data.gender_id).trigger('change');
+                  $('#confirmation_id').val(response.data.confirmation_id).trigger('change');
+                  $('#full_name').val(response.data.full_name);
+                  $('#age').val(response.data.age);
+                  $('#phone').val(response.data.phone);
+                  $('#consultation').text(response.data.consultation);
+                  $('#address').val(response.data.address);
+                  $('#city_id').val(response.data.city_id);
+                  $('#schedule_date').val(response.data.schedule_date);
+                  $('#lock_status').val(response.data.lock_status);
+                  $('#closing_status').bootstrapSwitch('state', response.data.closing_status);
                   $('#modal-form').modal('show');
-                  $('#Code').focus();
               },
               error: function (xhr, status, error) {
                   alert_show(xhr.status + " " + status + " " + error, false);
               }
           });
       } else {
-          $("#form-input").attr("action", "{{ route('clinic.save','Closing')}}");
+          $("#form-input").attr("action", "{{ route('clinic.save','closing')}}");
           $('#form-input').trigger("reset");
           $('#method').val("POST");
 
-          $('#Code').focus();
+          $('#id').focus();
           $('#modal-form').modal('show');
-          $('#Code').focus();
-          $(".is_reqs").hide(500);
       }
   }
 

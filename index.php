@@ -9,6 +9,12 @@
 
 define('LARAVEL_START', microtime(true));
 define('COMPANY_ID', "DEV");
+// define('APP_BRANCH', "Clinic");
+define('APP_BRANCH', "Marketing Clinic");
+// define('APP_BRANCH', "Marketing Product");
+// define('APP_BRANCH', "Management");
+define('APP_NAME', "KLINIK UMMI SITILATIFAH");
+define('APP_LOGIN', "https://image.freepik.com/free-vector/isometric-laptop-background-template_52683-7079.jpg");
 
 /*
 |--------------------------------------------------------------------------

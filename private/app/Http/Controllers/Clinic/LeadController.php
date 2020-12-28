@@ -47,6 +47,9 @@ class LeadController extends Controller {
 
         $module = getControllerName("Clinic", "Lead")::execute($request,$data);
 
+        $data = Visitor::find(str_replace('%20', ' ', $id));
+        getControllerName("Clinic", "Interaksi")::execute($request,$data);
+
         return redirect()->route('clinic.index','Lead')->with('notif_success', 'Lead '. $data->full_name .' has been update successfully!');
     }
 
@@ -55,6 +58,12 @@ class LeadController extends Controller {
         if (!$data) return redirect()->route('clinic.index','Lead')->with('notif_danger', 'Data '. $id .' not found!');
 
         $module = $data->delete();
+
+        $datas = Visitor::find(str_replace('%20', ' ', $id));
+        if($datas){
+          $datas->lock_status = 0;
+          $datas->save();
+        }
 
         return redirect()->back()->with('notif_success', 'Lead '. $data->full_name .' has been deleted!');
     }
@@ -71,7 +80,7 @@ class LeadController extends Controller {
           $result = Patient::withoutGlobalScopes()
                     ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
         }else{
-        	$result = Patient::withoutGlobalScopes();
+        	$result = Patient::withoutGlobalScopes()->where('followup_status',0);
         }
 
         return DataTables::of($result)
@@ -83,7 +92,10 @@ class LeadController extends Controller {
               return date('d-m-Y H:i',strtotime($module->schedule_date));
           })
           ->addColumn('active', function($module) {
-              return $module->status ? '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>' : '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>';
+              $created =  "created: ".date('d-m-Y H:i',strtotime($module->created_at))."<br/>";
+              $status =  $module->status ?  '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Reservasi</span>' : '<span class="label font-weight-bold label-lg  label-light-info label-inline">Kunjungan</span>';
+              $newold = $module->followup_status ? '<span class="label font-weight-bold label-lg  label-light-danger label-inline">Lama</span>' : '<span class="label font-weight-bold label-lg  label-light-info label-inline">Baru</span>';
+              return '<center>'.$created.$newold."&nbsp".$status.'</center>';
           })
           ->addColumn('action', function($module) {
               $data_id ="'".$module->id."'";
@@ -109,14 +121,10 @@ class LeadController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              if($module->Closingstatus){
+              if($module->closing_status){
                 return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
               }else{
-                if($module->lock_status){
-                  return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Lock</span>';
-                }else{
-                  return $edit . ' ' . $delete;
-                }
+                return $edit . ' ' . $delete;
               }
           })
           ->rawColumns(['active', 'action'])
@@ -145,7 +153,7 @@ class LeadController extends Controller {
         if ($request->id) {
             $data->id = strtoupper($request->id);
         }else{
-            $data->id = generadeCode("Clinic","Visitor",sess_company('id'), "VST", $numb=5);
+            $data->id = generadeCode("Clinic","Visitor",sess_company('id'), "LAD".date("ymd", time()), $numb=5);
         }
 
         if ($request->shift_work_id){
@@ -185,8 +193,8 @@ class LeadController extends Controller {
           // dd($request->schedule_date);
           $data->schedule_date = Carbon::createFromFormat('d-m-Y H:i', $request->schedule_date)->format('Y-m-d H:i');
         }
-        if ($request->closingstatus){
-          $data->closingstatus = $request->closingstatus;
+        if ($request->closing_status){
+          $data->closing_status = $request->closing_status;
         }
         if ($request->closingby){
           $data->closingby = $request->closingby;
@@ -209,6 +217,7 @@ class LeadController extends Controller {
         if ($request->except("status")) {
             $data->status = to_bool($request->status);
         }
+        $data->status = 1;
         $data->lock_status = 1;
         $data->save();
 

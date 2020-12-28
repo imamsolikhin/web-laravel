@@ -25,7 +25,7 @@ class CreateMstPatienTable extends Migration
             $table->string('consultation')->nullable();
             $table->string('sales_id',100)->nullable();
             $table->string('author',100)->nullable();
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(0);
             $table->string('created_by',100)->nullable();
             $table->string('updated_by',100)->nullable();
             $table->timestamps();

@@ -7,14 +7,14 @@
 @section('content')
   <div class="d-flex flex-column flex-root">
       <div class="login login-1 login-signin-on d-flex flex-column flex-lg-row flex-row-fluid bg-white" id="kt_login">
-          <div class="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-10 p-lg-40" style="background-image:url(https://image.freepik.com/free-vector/isometric-laptop-background-template_52683-7079.jpg )">
+          <div class="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-10 p-lg-40" style="background-image:url({{APP_LOGIN}})">
               <div class="d-flex flex-row-fluid flex-column justify-content-between">
                   <div class="flex-column-fluid d-flex flex-column justify-content-center">
-                      <h3 class="font-size-h1 mb-5 text-white">HPI MANAGEMENT</h3>
+                      <h3 class="font-size-h1 mb-5 text-white">{{APP_NAME}}</h3>
                       <p class="font-weight-lighter text-white opacity-80">-.</p>
                   </div>
                   <div class="d-none flex-column-auto d-lg-flex justify-content-between mt-10">
-                      <div class="opacity-70 font-weight-bold text-white">Powered by NUIS 2020</div>
+                      <div class="opacity-70 font-weight-bold text-white">Powered by DEVJR 2020</div>
                   </div>
               </div>
           </div>
@@ -59,31 +59,33 @@
                                           <button type="submit" href="javascript:void(0)" class="btn btn-primary font-weight-bold px-9 py-2 my-2">Login</button>
                                       </div>
                                   </div>
-                                  <div class="col-8 px-5 py-1">
-                                      <div class="form-group">
-                                          <select class="custom-select form-control" id="shiftwork" name="shiftwork" style="width:100%;" required>
-                                            <option value="" selected>Chose Shift</option>
-                                          </select>
+                                  @if (APP_BRANCH != 'Clinic')
+                                      <div class="col-8 px-5 py-1">
+                                          <div class="form-group">
+                                              <select class="custom-select form-control" id="shiftwork" name="shiftwork" style="width:100%;" required>
+                                                <option value="" selected>Chose Shift</option>
+                                              </select>
+                                          </div>
                                       </div>
-                                  </div>
 
-                                  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                                  <script>
-                                    $(document).ready(function() {
-                                        $.ajax({
-                                            url: "{{ route('login.attribute')}}",
-                                            type: "GET",
-                                            success: function (datas) {
-                                              if (datas.data){
-                                                var result = datas.data;
-                                                for (var i in result.shift_list){
-                                                  $('#shiftwork').append('<option value="'+result.shift_list[i].id +'">'+result.shift_list[i].name+'</option>');
+                                      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                                      <script>
+                                        $(document).ready(function() {
+                                            $.ajax({
+                                                url: "{{ route('login.attribute')}}",
+                                                type: "GET",
+                                                success: function (datas) {
+                                                  if (datas.data){
+                                                    var result = datas.data;
+                                                    for (var i in result.shift_list){
+                                                      $('#shiftwork').append('<option value="'+result.shift_list[i].id +'">'+result.shift_list[i].name+'</option>');
+                                                    }
+                                                  }
                                                 }
-                                              }
-                                            }
+                                            });
                                         });
-                                    });
-                                  </script>
+                                      </script>
+                                  @endif
                               </div>
                           </div>
                       </form>

@@ -31,13 +31,13 @@ class CreateSlsProductVisitorTable extends Migration
           $table->string('bank_id')->nullable();
           $table->dateTime('transaction_date')->nullable();
           $table->dateTime('delivery_date')->nullable();
-          $table->tinyInteger('confirm_status')->nullable();
+          $table->tinyInteger('confirm_status')->nullable()->default(0);
           $table->string('confirm_by')->nullable();
           $table->dateTime('confirm_date')->nullable();
-          $table->tinyInteger('warehouse_status')->nullable();
+          $table->tinyInteger('warehouse_status')->nullable()->default(0);
           $table->string('warehouse_by')->nullable();
           $table->dateTime('warehouse_date')->nullable();
-          $table->tinyInteger('closing_status')->nullable();
+          $table->tinyInteger('closing_status')->nullable()->default(0);
           $table->string('closing_by')->nullable();
           $table->dateTime('closing_date')->nullable();
           $table->string('packing_id')->nullable();

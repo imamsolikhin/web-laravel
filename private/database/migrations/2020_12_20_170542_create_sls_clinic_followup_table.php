@@ -27,12 +27,12 @@ class CreateSlsClinicFollowupTable extends Migration
             $table->text('address')->nullable();
             $table->string('city_id',50)->nullable();
             $table->dateTime('schedule_date',0)->nullable();
-            $table->tinyInteger('lock_status',0)->nullable();
+            $table->tinyInteger('lock_status',0)->nullable()->default(0);
             $table->string('confirmation_id',50)->nullable();
-            $table->tinyInteger('reservation_status')->nullable();
+            $table->tinyInteger('reservation_status')->nullable()->default(0);
             $table->string('reservation_by',100)->nullable();
             $table->dateTime('reservation_date',0)->nullable();
-            $table->tinyInteger('closing_status')->nullable();
+            $table->tinyInteger('closing_status')->nullable()->default(0);
             $table->string('closing_by',100)->nullable();
             $table->dateTime('closing_date',0)->nullable();
             $table->text('img_patient')->nullable();
@@ -40,10 +40,10 @@ class CreateSlsClinicFollowupTable extends Migration
             $table->text('img_conference')->nullable();
             $table->text('img_closing')->nullable();
             $table->string('sales_id',50)->nullable();
-            $table->tinyInteger('followup_status')->nullable();
+            $table->tinyInteger('followup_status')->nullable()->default(0);
             $table->dateTime('followup_date',0)->nullable();
             $table->string('author',100)->nullable();
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(0);
             $table->string('created_by',100)->nullable();
             $table->string('updated_by',100)->nullable();
             $table->timestamps();

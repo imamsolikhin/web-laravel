@@ -140,7 +140,7 @@ class InteraksiController extends Controller {
           							        </svg>
           							    </span>
           							</a>';
-              if($visitor->ClosingStatus){
+              if($visitor->closing_status){
                 return '<span class="label font-weight-bold label-lg  label-light-danger label-inline"><i class="fas fa-lock pr-2 text-warning "></i> Data Closed</span>';
               }else{
                 if($visitor->LockStatus){
@@ -213,8 +213,8 @@ class InteraksiController extends Controller {
           // $data->LockStatus = $request->LockStatus;
           $data->LockStatus = 0;
         // }
-        if ($request->ClosingStatus){
-          $data->ClosingStatus = $request->ClosingStatus;
+        if ($request->closing_status){
+          $data->closing_status = $request->closing_status;
         }
         if ($request->ClosingBy){
           $data->ClosingBy = $request->ClosingBy;
