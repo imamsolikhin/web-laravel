@@ -33,6 +33,7 @@ class UserController extends Controller {
             'email'     => 'required|email|unique:users,email',
             'role_id'     => 'required',
         ];
+        $user = new User;
 
         $this->validate($request, $rules);
         $path_img = null;

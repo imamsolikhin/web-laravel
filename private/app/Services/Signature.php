@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use phpseclib\Crypt\RSA;
+use phpseclib3\Crypt\RSA;
 
 class Signature
 {
