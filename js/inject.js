@@ -469,13 +469,6 @@ $.Loading = Loading;
       $("#datatable-minor_wrapper").removeClass("dataTables_wrapper form-inline dt-bootstrap no-footer");
       $("#datatable-minor_wrapper").addClass("dataTables_wrapper dt-bootstrap4 no-footer");
     });
-
-    $("div.datesearchbox").html('<div class="input-group"> <div class="input-group-addon"> <i class="glyphicon glyphicon-calendar"></i> </div><input type="text" class="form-control pull-right" id="datesearch" placeholder="Search by date range"> </div>');
-    document.getElementsByClassName("datesearchbox")[0].style.textAlign = "center";
-    $("#datesearch").attr("readonly",true);
-    $('#datesearch').daterangepicker({
-       autoUpdateInput: false
-     });
   };
 
 

@@ -174,7 +174,7 @@
 <script src="{{ config('app.url') }}global/vendor/datatables/jquery.dataTables.js"></script>
 <script src="{{ config('app.url') }}global/vendor/datatables-bootstrap/dataTables.bootstrap.js"></script>
 <script src="{{ config('app.url') }}global/vendor/datatables-responsive/dataTables.responsive.js"></script>
-<script src="{{ config('app.url') }}css/inject.css"></script>
+<script src="{{ config('app.url') }}js/inject.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
     $('[data-switch=true]').bootstrapSwitch('state', true);
