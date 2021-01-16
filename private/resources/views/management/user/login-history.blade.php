@@ -12,7 +12,7 @@
           <a href="{{ route('dashboard') }}" class="text-muted">Dashboard</a>
         </li>
         <li class="breadcrumb-item">
-          <a href="{{ route('master.index','advertise') }}" class="text-muted">User History</a>
+          <a href="{{ route('management.login-history') }}" class="text-muted">User History</a>
         </li>
         <li class="breadcrumb-item">
           <a href="#view" class="text-muted">View</a>

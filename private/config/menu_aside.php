@@ -758,6 +758,13 @@ if(APP_BRANCH == "Management"){
               'page' => 'management/role'
           ],
           [
+              'title' => 'Menu',
+              'root' => true,
+              'icon' => 'media/svg/icons/General/Shield-check.svg',
+              'bullet' => 'dot',
+              'page' => 'management/menu'
+          ],
+          [
               'title' => 'User Login History',
               'root' => true,
               'icon' => 'media/svg/icons/Code/Time-schedule.svg',

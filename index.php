@@ -15,6 +15,10 @@ define('COMPANY_ID', "DEV");
 define('APP_BRANCH', "Management");
 define('APP_NAME', "KLINIK UMMI SITILATIFAH");
 define('APP_LOGIN', "https://image.freepik.com/free-vector/isometric-laptop-background-template_52683-7079.jpg");
+define('VIEW', "view");
+define('CREATE', "create");
+define('UPDATE', "update");
+define('DELETE', "delete");
 
 /*
 |--------------------------------------------------------------------------

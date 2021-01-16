@@ -30,9 +30,33 @@ class UsersTableSeeder extends Seeder
         'active'=>1
       ]);
       \App\Models\Role::create([
-        'name'=>'Developer',
-        'display_name'=>'Super Admin',
-        'description'=>'Super Admin By Developer',
+        'name'=>'DEV',
+        'display_name'=>'Super Developer',
+        'description'=>'Super Developer',
+        'status'=>1
+      ]);
+      \App\Models\Role::create([
+        'name'=>'MNG',
+        'display_name'=>'Management Marketing',
+        'description'=>'Management Marketing',
+        'status'=>1
+      ]);
+      \App\Models\Role::create([
+        'name'=>'CLN',
+        'display_name'=>'Admin Clinic',
+        'description'=>'Admin Clinic',
+        'status'=>1
+      ]);
+      \App\Models\Role::create([
+        'name'=>'CSM',
+        'display_name'=>'CS Marketing',
+        'description'=>'CS Marketing',
+        'status'=>1
+      ]);
+      \App\Models\Role::create([
+        'name'=>'ADM',
+        'display_name'=>'Admin Marketing',
+        'description'=>'Admin Marketing',
         'status'=>1
       ]);
       \App\Http\Resources\Master\Company::create([

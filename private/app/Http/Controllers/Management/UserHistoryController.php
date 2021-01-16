@@ -10,6 +10,10 @@ use App\Models\UserLoginHistory;
 class UserHistoryController extends Controller {
     public function showLoginHistory()
     {
+      if(!getAuthMenu('management.login-history',VIEW)){
+        return redirect()->route('noauth');
+      }
+
         $page_title = 'User Login History';
         $page_description = 'Home/User Management/User Login History';
 
@@ -18,6 +22,7 @@ class UserHistoryController extends Controller {
 
     public function getLoginHistoryData()
     {
+
         $userLoginHistory = UserLoginHistory::with('user')->select('user_login_histories.*');
 
         return Datatables::of($userLoginHistory)

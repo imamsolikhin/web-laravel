@@ -49,8 +49,46 @@
   <div class="card-body pt-1">
     <table class="table table-bordered table-hover w100" cellspacing="0" id="datatable" style="width: 1070px !important;"></table>
   </div>
-</div>
 
+   @isset ($menu_parent)
+     @foreach($menu_parent as $menu)
+       	<div class="card-body pt-0 role_auth" id="role_auth_{{ $menu->id }}">
+     					<div class="col-md-12">
+     						<div class="table-responsive">
+                  <div class="card-header bg-danger p-2 pb-0">
+                    <div class="card-title pb-0 mb-0">
+       							    <h3 class="text-white pb-0 mb-0" style="font-weight:900"><div id="color-picker-1" class="mx-auto">Menu Auth {{ $menu->name }} <label class="role_name"></label></div></h3>
+                    </div>
+                  </div>
+     								<table id="datatable_auth_{{ $menu->id }}" class="datatable_detail table table-bordered table-hover w100 dataTable no-footer dtr-inline" cellspacing="0">
+     										<thead>
+     											<tr>
+     													<th class="text-left text-white dt-body-nowrap pt-1 pb-1" style="font-size:1.2rem;">No</th>
+     													<th class="text-center text-white dt-body-nowrap pt-1 pb-1" style="font-size:1.2rem;">Menu</th>
+     													<th class="text-center text-white dt-body-nowrap pt-1 pb-1" style="font-size:1.2rem;">View</th>
+     													<th class="text-center text-white dt-body-nowrap pt-1 pb-1" style="font-size:1.2rem;">Create</th>
+     													<th class="text-center text-white dt-body-nowrap pt-1 pb-1" style="font-size:1.2rem;">Update</th>
+     													<th class="text-center text-white dt-body-nowrap pt-1 pb-1" style="font-size:1.2rem;">Delete</th>
+     											</tr>
+     										</thead>
+     										<tbody></tbody>
+     								</table>
+     						</div>
+     					</div>
+       	</div>
+        <style>
+            #datatable_auth_{{ $menu->id }}{
+              margin-top: 0px !important;
+              margin-bottom: 0px !important;
+            }
+            #datatable_auth_{{ $menu->id }} tbody td {
+                padding: 0 0;
+                border-bottom-width: 0;
+            }
+        </style>
+     @endforeach
+   @endisset
+</div>
 
 <!-- Modal-->
 <div class="modal fade" id="modal-form" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
@@ -178,7 +216,7 @@
     },
     columns: [
       {title: "No", data: 'DT_RowIndex', defaultContent: '-', class: 'text-center dt-body-nowrap', orderable: false, searchable: false, autoHide: false},
-      {title: "Role ID", data: 'id', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
+      // {title: "Role ID", data: 'id', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
       {title: "Role Name", data: 'name', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
       {title: "Display Name", data: 'display_name', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
       {title: "Description", data: 'description', defaultContent: '-', class: 'text-center dt-body-nowrap', autoHide: false},
@@ -192,69 +230,93 @@
         targets: [0,-1],
         className: 'text-center visible dt-body-nowrap'
       },
-    ],
-    buttons: [
-      {
-        extend: 'print',
-        text: 'Print current page',
-        autoPrint: true,
-        customize: function (win) {
-          $(win.document.body)
-          .css('font-size', '10pt')
-          .prepend(
-            '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
-          );
-          $(win.document.body).find('table')
-          .addClass('compact')
-          .css('font-size', 'inherit');
-        },
-        exportOptions: {
-          columns: [0, 1, 'visible'],
-          modifier: {
-            page: 'current'
-          },
-        }
-      }, {
-        extend: 'copy',
-        className: 'btn default',
-        exportOptions: {
-          columns: [0, 1, 'visible']
-        }
-      }, {
-        extend: 'pdf',
-        className: 'btn default',
-        exportOptions: {
-          columns: [0, 1, 'visible']
-        }
-      }, {
-        extend: 'excelHtml5',
-        className: 'btn default',
-        excelStyles: {
-          template: 'blue_medium',
-        },
-        exportOptions: {
-          columns: [0, 1, 'visible']
-        }
-      }, {
-        extend: 'csvHtml5',
-        className: 'btn default',
-        exportOptions: {
-          columns: [0, 1, 'visible']
-        }
-      }, {
-        text: 'Reload',
-        className: 'btn default',
-        action: function (e, dt, node, config) {
-          dt.ajax.reload();
-          alert_show('Datatable reloaded!', false);
-        }
-      },
-      'colvis'
-    ],
-    initComplete: function() {
-      $('.tl-tip').tooltip();
-    }
+    ]
   });
+
+  	$('#datatable tbody').on( 'click', 'tr', function () {
+      $(".datatable_detail tbody>tr").remove();
+      if ($(this).hasClass('selected')) {
+          table.$('tr.selected').removeClass('selected');
+          $(this).removeClass('selected');
+          $(".role_name").text('');
+      }
+      else {
+          table.$('tr.selected').removeClass('selected');
+          $(this).addClass('selected');
+          var id = $(this).find("td:eq(1)").html();
+          $(".role_name").text(" : "+$(this).find("td:eq(2)").html());
+          $(".role_auth").loading("start");
+          $.ajax({
+              url: "{{ route('management.role.show.auth','') }}/"+id,
+              type: "GET",
+              headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+              },
+              success: function (response) {
+                if(response.data["role_auth"]){
+                    for (var x in response.data["menu_parent"]){
+                        $("#datatable_auth_"+response.data["menu_parent"][x].id+" tbody>tr").remove();
+                        var table = document.getElementById("datatable_auth_"+response.data["menu_parent"][x].id).getElementsByTagName('tbody')[0];
+                        var no = 1;
+                        for (var i in response.data["role_auth"]){
+                            if(response.data["role_auth"][i].parent_id == response.data["menu_parent"][x].id){
+                              var row = table.insertRow(-1);
+                              row.insertCell(0).innerHTML = '<label class="col-12 text-left pt-1 pb-1">'+(no)+'</label>';
+                              row.insertCell(1).innerHTML = '<label class="col-12 text-left pt-1 pb-1">'+response.data["role_auth"][i].name+'</label>';
+                              row.insertCell(2).innerHTML = '<label class="col-12 text-center pt-1 pb-1">'+rdb_create(response.data["role_auth"][i].id,response.data["role_auth"][i].view,"view",response.data["menu_parent"][x].id)+'</label>';
+                              row.insertCell(3).innerHTML = '<label class="col-12 text-center pt-1 pb-1">'+rdb_create(response.data["role_auth"][i].id,response.data["role_auth"][i].create,"create",response.data["menu_parent"][x].id)+'</label>';
+                              row.insertCell(4).innerHTML = '<label class="col-12 text-center pt-1 pb-1">'+rdb_create(response.data["role_auth"][i].id,response.data["role_auth"][i].update,"update",response.data["menu_parent"][x].id)+'</label>';
+                              row.insertCell(5).innerHTML = '<label class="col-12 text-center pt-1 pb-1">'+rdb_create(response.data["role_auth"][i].id,response.data["role_auth"][i].delete,"delete",response.data["menu_parent"][x].id)+'</label>';
+                              no++;
+                            }
+                        }
+                    }
+                  }
+									$(".role_auth").loading("stop");
+              },
+              error: function (xhr, status, error) {
+                $(".role_auth").loading("stop");
+              }
+          });
+        }
+      });
+
+  function rdb_create(id, sts, flag, tbl){
+      var rdb = '';
+      var cols = "column_status_"+id+"_"+flag;
+      var str_cols = "'column_status_"+id+"_"+flag+"'";
+      var str_flag = "'"+flag+"'";
+      if (sts){
+        rdb += '<div class="btn-group-sm btn-group-toggle" data-toggle="buttons">';
+        rdb += '    <label class="btn btn-light-primary active"><input type="radio" name="'+cols+'" value="1" onchange="authChange('+id+','+str_cols+','+str_flag+','+tbl+')" checked/><span></span>On</label>';
+        rdb += '    <label class="btn btn-light-danger "><input type="radio" name="'+cols+'" value="0" onchange="authChange('+id+','+str_cols+','+str_flag+','+tbl+')" /><span></span>Off</label>';
+        rdb += '</div>';
+      }else{
+        rdb += '<div class="btn-group-sm btn-group-toggle" data-toggle="buttons">';
+        rdb += '    <label class="btn btn-light-primary "><input type="radio" name="'+cols+'" value="1" onchange="authChange('+id+','+str_cols+','+str_flag+','+tbl+')" /><span></span>On</label>';
+        rdb += '    <label class="btn btn-light-danger active"><input type="radio" name="'+cols+'" value="0" onchange="authChange('+id+','+str_cols+','+str_flag+','+tbl+')" checked/><span></span>Off</label>';
+        rdb += '</div>';
+      }
+      return rdb;
+  }
+
+  function authChange(id, cols, flag, tbl){
+    $("#datatable_auth_"+tbl).loading("start");
+    $.ajax({
+        url: "{{ route('management.role.update.auth',['','',''])}}/"+id+"/"+flag+"/"+$("input[name='"+cols+"']:checked").val(),
+        type: "POST",
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        success: function (response) {
+            $("#datatable_auth_"+tbl).loading("stop");
+        },
+        error: function (xhr, status, error) {
+            $("#datatable_auth_"+tbl).loading("stop");
+        }
+    });
+  }
+
 
   function show_data(id = "") {
       if (id !== "") {

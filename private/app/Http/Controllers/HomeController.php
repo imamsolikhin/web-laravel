@@ -22,6 +22,11 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+
+    public function noauth(){
+        return view('auth.noauth');
+    }
+    
     public function index()
     {
         return redirect()->route('dashboard');

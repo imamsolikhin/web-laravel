@@ -170,20 +170,14 @@ function to_bool($val = null) {
     }
 }
 
-function generateRandomString($length = 20, $company = null, $branch = null) {
-    if($company==null){
-      $company= env('APP_COMPANY');
+function getAuthMenu($module,$key) {
+    $flag = App\Models\RoleAuth::select("role_menu_auth.".$key." AS key")
+                  ->join('menus', 'menus.id', '=', 'role_menu_auth.menu_id')
+                  ->where('role_menu_auth.role_id',sess_user('role_id'))
+                  ->where('menus.url',\URL::route($module,[],false))
+                  ->first();
+    if($flag){
+      return $flag->key;
     }
-
-    if($branch==null){
-      $branch=env('APP_BRANCH');
-    }
-
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
-    for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
-    }
-    return $company.$branch.$randomString;
+    return False;
 }

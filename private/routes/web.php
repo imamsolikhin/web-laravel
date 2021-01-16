@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'HomeController@index');
 Route::get('dashboard', 'HomeController@dashboard')->name('dashboard');
 Route::get('/quick-search', 'PagesController@quickSearch')->name('quick-search');
+Route::get('/noauth', 'HomeController@noauth')->name('noauth');
 
 Route::middleware('web')->group(function() {
    Route::middleware('guest')->namespace('Auth')->group(function() {
@@ -42,15 +43,22 @@ Route::middleware('web')->group(function() {
       });
       Route::resource('user', 'UserController', ['except' => ['create', 'show']]);
 
+     Route::get('login-history', 'UserHistoryController@showLoginHistory')->name('login-history');
+     Route::post('login-history/data', 'UserHistoryController@getLoginHistoryData')->name('login-history.data');
 
-      Route::get('login-history', 'UserHistoryController@showLoginHistory')->name('login-history');
-      Route::post('login-history/data', 'UserHistoryController@getLoginHistoryData')->name('login-history.data');
+     Route::prefix('role')->as('role.')->group(function() {
+         Route::post('data', 'RoleController@getData')->name('data');
+         Route::get('{id}', 'RoleController@show')->name('show');
+         Route::get('auth/{id}', 'RoleController@show_auth')->name('show.auth');
+         Route::post('{id}/{col}/{val}', 'RoleController@update_auth')->name('update.auth');
+     });
+     Route::resource('role', 'RoleController', ['except' => ['create', 'show']]);
 
-      Route::prefix('role')->as('role.')->group(function() {
-          Route::post('data', 'RoleController@getData')->name('data');
-          Route::get('{id}', 'RoleController@show')->name('show');
-      });
-      Route::resource('role', 'RoleController', ['except' => ['create', 'show']]);
+     Route::prefix('menu')->as('menu.')->group(function() {
+         Route::post('data', 'MenuController@getData')->name('data');
+         Route::get('{id}', 'MenuController@show')->name('show');
+     });
+     Route::resource('menu', 'MenuController', ['except' => ['create', 'show']]);
   });
 });
 

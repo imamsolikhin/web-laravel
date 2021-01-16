@@ -18,8 +18,11 @@ class UserController extends Controller {
     }
 
     public function index() {
-        $datas["users"] = User::all();
-        $datas["roles"] = Role::all();
+      if(!getAuthMenu('management.user.index',VIEW)){
+        return redirect()->route('noauth');
+      }
+        $datas["users"] = User::where('role_id','!=',1)->get();
+        $datas["roles"] = Role::where('id','!=',1)->get();
         return view('management.user.index',$datas);
     }
 
@@ -38,14 +41,8 @@ class UserController extends Controller {
         $this->validate($request, $rules);
         $path_img = null;
 
-        if($request->File){
-          $file = $request->file('File');
-          $name_file = $user->id."-".$user->name.".".$file->getClientOriginalExtension();
-          $path_upload = 'upload/'.$request->role;
-          $file->move($path_upload,$name_file);
-          $path_img = $path_upload."/".$name_file;
-        }
 
+        $user->id          = generateRandomString(10, "FMI", "NOC");
         $user->api_token          = $path_img;
         $user->password           = Hash::make($request->input('password'));
         $user->name               = $request->input('name');
@@ -53,6 +50,13 @@ class UserController extends Controller {
         $user->email              = $request->input('email');
         $user->role_id              = $request->input('role_id');
         $user->active             = to_bool($request->input('active'));
+        if($request->File){
+          $file = $request->file('File');
+          $name_file = $user->id."-".$user->name.".".$file->getClientOriginalExtension();
+          $path_upload = 'upload/'.$request->role;
+          $file->move($path_upload,$name_file);
+          $path_img = $path_upload."/".$name_file;
+        }
         $user->save();
 
         // $user->syncRoles([$request->role]);
@@ -62,6 +66,10 @@ class UserController extends Controller {
 
     public function edit($id, Request $request)
     {
+      if(!getAuthMenu('management.user.index',VIEW)){
+        return redirect()->route('noauth');
+      }
+
         $users = User::withoutGlobalScopes(['active'])->findOrFail($id);
         // $users->Schedule = date('d-m-Y H:i',strtotime($users->Schedule));
 
@@ -83,24 +91,23 @@ class UserController extends Controller {
         $this->validate($request, $rules);
         $path_img = null;
 
-        if($request->File){
-          $file = $request->file('File');
-          $name_file = $user->id."-".$user->name.".".$file->getClientOriginalExtension();
-          $path_upload = 'upload/'.$request->role;
-          $file->move($path_upload,$name_file);
-          $path_img = $path_upload."/".$name_file;
-        }
-
         $user->api_token          = $path_img;
-        $user->password           = Hash::make($request->input('password'));
+        if($request->password != ""){
+          $user->password           = Hash::make($request->input('password'));
+        }
         $user->name               = $request->input('name');
         $user->username           = $request->input('username');
         $user->email              = $request->input('email');
         $user->role_id              = $request->input('role_id');
         $user->active             = to_bool($request->input('active'));
+        if($request->File){
+          $file = $request->file('File');
+          $name_file = $user->id."-".$user->name.".".$file->getClientOriginalExtension();
+          $path_upload = 'upload/'.$user->role_id;
+          $file->move($path_upload,$name_file);
+          $path_img = $path_upload."/".$name_file;
+        }
         $user->save();
-
-        // $user->syncRoles([$request->role]);
 
         return redirect()->route('management.user.index')->with('notif_success', 'New user has been updated successfully!');
     }
@@ -117,7 +124,8 @@ class UserController extends Controller {
     {
     	$result = User::withoutGlobalScopes()
                      ->select(['users.*', 'roles.display_name as role_display_name'])
-                     ->leftJoin('roles', 'users.role_id', '=', 'roles.id');
+                     ->leftJoin('roles', 'users.role_id', '=', 'roles.id')
+                     ->where('role_id','!=',1);
 
        return DataTables::of($result)
          ->addIndexColumn()

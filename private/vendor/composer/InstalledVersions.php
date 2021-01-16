@@ -1,5 +1,15 @@
 <?php
 
+
+
+
+
+
+
+
+
+
+
 namespace Composer;
 
 use Composer\Semver\VersionParser;
@@ -19,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'f91206da45acf197c62b0de0169ced89f0878d7e',
+    'reference' => '0fe07143c10f74dfda35b7a1a5e887fcaf13df69',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -231,203 +241,203 @@ private static $installed = array (
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/broadcasting' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/bus' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/cache' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/config' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/console' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/container' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/contracts' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/cookie' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/database' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/encryption' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/events' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/filesystem' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/hashing' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/http' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/log' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/mail' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/notifications' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/pagination' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/pipeline' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/queue' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/redis' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/routing' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/session' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/support' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/testing' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/translation' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/validation' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'illuminate/view' => 
     array (
       'replaced' => 
       array (
-        0 => 'v7.30.2',
+        0 => 'v7.30.3',
       ),
     ),
     'jaybizzle/crawler-detect' => 
@@ -457,12 +467,12 @@ private static $installed = array (
     ),
     'laravel/framework' => 
     array (
-      'pretty_version' => 'v7.30.2',
-      'version' => '7.30.2.0',
+      'pretty_version' => 'v7.30.3',
+      'version' => '7.30.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '405ca2bcf532dff1ef27f9f7ff7940221c575c84',
+      'reference' => '28481951106e75cf8c5a8b24100059fa327df1ef',
     ),
     'laravel/laravel' => 
     array (
@@ -471,7 +481,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'f91206da45acf197c62b0de0169ced89f0878d7e',
+      'reference' => '0fe07143c10f74dfda35b7a1a5e887fcaf13df69',
     ),
     'laravel/tinker' => 
     array (
@@ -824,8 +834,8 @@ private static $installed = array (
     array (
       'provided' => 
       array (
-        0 => '1.0',
-        1 => '1.0.0',
+        0 => '1.0.0',
+        1 => '1.0',
       ),
     ),
     'psr/simple-cache' => 

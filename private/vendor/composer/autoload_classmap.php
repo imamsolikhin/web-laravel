@@ -2391,6 +2391,8 @@ return array(
     'League\\MimeTypeDetection\\FinfoMimeTypeDetector' => $vendorDir . '/league/mime-type-detection/src/FinfoMimeTypeDetector.php',
     'League\\MimeTypeDetection\\GeneratedExtensionToMimeTypeMap' => $vendorDir . '/league/mime-type-detection/src/GeneratedExtensionToMimeTypeMap.php',
     'League\\MimeTypeDetection\\MimeTypeDetector' => $vendorDir . '/league/mime-type-detection/src/MimeTypeDetector.php',
+    'MenuIconTableSeeder' => $baseDir . '/database/seeds/MenuIconTableSeeder.php',
+    'MenuTableSeeder' => $baseDir . '/database/seeds/MenuTableSeeder.php',
     'Mobile_Detect' => $vendorDir . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
     'Mockery' => $vendorDir . '/mockery/mockery/library/Mockery.php',
     'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => $vendorDir . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
