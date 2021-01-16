@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
         'username'=>'de4ragil',
         'email'=> 'de4imamsolikhin@gmail.com',
         'password'=>'$2y$10$j2k/ohKZUiJ8.VLrSgijdujJiTzY27PJIqUrWEMtYikyFfmVopfiC',
-        'role_id'=>"2",
+        'role_id'=>"1",
         'active'=>1
       ]);
       \App\Models\User::create([
