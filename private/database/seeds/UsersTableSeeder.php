@@ -13,24 +13,23 @@ class UsersTableSeeder extends Seeder
     {
       \App\Models\User::create([
         'id'=>'DEV-GLOBAL-001',
-        'name'=>'admin',
-        'username'=>'admin',
-        'email'=> 'admin@gmail.com',
-        'password'=>'$2y$10$j2k/ohKZUiJ8.VLrSgijdujJiTzY27PJIqUrWEMtYikyFfmVopfiC',
-        'role_id'=>"DEV",
-        'active'=>1
-      ]);
-      \App\Models\User::create([
-        'id'=>'DEV-GLOBAL-002',
         'name'=>'Imam Solikhin',
         'username'=>'de4ragil',
         'email'=> 'de4imamsolikhin@gmail.com',
         'password'=>'$2y$10$j2k/ohKZUiJ8.VLrSgijdujJiTzY27PJIqUrWEMtYikyFfmVopfiC',
-        'role_id'=>"DEV",
+        'role_id'=>"2",
+        'active'=>1
+      ]);
+      \App\Models\User::create([
+        'id'=>'ADM-GLOBAL-002',
+        'name'=>'admin',
+        'username'=>'admin',
+        'email'=> 'admin@gmail.com',
+        'password'=>'$2y$10$j2k/ohKZUiJ8.VLrSgijdujJiTzY27PJIqUrWEMtYikyFfmVopfiC',
+        'role_id'=>"2",
         'active'=>1
       ]);
       \App\Models\Role::create([
-        'id'=>"DEV",
         'name'=>'Developer',
         'display_name'=>'Super Admin',
         'description'=>'Super Admin By Developer',
