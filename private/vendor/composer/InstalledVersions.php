@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '0fe07143c10f74dfda35b7a1a5e887fcaf13df69',
+    'reference' => '095d973e6b585ad6a0569034c9fdd8ffba8de5c9',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -200,6 +200,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '848d8125239d7dbf8ab25cb7f054f1a630e68c2e',
+    ),
+    'geekcom/phpjasper' => 
+    array (
+      'pretty_version' => '3.3.1',
+      'version' => '3.3.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'df25051c1c50410d89d51fa84b8b6457b3c1e851',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -481,7 +490,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '0fe07143c10f74dfda35b7a1a5e887fcaf13df69',
+      'reference' => '095d973e6b585ad6a0569034c9fdd8ffba8de5c9',
     ),
     'laravel/tinker' => 
     array (
@@ -1015,6 +1024,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '1c51a5fa12131565fe3860705163e53d7a26258a',
+    ),
+    'squizlabs/php_codesniffer' => 
+    array (
+      'pretty_version' => '3.5.8',
+      'version' => '3.5.8.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9d583721a7157ee997f235f327de038e7ea6dac4',
     ),
     'swiftmailer/swiftmailer' => 
     array (

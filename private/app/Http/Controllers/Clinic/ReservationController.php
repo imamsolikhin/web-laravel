@@ -100,7 +100,7 @@ class ReservationController extends Controller {
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
           $result = Patient::withoutGlobalScopes()
-                    ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
+                    ->whereBetween('reservation_date', array($request->from_date, $request->to_date)) ;
         }else{
         	$result = Patient::withoutGlobalScopes();
         }
@@ -224,9 +224,6 @@ class ReservationController extends Controller {
         if ($request->reservation_date){
           $data->reservation_date = $request->reservation_date;
         }
-        if ($request->closing_status){
-          $data->closing_status = $request->closing_status;
-        }
         if ($request->closing_by){
           $data->closing_by = $request->closing_by;
         }
@@ -244,9 +241,6 @@ class ReservationController extends Controller {
         }
         if ($request->img_closing){
           $data->img_closing = $request->img_closing;
-        }
-        if ($request->except("closing_status")) {
-            $data->closing_status = to_bool($request->closing_status);
         }
         $data->lock_status = 1;
         $data->save();

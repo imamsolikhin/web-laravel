@@ -52,7 +52,6 @@ class ClosingController extends Controller {
           $path_upload = 'upload/'.sess_company("id").'//CLOSING//'.date('Y/m-d',time());
           $file->move($path_upload,$name_file);
           $data->closing_by = sess_user("id");
-          $data->closing_status = 1;
           $data->closing_date = currDate();
           $data->img_closing = $path_upload."/".$name_file;
           $module = getControllerName("Clinic", "Closing")::execute($request,$module);
@@ -100,7 +99,7 @@ class ClosingController extends Controller {
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
           $result = Patient::withoutGlobalScopes()
-                    ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
+                    ->whereBetween('reservation_date', array($request->from_date, $request->to_date)) ;
         }else{
         	$result = Patient::withoutGlobalScopes();
         }
@@ -126,7 +125,7 @@ class ClosingController extends Controller {
           })
           ->addColumn('active_closing', function($module) {
               $img = '<div class="symbol-label"><img alt="img" src="'.asset($module->img_closing).'" height="100" width="200"/>'.'</div>';
-              $closing_status =  $module->closing_status ?  '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Berkunjung</span>' : '<span class="label font-weight-bold label-lg  label-light-info label-inline">Terjadwal</span>';
+              $closing_status =  $module->closing_status ?  '<span class="label font-weight-bold label-lg  label-light-warning label-inline">Locked</span>' : '<span class="label font-weight-bold label-lg  label-light-info label-inline">Pending</span>';
               $newold = '<span class="label font-weight-bold label-lg  label-light-danger label-inline">'.date('d-m-Y H:i',strtotime($module->closing_date)).'</span>';
               return $img.'<br/><center>'.$newold."&nbsp".$closing_status.'</center>';
           })
@@ -235,9 +234,6 @@ class ClosingController extends Controller {
         if ($request->reservation_date){
           $data->reservation_date = $request->reservation_date;
         }
-        if ($request->closing_status){
-          $data->closing_status = $request->closing_status;
-        }
         if ($request->closing_by){
           $data->closing_by = $request->closing_by;
         }
@@ -255,9 +251,6 @@ class ClosingController extends Controller {
         }
         if ($request->img_closing){
           $data->img_closing = $request->img_closing;
-        }
-        if ($request->except("closing_status")) {
-            $data->closing_status = to_bool($request->closing_status);
         }
         $data->lock_status = 1;
         $data->save();

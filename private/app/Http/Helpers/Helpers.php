@@ -181,3 +181,16 @@ function getAuthMenu($module,$key) {
     }
     return False;
 }
+
+function getDatabaseConfig()
+   {
+       return [
+           'driver'   => env('com.mysql.jdbc.Driver'),
+           'host'     => env('127.0.0.1'),
+           'port'     => env('8080'),
+           'username' => env('root'),
+           'password' => env('leone231'),
+           'database' => env('db_psicologia'),
+           'jdbc_dir' => base_path() . env('JDBC_DIR', '/vendor/lavela/phpjasper/src/JasperStarter/jdbc'),
+       ];
+   }

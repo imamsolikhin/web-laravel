@@ -87,9 +87,9 @@ class InteraksiController extends Controller {
    }
 
     public static function list($request) {
-        if($request->from_date != '' && $request->from_date  != ''){
+        if($request->from_date != '' && $request->to_date  != ''){
           $result = Visitor::withoutGlobalScopes()
-                    ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
+                    ->whereBetween('created_at', array($request->from_date, $request->to_date)) ;
         }else{
         	$result = Visitor::withoutGlobalScopes()->orderBy('created_at','desc');
         }

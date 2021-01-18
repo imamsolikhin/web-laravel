@@ -95,6 +95,7 @@
     </div>
   </div>
   <div class="card-body pt-1">
+    <div hidden><input id="start-date"/><input id="end-date"/></div>
     <table class="table table-bordered table-hover w100" cellspacing="0" id="datatable" style="width: 1070px !important;"></table>
   </div>
 </div>
@@ -298,15 +299,15 @@
      //menangani proses saat apply date range
       $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
          $(this).val(picker.startDate.format('DD-MM-YYYY') + ' - ' + picker.endDate.format('DD-MM-YYYY'));
-         start_date=picker.startDate.format('YYYY-MM-DD');
-         end_date=picker.endDate.format('YYYY-MM-DD');
+         $("#start-date").val(picker.startDate.format('YYYY-MM-DD'));
+         $("#end-date").val(picker.endDate.format('YYYY-MM-DD'));
          refresh_table();
       });
 
       $('#datesearch').on('cancel.daterangepicker', function(ev, picker) {
         $(this).val('');
-        start_date='';
-        end_date='';
+        $("#start-date").val('');
+        $("#end-date").val('');
         refresh_table();
       });
   });
@@ -339,9 +340,12 @@
     ajax: {
       method: 'POST',
       url : '{{ route('clinic.list','interaksi') }}',
-      data: {from_date:start_date, to_date:end_date},
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      data: function (d) {
+        d.from_date = $("#start-date").val();
+        d.to_date = $(" #end-date").val();
       }
     },
     columns: [
@@ -484,14 +488,6 @@
   }
 
   function refresh_table() {
-      table = table.dataTable();
-      oSettings = table.fnSettings();
-      table.fnClearTable(this);
-      for (var i = 0; i < json.aaData.length; i++) {
-          table.oApi._fnAddData(oSettings, json.aaData[i]);
-      }
-
-      oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
       table.fnDraw();
   }
 

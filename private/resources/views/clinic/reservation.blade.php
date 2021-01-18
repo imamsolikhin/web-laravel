@@ -84,6 +84,7 @@
     </div>
   </div>
   <div class="card-body pt-1">
+    <div hidden><input id="start-date"/><input id="end-date"/></div>
     <table class="table table-bordered table-hover w100" cellspacing="0" id="datatable" style="width: 1070px !important;"></table>
   </div>
 </div>
@@ -247,14 +248,6 @@
                     </div>
                     <div class="mb-2">
                         <div class="form-group row">
-                            <label class="col-lg-4 col-form-label">Closing Status</label>
-                            <div class="col-lg-8">
-                                <input id="closing_status" name="closing_status" data-switch="true" type="checkbox" checked="checked" data-on-text="Closing" data-handle-width="200" data-off-text="Terjadwal" data-off-color="info" data-on-color="warning" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-2">
-                        <div class="form-group row">
                             <label class="col-lg-4 col-form-label"></label>
                             <div class="col-lg-8">
                                 <button type="submit" class="btn btn-success font-weight-bold">Save</button>
@@ -288,20 +281,20 @@
   var start_date = "";
   var end_date = "";
   $(document).ready(function() {
-     //menangani proses saat apply date range
-      $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
-         $(this).val(picker.startDate.format('DD-MM-YYYY') + ' - ' + picker.endDate.format('DD-MM-YYYY'));
-         start_date=picker.startDate.format('YYYY-MM-DD');
-         end_date=picker.endDate.format('YYYY-MM-DD');
-         refresh_table();
-      });
-
-      $('#datesearch').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-        start_date='';
-        end_date='';
+    //menangani proses saat apply date range
+     $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD-MM-YYYY') + ' - ' + picker.endDate.format('DD-MM-YYYY'));
+        $("#start-date").val(picker.startDate.format('YYYY-MM-DD'));
+        $("#end-date").val(picker.endDate.format('YYYY-MM-DD'));
         refresh_table();
-      });
+     });
+
+     $('#datesearch').on('cancel.daterangepicker', function(ev, picker) {
+       $(this).val('');
+       $("#start-date").val('');
+       $("#end-date").val('');
+       refresh_table();
+     });
   });
 
   $('.select2').select2();
@@ -322,9 +315,12 @@
     ajax: {
       method: 'POST',
       url : '{{ route('clinic.list','reservation') }}',
-      data: {from_date:start_date, to_date:end_date},
       headers: {
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      data: function (d) {
+        d.from_date = $("#start-date").val();
+        d.to_date = $("#end-date").val();
       }
     },
     columns: [
@@ -437,7 +433,6 @@
                   $('#city_id').val(response.data.city_id);
                   $('#schedule_date').val(response.data.schedule_date);
                   $('#lock_status').val(response.data.lock_status);
-                  $('#closing_status').bootstrapSwitch('state', response.data.closing_status);
                   $('#modal-form').modal('show');
               },
               error: function (xhr, status, error) {
@@ -455,14 +450,6 @@
   }
 
   function refresh_table() {
-      table = table.dataTable();
-      oSettings = table.fnSettings();
-      table.fnClearTable(this);
-      for (var i = 0; i < json.aaData.length; i++) {
-          table.oApi._fnAddData(oSettings, json.aaData[i]);
-      }
-
-      oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
       table.fnDraw();
   }
 

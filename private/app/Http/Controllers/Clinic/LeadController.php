@@ -78,7 +78,7 @@ class LeadController extends Controller {
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
           $result = Patient::withoutGlobalScopes()
-                    ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
+                    ->whereBetween('reservation_date', array($request->from_date, $request->to_date)) ;
         }else{
         	$result = Patient::withoutGlobalScopes()->where('followup_status',0);
         }

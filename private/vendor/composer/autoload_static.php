@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532
+class ComposerStaticInit9e746562b2afdfa02f2d3fff891e3e49
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -116,6 +116,7 @@ class ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532
             'Prophecy\\' => 9,
             'PhpParser\\' => 10,
             'PhpOption\\' => 10,
+            'PHPJasper\\' => 10,
         ),
         'O' => 
         array (
@@ -393,6 +394,10 @@ class ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532
         array (
             0 => __DIR__ . '/..' . '/phpoption/phpoption/src/PhpOption',
         ),
+        'PHPJasper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/geekcom/phpjasper/src',
+        ),
         'Opis\\Closure\\' => 
         array (
             0 => __DIR__ . '/..' . '/opis/closure/src',
@@ -589,6 +594,7 @@ class ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532
         'App\\Http\\Controllers\\Clinic\\ReservationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Clinic/ReservationController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
+        'App\\Http\\Controllers\\Management\\MenuController' => __DIR__ . '/../..' . '/app/Http/Controllers/Management/MenuController.php',
         'App\\Http\\Controllers\\Management\\RoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/Management/RoleController.php',
         'App\\Http\\Controllers\\Management\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Management/UserController.php',
         'App\\Http\\Controllers\\Management\\UserHistoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Management/UserHistoryController.php',
@@ -651,7 +657,11 @@ class ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532
         'App\\Http\\Resources\\Product\\Followup' => __DIR__ . '/../..' . '/app/Http/Resources/Product/Followup.php',
         'App\\Http\\Resources\\Product\\Visitor' => __DIR__ . '/../..' . '/app/Http/Resources/Product/Visitor.php',
         'App\\Listeners\\EventListener' => __DIR__ . '/../..' . '/app/Listeners/EventListener.php',
+        'App\\Models\\Menu' => __DIR__ . '/../..' . '/app/Models/Menu.php',
+        'App\\Models\\MenuIcon' => __DIR__ . '/../..' . '/app/Models/MenuIcon.php',
+        'App\\Models\\MenuTools' => __DIR__ . '/../..' . '/app/Models/MenuTools.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
+        'App\\Models\\RoleAuth' => __DIR__ . '/../..' . '/app/Models/RoleAuth.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\UserLoginHistory' => __DIR__ . '/../..' . '/app/Models/UserLoginHistory.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
@@ -3197,6 +3207,12 @@ class ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532
         'Opis\\Closure\\SecurityProvider' => __DIR__ . '/..' . '/opis/closure/src/SecurityProvider.php',
         'Opis\\Closure\\SelfReference' => __DIR__ . '/..' . '/opis/closure/src/SelfReference.php',
         'Opis\\Closure\\SerializableClosure' => __DIR__ . '/..' . '/opis/closure/src/SerializableClosure.php',
+        'PHPJasper\\Exception\\ErrorCommandExecutable' => __DIR__ . '/..' . '/geekcom/phpjasper/src/Exception/ErrorCommandExecutable.php',
+        'PHPJasper\\Exception\\InvalidCommandExecutable' => __DIR__ . '/..' . '/geekcom/phpjasper/src/Exception/InvalidCommandExecutable.php',
+        'PHPJasper\\Exception\\InvalidFormat' => __DIR__ . '/..' . '/geekcom/phpjasper/src/Exception/InvalidFormat.php',
+        'PHPJasper\\Exception\\InvalidInputFile' => __DIR__ . '/..' . '/geekcom/phpjasper/src/Exception/InvalidInputFile.php',
+        'PHPJasper\\Exception\\InvalidResourceDirectory' => __DIR__ . '/..' . '/geekcom/phpjasper/src/Exception/InvalidResourceDirectory.php',
+        'PHPJasper\\PHPJasper' => __DIR__ . '/..' . '/geekcom/phpjasper/src/PHPJasper.php',
         'PHPUnit\\Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert.php',
         'PHPUnit\\Framework\\AssertionFailedError' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Exception/AssertionFailedError.php',
@@ -5410,10 +5426,10 @@ class ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit6721a1d20aebebd4cc059bcda2c8f532::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit9e746562b2afdfa02f2d3fff891e3e49::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit9e746562b2afdfa02f2d3fff891e3e49::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit9e746562b2afdfa02f2d3fff891e3e49::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit9e746562b2afdfa02f2d3fff891e3e49::$classMap;
 
         }, null, ClassLoader::class);
     }

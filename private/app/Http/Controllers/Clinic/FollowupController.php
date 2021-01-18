@@ -100,7 +100,7 @@ class FollowupController extends Controller {
     public static function list($request) {
         if($request->from_date != '' && $request->from_date  != ''){
           $result = Followup::withoutGlobalScopes()
-                    ->whereBetween('schedule', array($request->from_date, $request->to_date)) ;
+                    ->whereBetween('followup_date', array($request->from_date, $request->to_date)) ;
         }else{
         	$result = Followup::withoutGlobalScopes()->orderBy('created_at','desc');
         }
