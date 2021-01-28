@@ -1,7 +1,8 @@
 # Metronic 7 + Laravel 7
 
 ### Introduction
-
+User: admin@gmail.com
+Pass: admin
 ...
 
 ### Installation
@@ -36,7 +37,7 @@ npm run dev
 ```
 
 ```bash
-php artisan serve
+php artisan migrate:refresh --seed
 ```
 
 And navigate to generated server link (http://127.0.0.1:8000)
