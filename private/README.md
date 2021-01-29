@@ -18,6 +18,7 @@ Assuming your machine meets all requirements - let's process to installation of 
 
 ```bash
 composer install
+composer update
 ```
 
 ```bash

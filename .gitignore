@@ -23,3 +23,5 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 private/.DS_Store
+nbproject/private/private.xml
+private/README.md

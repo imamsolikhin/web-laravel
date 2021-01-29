@@ -641,6 +641,13 @@ if(APP_BRANCH == "Management"){
                     'page' => 'master/ads'
                   ],
                   [
+                    'title' => 'Vendor',
+                    'root' => true,
+                    'icon' => 'media/svg/icons/Code/Terminal.svg',
+                    'bullet' => 'dot',
+                    'page' => 'master/vendor'
+                  ],
+                  [
                     'title' => 'Bank',
                     'root' => true,
                     'icon' => 'media/svg/icons/Code/Terminal.svg',

@@ -9,6 +9,7 @@ class MasterController extends Controller
 {
     public function index($table)
     {
+        //dd(getControllerName("Master", $table));
       return getControllerName("Master", $table)::index();
     }
 
