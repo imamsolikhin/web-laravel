@@ -84,9 +84,9 @@
                     </div>
                     <div class="mb-1">
                         <div class="form-group row">
-                            <label class="col-lg-4 col-form-label">{{ $module }} Alamat</label>
+                            <label class="col-lg-4 col-form-label">{{ $module }} Address</label>
                             <div class="col-lg-8">
-                                <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Enter Alamat" value=""/>
+                                <input type="text" class="form-control" id="address" name="address" placeholder="Enter Adrress" value=""/>
                             </div>
                         </div>
                     </div>
@@ -153,6 +153,7 @@
       {title: "No", data: 'DT_RowIndex', orderable: false, searchable: false, autoHide: false},
       {title: "{{ $module }} ID", data: 'id', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: true},
       {title: "{{ $module }} Name", data: 'name', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: true},
+      {title: "{{ $module }} Address", data: 'address', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: true},
       {title: "Status", data: 'active', defaultContent: '-', class: 'text-center dt-body-nowrap', autohide: true},
       {title: "Actions", data: 'action', orderable: false, responsivePriority: -1},
     ],
@@ -185,6 +186,7 @@
 
                   $('#id').val(response.data.id);
                   $('#name').val(response.data.name);
+                  $('#address').val(response.data.address);
                   $('#status').bootstrapSwitch('state', response.data.status);
                   $('#modal-form').modal('show');
                   $('#id').attr('readonly',true)

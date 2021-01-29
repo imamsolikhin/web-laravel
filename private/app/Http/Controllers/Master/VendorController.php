@@ -68,7 +68,7 @@ class VendorController extends Controller{
         $request->id = sess_company('id').'-'.$request->id;
         $validator = static::$controller::validation($request);
         if ($validator->fails()) return redirect()->route('master.index',static::$auth)->with('notif_danger', 'New '.static::$module_alias.' '. $request->name .' can not be save!');
-
+        
         $module = static::$controller::execute($request);
         return redirect()->route('master.index',static::$auth)->with('notif_success', 'New '.static::$module_alias.' '. $request->name .' has been added successfully!');
     }
@@ -155,6 +155,9 @@ class VendorController extends Controller{
         }
         if ($request->name){
           $data->name = $request->name;
+        }
+        if($request->name){
+          $data->address = $request->address;  
         }
         if ($request->except('status')) {
             $data->status = to_bool($request->status);
