@@ -17,7 +17,7 @@ class CreateMstVendorTable extends Migration
             $table->string('id',50)->primary();
             $table->string('company_id',100)->nullable();
             $table->string('name');
-            $table->text('alamat');
+            $table->text('alamat')->nullable();
             $table->string('author',100)->nullable();
             $table->tinyInteger('status')->default(0);
             $table->string('created_by',100)->nullable();

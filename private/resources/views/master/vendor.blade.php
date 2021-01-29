@@ -84,7 +84,7 @@
                     </div>
                     <div class="mb-1">
                         <div class="form-group row">
-                            <label class="col-lg-4 col-form-label">{{ $module }} Alamata</label>
+                            <label class="col-lg-4 col-form-label">{{ $module }} Alamat</label>
                             <div class="col-lg-8">
                                 <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Enter Alamat" value=""/>
                             </div>
