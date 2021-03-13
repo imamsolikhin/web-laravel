@@ -1,0 +1,48 @@
+{
+  "name": "alexmg86/laravel-sub-query",
+  "description": "Laravel subquery",
+  "license": "MIT",
+  "keywords": ["php", "laravel", "sub", "query", "withSum", "withMax", "withMin", "withAvg", "orderByRelation", "limit relation"],
+  "type": "library",
+  "authors": [
+    {
+      "name": "Aleksei Morozov",
+      "email": "alexmg86@mail.ru"
+    }
+  ],
+  "homepage": "https://github.com/alexmg86/laravelsubquery",
+  "require": {
+    "php": ">=5.6.4",
+    "illuminate/support": ">=5.4",
+    "laravel/framework": "<8.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": ">=3.1",
+    "phpunit/phpunit": ">=5.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Alexmg86\\LaravelSubQuery\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Alexmg86\\LaravelSubQuery\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "phpunit": "phpunit"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Alexmg86\\LaravelSubQuery\\ServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
